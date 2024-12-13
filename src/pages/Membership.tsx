@@ -19,42 +19,126 @@ import {
 } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
 import { loadStripe } from '@stripe/stripe-js';
+import {
+  CardElement,
+  Elements,
+  useStripe,
+  useElements,
+} from '@stripe/stripe-js/pure';
 import { useAuth } from '../contexts/AuthContext';
 import { payments } from '../services/api';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
-const Membership: React.FC = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
+const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (error: string) => void }) => {
+  const stripe = useStripe();
+  const elements = useElements();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const selectedPlan = 'monthly';
   const duration = selectedPlan === 'monthly' ? 1 : 12;
 
-  const handleSubscribe = async () => {
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
     try {
       setLoading(true);
-      setError(null);
 
-      // Create payment intent for membership
+      // Create payment intent
       const { clientSecret } = await payments.createMembershipIntent(duration);
 
-      // Confirm payment with Stripe
-      const stripe = await stripePromise;
-      const { error: stripeError } = await stripe!.confirmCardPayment(clientSecret);
+      // Get card element
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        throw new Error('Card element not found');
+      }
+
+      // Confirm payment
+      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              // Add billing details if needed
+            },
+          },
+        }
+      );
 
       if (stripeError) {
         throw new Error(stripeError.message);
       }
 
-      // Refresh page to update membership status
-      window.location.reload();
+      if (paymentIntent.status === 'succeeded') {
+        onSuccess();
+      } else {
+        throw new Error('Payment failed');
+      }
     } catch (err: any) {
-      setError(err.message || 'Gagal memproses pembayaran. Silakan coba lagi.');
+      onError(err.message || 'Payment failed');
     } finally {
       setLoading(false);
     }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Box sx={{ mb: 3 }}>
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                  color: '#aab7c4',
+                },
+              },
+              invalid: {
+                color: '#9e2146',
+              },
+            },
+          }}
+        />
+      </Box>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        fullWidth
+        disabled={!stripe || loading}
+        sx={{ mt: 2 }}
+      >
+        {loading ? (
+          <CircularProgress size={24} color="inherit" />
+        ) : (
+          'Berlangganan Sekarang'
+        )}
+      </Button>
+    </form>
+  );
+};
+
+const Membership: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const handleSuccess = () => {
+    setSuccess(true);
+    // Refresh page after a short delay
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+  };
+
+  const handleError = (errorMessage: string) => {
+    setError(errorMessage);
   };
 
   return (
@@ -97,192 +181,47 @@ const Membership: React.FC = () => {
           </Typography>
         </Box>
 
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12} sm={8} md={6}>
-            <Paper
-              elevation={3}
-              sx={{
-                p: { xs: 2, sm: 3 },
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                borderRadius: 2,
-                border: '1px solid',
-                borderColor: 'divider'
-              }}
-            >
-              <Box mb={2}>
-                <Typography 
-                  variant="h5" 
-                  gutterBottom
-                  sx={{ fontWeight: 600 }}
-                >
-                  Paket Pembeli
-                </Typography>
-                <Typography 
-                  variant="h4" 
-                  color="primary" 
-                  sx={{ 
-                    fontWeight: 700,
-                    fontSize: { xs: '1.75rem', sm: '2rem' }
-                  }}
-                >
-                  Rp 95.000
-                </Typography>
-                <Typography 
-                  variant="subtitle1" 
-                  color="text.secondary"
-                  sx={{ mt: 0.5 }}
-                >
-                  per bulan
-                </Typography>
-              </Box>
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
 
-              <Box flexGrow={1} mb={3}>
-                <List disablePadding>
-                  <ListItem sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 36 }}>
-                      <CheckCircle color="primary" fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary="Chat langsung via WhatsApp" 
-                      primaryTypographyProps={{
-                        fontSize: { xs: '0.875rem', sm: '1rem' }
-                      }}
-                    />
-                  </ListItem>
-                  <ListItem sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 36 }}>
-                      <CheckCircle color="primary" fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary="Harga lebih murah" 
-                      secondary="Hemat hingga 20% dari harga regular"
-                      primaryTypographyProps={{
-                        fontSize: { xs: '0.875rem', sm: '1rem' }
-                      }}
-                      secondaryTypographyProps={{
-                        fontSize: { xs: '0.75rem', sm: '0.875rem' }
-                      }}
-                    />
-                  </ListItem>
-                  <ListItem sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 36 }}>
-                      <CheckCircle color="primary" fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary="Proses lebih cepat" 
-                      secondary="Prioritas dalam pemesanan dan konfirmasi"
-                      primaryTypographyProps={{
-                        fontSize: { xs: '0.875rem', sm: '1rem' }
-                      }}
-                      secondaryTypographyProps={{
-                        fontSize: { xs: '0.75rem', sm: '0.875rem' }
-                      }}
-                    />
-                  </ListItem>
-                  <ListItem sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 36 }}>
-                      <CheckCircle color="primary" fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary="Perpanjangan otomatis tiap bulan" 
-                      primaryTypographyProps={{
-                        fontSize: { xs: '0.875rem', sm: '1rem' }
-                      }}
-                    />
-                  </ListItem>
-                </List>
-              </Box>
+        {success && (
+          <Alert severity="success" sx={{ mb: 3 }}>
+            Pembayaran berhasil! Halaman akan dimuat ulang...
+          </Alert>
+        )}
 
-              {user ? (
-                user.membership?.type === 'shopper' && user.membership?.expiresAt && new Date(user.membership.expiresAt) > new Date() ? (
-                  <Box>
-                    <Alert 
-                      severity="success" 
-                      sx={{ 
-                        mb: 2,
-                        '& .MuiAlert-message': {
-                          width: '100%',
-                          textAlign: 'center'
-                        }
-                      }}
-                    >
-                      Membership aktif sampai{' '}
-                      {new Date(user.membership.expiresAt).toLocaleDateString('id-ID')}
-                    </Alert>
-                    <Typography 
-                      variant="caption" 
-                      color="text.secondary" 
-                      display="block" 
-                      textAlign="center"
-                      sx={{ fontSize: '0.75rem' }}
-                    >
-                      Perpanjangan otomatis setiap bulan
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Box>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      onClick={handleSubscribe}
-                      disabled={loading}
-                      sx={{ 
-                        py: 1.5,
-                        fontSize: '1rem',
-                        fontWeight: 600
-                      }}
-                    >
-                      {loading ? <CircularProgress size={24} /> : 'Berlangganan Sekarang'}
-                    </Button>
-                    <Typography 
-                      variant="caption" 
-                      color="text.secondary" 
-                      display="block" 
-                      textAlign="center" 
-                      mt={1}
-                      sx={{ fontSize: '0.75rem' }}
-                    >
-                      *Pembayaran otomatis setiap bulan
-                    </Typography>
-                  </Box>
-                )
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  onClick={() => navigate('/login')}
-                  sx={{ 
-                    py: 1.5,
-                    fontSize: '1rem',
-                    fontWeight: 600
-                  }}
-                >
-                  Masuk untuk Berlangganan
-                </Button>
-              )}
-            </Paper>
-          </Grid>
-        </Grid>
+        <Elements stripe={stripePromise}>
+          <PaymentForm onSuccess={handleSuccess} onError={handleError} />
+        </Elements>
 
-        <Dialog 
-          open={!!error} 
-          onClose={() => setError(null)}
-          PaperProps={{
-            sx: { borderRadius: 2 }
-          }}
-        >
-          <DialogTitle>Kesalahan</DialogTitle>
-          <DialogContent>
-            <Typography>{error}</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setError(null)}>Tutup</Button>
-          </DialogActions>
-        </Dialog>
+        <Box mt={4}>
+          <Typography variant="h6" gutterBottom>
+            Keuntungan Member:
+          </Typography>
+          <List>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircle color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Akses ke semua fitur jasa titip" />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircle color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Prioritas dukungan pelanggan" />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircle color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Badge khusus member" />
+            </ListItem>
+          </List>
+        </Box>
       </Paper>
     </Box>
   );
