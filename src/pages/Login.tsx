@@ -17,12 +17,12 @@ import { useAuth } from '../contexts/AuthContext';
 const validationSchema = yup.object({
   email: yup
     .string()
-    .email('Enter a valid email')
-    .required('Email is required'),
+    .email('Masukkan email yang valid')
+    .required('Email harus diisi'),
   password: yup
     .string()
-    .min(6, 'Password should be of minimum 6 characters length')
-    .required('Password is required'),
+    .min(6, 'Password minimal 6 karakter')
+    .required('Password harus diisi'),
 });
 
 const Login = () => {
@@ -38,10 +38,12 @@ const Login = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+        setError(null);
         await login(values.email, values.password);
         navigate('/');
       } catch (err: any) {
-        setError(err.message || 'Failed to login. Please try again.');
+        // Use the error message from the server, or a generic message
+        setError(err.response?.data?.message || 'Gagal masuk ke sistem. Silakan coba lagi.');
       }
     },
   });
@@ -57,7 +59,7 @@ const Login = () => {
     >
       <Paper sx={{ p: 4, maxWidth: 400, width: '100%' }}>
         <Typography variant="h5" align="center" gutterBottom>
-          Login
+          Masuk
         </Typography>
 
         {error && (
@@ -98,15 +100,15 @@ const Login = () => {
             disabled={formik.isSubmitting}
             sx={{ mt: 3 }}
           >
-            {formik.isSubmitting ? <CircularProgress size={24} /> : 'Login'}
+            {formik.isSubmitting ? <CircularProgress size={24} /> : 'Masuk'}
           </Button>
         </form>
 
         <Box mt={2} textAlign="center">
           <Typography variant="body2">
-            Don't have an account?{' '}
+            Belum punya akun?{' '}
             <Link component={RouterLink} to="/register">
-              Register here
+              Daftar di sini
             </Link>
           </Typography>
         </Box>
