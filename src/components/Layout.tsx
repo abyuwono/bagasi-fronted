@@ -5,6 +5,7 @@ import {
   Toolbar,
   Typography,
   Container,
+  Button,
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -40,24 +41,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Box
               component={Link}
               to="/"
-              sx={{ 
-                flexGrow: 1, 
-                textDecoration: 'none', 
+              sx={{
+                flexGrow: 1,
+                textDecoration: 'none',
                 color: 'inherit',
-                alignItems: 'flex-start'
+                alignItems: 'flex-start',
+                display: 'flex',
+                gap: 1
               }}
-              spacing={0}
             >
               <Typography variant="h6">
                 Bagasi
               </Typography>
-              <Typography 
-                variant="caption" 
-                sx={{ 
-                  marginTop: '-8px !important',
-                  letterSpacing: '0.5px'
-                }}
-              >
+              <Typography variant="h6">
                 Marketplace
               </Typography>
             </Box>
@@ -66,37 +62,52 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {user ? (
                 <>
                   {user.role === 'traveler' ? (
-                    <Box>
+                    <Button
+                      color="inherit"
+                      component={Link}
+                      to="/ads/new"
+                    >
                       Buka JasTip
-                    </Box>
+                    </Button>
                   ) : (
-                    <Box>
+                    <Button
+                      color="inherit"
+                      component={Link}
+                      to="/membership"
+                    >
                       Membership
-                    </Box>
+                    </Button>
                   )}
-                  <Box>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/profile"
+                  >
                     Profil
-                  </Box>
-                  <Box
+                  </Button>
+                  <Button
+                    color="inherit"
                     onClick={handleLogout}
                   >
                     Keluar
-                  </Box>
+                  </Button>
                 </>
               ) : (
                 <>
-                  <Box
+                  <Button
+                    color="inherit"
                     component={Link}
                     to="/login"
                   >
                     Masuk
-                  </Box>
-                  <Box
+                  </Button>
+                  <Button
+                    color="inherit"
                     component={Link}
                     to="/register"
                   >
                     Daftar
-                  </Box>
+                  </Button>
                 </>
               )}
             </Box>
