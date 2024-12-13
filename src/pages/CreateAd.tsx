@@ -126,6 +126,7 @@ const CreateAd = () => {
         state: {
           amount: amount,
           adTitle: 'Jastip dari ' + formik.values.departureCity + ' ke ' + formik.values.arrivalCity,
+          flightDate: formik.values.departureDate,
         },
       });
     } catch (error) {
