@@ -17,20 +17,14 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    logout();
-    handleClose();
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (

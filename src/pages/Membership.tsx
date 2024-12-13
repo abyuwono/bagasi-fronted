@@ -29,7 +29,7 @@ const Membership: React.FC = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('monthly');
+  const selectedPlan = 'monthly';
   const duration = selectedPlan === 'monthly' ? 1 : 12;
 
   const handleSubscribe = async () => {
