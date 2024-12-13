@@ -21,6 +21,9 @@ import { payments } from '../services/api';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
+// Fixed price for ad posting
+const AD_POSTING_PRICE = 195000; // IDR 195,000
+
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -40,12 +43,11 @@ const formatDate = (date: string) => {
 };
 
 interface AdPaymentProps {
-  amount: number;
   adTitle: string;
   flightDate: string;
 }
 
-const PaymentForm = ({ amount, adTitle, flightDate }: AdPaymentProps) => {
+const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -87,7 +89,6 @@ const PaymentForm = ({ amount, adTitle, flightDate }: AdPaymentProps) => {
       }
 
       if (paymentIntent.status === 'succeeded') {
-        // Navigate to success page
         navigate('/ads/payment-success');
       } else {
         throw new Error('Payment failed');
@@ -112,18 +113,18 @@ const PaymentForm = ({ amount, adTitle, flightDate }: AdPaymentProps) => {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="body1">
+              <Typography variant="body1" fontWeight="bold">
                 {adTitle}
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body1">
-                Tanggal Penerbangan: {formatDate(flightDate)}
+              <Typography variant="body1" fontStyle="italic">
+                {formatDate(flightDate)}
               </Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6" color="primary">
-                Total: {formatPrice(Number(amount))}
+                {formatPrice(AD_POSTING_PRICE)}
               </Typography>
             </Grid>
           </Grid>
@@ -171,7 +172,7 @@ const PaymentForm = ({ amount, adTitle, flightDate }: AdPaymentProps) => {
             {loading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              `Bayar ${formatPrice(Number(amount))}`
+              `Bayar ${formatPrice(AD_POSTING_PRICE)}`
             )}
           </Button>
         </form>
@@ -193,11 +194,11 @@ const PaymentForm = ({ amount, adTitle, flightDate }: AdPaymentProps) => {
 
 const AdPayment = () => {
   const location = useLocation();
-  const { amount, adTitle, flightDate } = location.state as AdPaymentProps;
+  const { adTitle, flightDate } = location.state as AdPaymentProps;
 
   return (
     <Elements stripe={stripePromise}>
-      <PaymentForm amount={amount} adTitle={adTitle} flightDate={flightDate} />
+      <PaymentForm adTitle={adTitle} flightDate={flightDate} />
     </Elements>
   );
 };

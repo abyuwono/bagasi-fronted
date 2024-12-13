@@ -124,7 +124,6 @@ const CreateAd = () => {
       // Navigate to payment page with ad details
       navigate('/ads/payment', {
         state: {
-          amount: amount,
           adTitle: 'Jastip dari ' + formik.values.departureCity + ' ke ' + formik.values.arrivalCity,
           flightDate: formik.values.departureDate,
         },
