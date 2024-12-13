@@ -24,12 +24,13 @@ import { payments } from '../services/api';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
-const Membership = () => {
+const Membership: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [duration, setDuration] = useState(1); // Default to 1 month
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('monthly');
+  const duration = selectedPlan === 'monthly' ? 1 : 12;
 
   const handleSubscribe = async () => {
     try {

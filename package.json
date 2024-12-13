@@ -53,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@chakra-ui/cli": "^3.2.3",
     "@types/node": "^16.18.122",
     "@types/react": "^18.3.16",

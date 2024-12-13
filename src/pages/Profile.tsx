@@ -20,7 +20,6 @@ import {
 import {
   Verified as VerifiedIcon,
   GppMaybe as UnverifiedIcon,
-  Star as StarIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 

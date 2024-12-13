@@ -1,17 +1,11 @@
 import React from 'react';
 import {
   AppBar,
+  Box,
   Toolbar,
   Typography,
-  Button,
   Container,
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
-  Stack,
 } from '@mui/material';
-import { AccountCircle } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -43,7 +37,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <AppBar position="static">
         <Container>
           <Toolbar>
-            <Stack
+            <Box
               component={Link}
               to="/"
               sx={{ 
@@ -66,58 +60,43 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               >
                 Marketplace
               </Typography>
-            </Stack>
+            </Box>
 
             <Box sx={{ display: 'flex', gap: 2 }}>
               {user ? (
                 <>
                   {user.role === 'traveler' ? (
-                    <Button
-                      color="inherit"
-                      component={Link}
-                      to="/ads/new"
-                    >
+                    <Box>
                       Buka JasTip
-                    </Button>
+                    </Box>
                   ) : (
-                    <Button
-                      color="inherit"
-                      component={Link}
-                      to="/membership"
-                    >
+                    <Box>
                       Membership
-                    </Button>
+                    </Box>
                   )}
-                  <Button
-                    color="inherit"
-                    component={Link}
-                    to="/profile"
-                  >
+                  <Box>
                     Profil
-                  </Button>
-                  <Button
-                    color="inherit"
+                  </Box>
+                  <Box
                     onClick={handleLogout}
                   >
                     Keluar
-                  </Button>
+                  </Box>
                 </>
               ) : (
                 <>
-                  <Button
-                    color="inherit"
+                  <Box
                     component={Link}
                     to="/login"
                   >
                     Masuk
-                  </Button>
-                  <Button
-                    color="inherit"
+                  </Box>
+                  <Box
                     component={Link}
                     to="/register"
                   >
                     Daftar
-                  </Button>
+                  </Box>
                 </>
               )}
             </Box>
