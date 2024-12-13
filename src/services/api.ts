@@ -95,10 +95,11 @@ export const payments = {
     return response.data;
   },
   createMembershipIntent: async (duration: number) => {
-    const response = await api.post('/payments/create-payment-intent', {
-      type: 'membership',
-      duration
-    });
+    const response = await api.post('/payments/create-membership-intent', { duration });
+    return response.data;
+  },
+  getMembershipPrice: async () => {
+    const response = await api.get('/payments/membership-price');
     return response.data;
   },
 };

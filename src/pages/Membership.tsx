@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -23,6 +23,15 @@ import { useAuth } from '../contexts/AuthContext';
 import { payments } from '../services/api';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
+
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+};
 
 const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (error: string) => void }) => {
   const stripe = useStripe();
@@ -121,6 +130,24 @@ const Membership: React.FC = () => {
   const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [price, setPrice] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const { price } = await payments.getMembershipPrice();
+        setPrice(price);
+      } catch (err) {
+        console.error('Error fetching price:', err);
+        setError('Gagal memuat harga membership');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrice();
+  }, []);
 
   const handleSuccess = () => {
     setSuccess(true);
@@ -191,15 +218,21 @@ const Membership: React.FC = () => {
             Berlangganan untuk mengakses fitur lengkap jasa titip
           </Typography>
           <Box mt={3}>
-            <Typography variant="h3" color="primary" gutterBottom>
-              Rp 10.000
-              <Typography component="span" variant="h6" color="text.secondary">
-                /bulan
-              </Typography>
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-              *Berlangganan otomatis diperpanjang setiap bulan
-            </Typography>
+            {loading ? (
+              <CircularProgress size={24} />
+            ) : price ? (
+              <>
+                <Typography variant="h3" color="primary" gutterBottom>
+                  {formatPrice(price)}
+                  <Typography component="span" variant="h6" color="text.secondary">
+                    /bulan
+                  </Typography>
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                  *Berlangganan otomatis diperpanjang setiap bulan
+                </Typography>
+              </>
+            ) : null}
           </Box>
         </Box>
 
