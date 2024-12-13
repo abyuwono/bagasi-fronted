@@ -5,8 +5,8 @@ import {
   Paper,
   Typography,
   Button,
-  CheckCircleOutline as CheckCircleIcon,
 } from '@mui/material';
+import { CheckCircleOutline as CheckCircleIcon } from '@mui/icons-material';
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
