@@ -21,8 +21,8 @@ import { payments } from '../services/api';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
-// Fixed price for ad posting
-const AD_POSTING_PRICE = 195000; // IDR 195,000
+// Fixed price for ad posting (IDR 195,000)
+const AD_POSTING_PRICE = 195000;
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -67,6 +67,10 @@ const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
 
       // Create payment intent
       const { clientSecret } = await payments.createAdPostingIntent();
+
+      if (!clientSecret) {
+        throw new Error('Failed to create payment intent');
+      }
 
       // Get card element
       const cardElement = elements.getElement(CardElement);

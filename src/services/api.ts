@@ -94,7 +94,7 @@ export const payments = {
   },
   createAdPostingIntent: async () => {
     const response = await api.post('/payments/create-ad-posting-intent');
-    return response.data.amount;
+    return response.data;
   },
   createMembershipIntent: async (duration: number) => {
     const response = await api.post('/payments/create-membership-intent', { duration });
