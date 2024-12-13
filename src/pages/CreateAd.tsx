@@ -121,29 +121,19 @@ const CreateAd = () => {
       setLoading(true);
       setError(null);
 
-      // Create payment intent
-      const { clientSecret } = await payments.createAdPostingIntent();
+      // Get payment details first
+      const { amount } = await payments.createAdPostingIntent();
 
-      // Confirm payment with Stripe
-      const stripe = await stripePromise;
-      const { error: stripeError } = await stripe!.confirmCardPayment(clientSecret);
-
-      if (stripeError) {
-        throw new Error(stripeError.message);
-      }
-
-      // Create ad
-      await ads.create({
-        ...formik.values,
-        departureDate: new Date(formik.values.departureDate).toISOString(),
-        returnDate: new Date(formik.values.returnDate).toISOString(),
-        availableWeight: Number(formik.values.availableWeight),
-        pricePerKg: Number(formik.values.pricePerKg),
+      // Navigate to payment page with ad details
+      navigate('/ads/payment', {
+        state: {
+          amount: amount,
+          adTitle: 'Jastip dari ' + formik.values.departureCity + ' ke ' + formik.values.arrivalCity,
+        },
       });
-      
-      navigate('/');
-    } catch (err: any) {
-      setError(err.message || 'Gagal membuat iklan. Silakan coba lagi.');
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Gagal memproses pembayaran. Silakan coba lagi.');
     } finally {
       setLoading(false);
       setShowConfirmation(false);

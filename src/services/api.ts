@@ -88,11 +88,13 @@ export const ads = {
 };
 
 export const payments = {
-  createAdPostingIntent: async () => {
-    const response = await api.post('/payments/create-payment-intent', {
-      type: 'ad_posting'
-    });
+  createPaymentIntent: async (amount: number) => {
+    const response = await api.post('/payments/create-payment-intent', { amount });
     return response.data;
+  },
+  createAdPostingIntent: async () => {
+    const response = await api.post('/payments/create-ad-posting-intent');
+    return response.data.amount;
   },
   createMembershipIntent: async (duration: number) => {
     const response = await api.post('/payments/create-membership-intent', { duration });

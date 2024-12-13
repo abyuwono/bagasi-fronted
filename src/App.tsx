@@ -11,6 +11,8 @@ import CreateAd from './pages/CreateAd';
 import AdDetails from './pages/AdDetails';
 import Membership from './pages/Membership';
 import Profile from './pages/Profile';
+import AdPayment from './pages/AdPayment';
+import PaymentSuccess from './pages/PaymentSuccess';
 
 const theme = createTheme({
   palette: {
@@ -70,6 +72,8 @@ const App = () => {
             }
           />
           <Route path="/ads/:id" element={<AdDetails />} />
+          <Route path="/ads/payment" element={<AdPayment />} />
+          <Route path="/ads/payment-success" element={<PaymentSuccess />} />
           <Route
             path="/membership"
             element={
