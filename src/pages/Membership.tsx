@@ -190,6 +190,17 @@ const Membership: React.FC = () => {
           >
             Berlangganan untuk mengakses fitur lengkap jasa titip
           </Typography>
+          <Box mt={3}>
+            <Typography variant="h3" color="primary" gutterBottom>
+              Rp 10.000
+              <Typography component="span" variant="h6" color="text.secondary">
+                /bulan
+              </Typography>
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+              *Berlangganan otomatis diperpanjang setiap bulan
+            </Typography>
+          </Box>
         </Box>
 
         {error && (
@@ -217,21 +228,53 @@ const Membership: React.FC = () => {
               <ListItemIcon>
                 <CheckCircle color="primary" />
               </ListItemIcon>
-              <ListItemText primary="Akses ke semua fitur jasa titip" />
+              <ListItemText 
+                primary="Akses ke semua fitur jasa titip"
+                secondary="Fitur lengkap untuk memudahkan transaksi Anda" 
+              />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <CheckCircle color="primary" />
               </ListItemIcon>
-              <ListItemText primary="Prioritas dukungan pelanggan" />
+              <ListItemText 
+                primary="Prioritas dukungan pelanggan"
+                secondary="Dapatkan bantuan lebih cepat dari tim support kami" 
+              />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <CheckCircle color="primary" />
               </ListItemIcon>
-              <ListItemText primary="Badge khusus member" />
+              <ListItemText 
+                primary="Badge khusus member"
+                secondary="Tampilkan badge eksklusif di profil Anda" 
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircle color="primary" />
+              </ListItemIcon>
+              <ListItemText 
+                primary="Notifikasi traveller baru"
+                secondary="Dapatkan notifikasi saat ada traveller baru di kota tujuan Anda" 
+              />
             </ListItem>
           </List>
+        </Box>
+
+        <Box mt={4} textAlign="center" sx={{ opacity: 0.7 }}>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            Pembayaran aman diproses oleh
+          </Typography>
+          <img 
+            src="https://stripe.com/img/v3/home/twitter.png" 
+            alt="Powered by Stripe" 
+            style={{ 
+              height: '24px',
+              marginTop: '8px'
+            }} 
+          />
         </Box>
       </Paper>
     </Box>
