@@ -24,7 +24,7 @@ import {
   Elements,
   useStripe,
   useElements,
-} from '@stripe/stripe-js/pure';
+} from '@stripe/react-stripe-js';
 import { useAuth } from '../contexts/AuthContext';
 import { payments } from '../services/api';
 
