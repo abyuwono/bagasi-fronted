@@ -19,6 +19,9 @@ import {
 import { loadStripe } from '@stripe/stripe-js';
 import { payments } from '../services/api';
 
+// Import SVG logo
+import stripeLogo from '../assets/svg/stripe.svg';
+
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
 // Fixed price for ad posting (IDR 195,000)
@@ -184,12 +187,10 @@ const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
         <Box mt={3} textAlign="center">
           <Typography variant="body2" color="text.secondary">
             Pembayaran aman menggunakan Stripe
-            <img
-              src="https://stripe.com/img/v3/home/twitter.png"
-              alt="Stripe"
-              style={{ height: 20, marginLeft: 8, verticalAlign: 'middle' }}
-            />
           </Typography>
+          <Box mt={1}>
+            <img src={stripeLogo} alt="Powered by Stripe" style={{ height: 24, opacity: 0.75 }} />
+          </Box>
         </Box>
       </Paper>
     </Box>
