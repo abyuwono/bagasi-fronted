@@ -16,11 +16,8 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { loadStripe } from '@stripe/stripe-js';
-import { ads, payments } from '../services/api';
+import { payments } from '../services/api';
 import AdPostingConfirmation from '../components/AdPostingConfirmation';
-
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
 const AUSTRALIAN_CITIES = [
   'Sydney',
