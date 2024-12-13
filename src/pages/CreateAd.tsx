@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { payments } from '../services/api';
 import AdPostingConfirmation from '../components/AdPostingConfirmation';
 
 const AUSTRALIAN_CITIES = [
