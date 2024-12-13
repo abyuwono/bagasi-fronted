@@ -118,9 +118,6 @@ const CreateAd = () => {
       setLoading(true);
       setError(null);
 
-      // Get payment details first
-      const { amount } = await payments.createAdPostingIntent();
-
       // Navigate to payment page with ad details
       navigate('/ads/payment', {
         state: {
