@@ -15,6 +15,7 @@ import {
   TextField,
   Rating,
   Divider,
+  Tooltip,
 } from '@mui/material';
 import { WhatsApp } from '@mui/icons-material';
 import { format } from 'date-fns';
@@ -173,9 +174,16 @@ const AdDetails = () => {
                       {ad.user?.username || 'Pengguna'}
                     </Typography>
                     {ad.user?.isVerified && (
-                      <Box ml={1}>
-                        <VerificationBadge />
-                      </Box>
+                      <Tooltip title="ID Verified" arrow>
+                        <Box ml={1}>
+                          <VerificationBadge
+                            sx={{
+                              fontSize: '1.2rem',
+                              color: '#34D399',
+                            }}
+                          />
+                        </Box>
+                      </Tooltip>
                     )}
                   </Box>
                   <Box display="flex" alignItems="center">
