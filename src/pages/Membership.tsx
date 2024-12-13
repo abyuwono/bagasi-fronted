@@ -7,15 +7,10 @@ import {
   Button,
   Alert,
   CircularProgress,
-  Grid,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
 import { loadStripe } from '@stripe/stripe-js';
@@ -124,7 +119,6 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
 };
 
 const Membership: React.FC = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -140,6 +134,24 @@ const Membership: React.FC = () => {
   const handleError = (errorMessage: string) => {
     setError(errorMessage);
   };
+
+  if (!user) {
+    return (
+      <Box sx={{ textAlign: 'center', py: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Silakan login terlebih dahulu
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => window.location.href = '/login'}
+          sx={{ mt: 2 }}
+        >
+          Login
+        </Button>
+      </Box>
+    );
+  }
 
   return (
     <Box 
