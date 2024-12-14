@@ -18,7 +18,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { payments } from '../services/api';
+import { payments, auth } from '../services/api';
 
 // Import PNG logo
 import stripeLogo from '../assets/images/stripe.png';
@@ -70,17 +70,7 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
 
       // Verify token is valid
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        if (!response.ok) {
-          localStorage.removeItem('token');
-          setError('Sesi Anda telah berakhir. Silakan login kembali.');
-          navigate('/login', { state: { from: '/ads/payment' } });
-          return;
-        }
+        await auth.getProfile();
       } catch (err) {
         console.error('Error verifying token:', err);
         localStorage.removeItem('token');
