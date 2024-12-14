@@ -14,7 +14,7 @@ import {
   DialogActions,
   Alert,
 } from '@mui/material';
-import { browserSupportsWebAuthn, startAuthentication } from '@simplewebauthn/browser';
+import { platformAuthenticatorIsAvailable, startAuthentication } from '@simplewebauthn/browser';
 import { adminApi } from '../services/api';
 import UserManagement from '../components/admin/UserManagement';
 import AdManagement from '../components/admin/AdManagement';
@@ -47,14 +47,19 @@ const Admin: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
-    if (!browserSupportsWebAuthn()) {
-      setError('Your browser does not support WebAuthn. Please use a modern browser.');
-    }
+    const checkWebAuthnSupport = async () => {
+      const supported = await platformAuthenticatorIsAvailable();
+      if (!supported) {
+        setError('Your browser does not support WebAuthn. Please use a modern browser.');
+      }
+    };
+    checkWebAuthnSupport();
   }, []);
 
   const handleAuth = async () => {
     try {
-      if (!browserSupportsWebAuthn()) {
+      const supported = await platformAuthenticatorIsAvailable();
+      if (!supported) {
         setError('Your browser does not support WebAuthn');
         return;
       }
@@ -99,7 +104,6 @@ const Admin: React.FC = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleAuth}
-                disabled={!browserSupportsWebAuthn()}
               >
                 Authenticate with Passkey
               </Button>
@@ -120,12 +124,12 @@ const Admin: React.FC = () => {
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
-            aria-label="admin tabs"
+            indicatorColor="primary"
+            textColor="primary"
           >
             <Tab label="User Management" />
             <Tab label="Ad Management" />
           </Tabs>
-          
           <TabPanel value={activeTab} index={0}>
             <UserManagement />
           </TabPanel>
