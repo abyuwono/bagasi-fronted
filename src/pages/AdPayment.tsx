@@ -189,7 +189,7 @@ const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
             Pembayaran aman menggunakan Stripe
           </Typography>
           <Box mt={1}>
-            <img src={stripeLogo} alt="Powered by Stripe" style={{ height: 24, opacity: 0.75 }} />
+            <img src={stripeLogo} alt="Powered by Stripe" style={{ height: 48, opacity: 0.75 }} />
           </Box>
         </Box>
       </Paper>
