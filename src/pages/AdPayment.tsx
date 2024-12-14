@@ -70,10 +70,9 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
 
       // Verify token is valid
       try {
-        await auth.getProfile();
+        await auth.checkAuth();
       } catch (err) {
         console.error('Error verifying token:', err);
-        localStorage.removeItem('token');
         setError('Sesi Anda telah berakhir. Silakan login kembali.');
         navigate('/login', { state: { from: '/ads/payment' } });
         return;

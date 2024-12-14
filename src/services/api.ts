@@ -51,7 +51,7 @@ export const auth = {
     const response = await api.post('/auth/login', data);
     return response.data;
   },
-  getProfile: async () => {
+  checkAuth: async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -60,6 +60,7 @@ export const auth = {
       const response = await api.get('/auth/me');
       return response.data;
     } catch (error) {
+      localStorage.removeItem('token');
       throw error;
     }
   },
