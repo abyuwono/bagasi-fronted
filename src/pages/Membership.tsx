@@ -21,6 +21,7 @@ import {
 } from '@stripe/react-stripe-js';
 import { useAuth } from '../contexts/AuthContext';
 import { payments } from '../services/api';
+import stripeLogo from '../assets/images/stripe.png';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
@@ -300,14 +301,16 @@ const Membership: React.FC = () => {
           <Typography variant="body2" color="text.secondary" gutterBottom>
             Pembayaran aman diproses oleh
           </Typography>
-          <img 
-            src="https://stripe.com/img/v3/home/twitter.png" 
-            alt="Powered by Stripe" 
-            style={{ 
-              height: '24px',
-              marginTop: '8px'
-            }} 
-          />
+          <Box sx={{ mt: 0.2, mb: 0.2 }}>
+            <img 
+              src={stripeLogo}
+              alt="Powered by Stripe" 
+              style={{ 
+                height: '120px',
+                opacity: 0.75
+              }} 
+            />
+          </Box>
         </Box>
       </Paper>
     </Box>
