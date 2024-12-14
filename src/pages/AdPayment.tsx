@@ -67,7 +67,7 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
         return;
       }
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/payments/create-ad-posting-intent`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/payments/create-ad-posting-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
