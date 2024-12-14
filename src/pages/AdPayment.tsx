@@ -19,8 +19,8 @@ import {
 import { loadStripe } from '@stripe/stripe-js';
 import { payments } from '../services/api';
 
-// Import SVG logo
-import stripeLogo from '../assets/svg/stripe.svg';
+// Import PNG logo
+import stripeLogo from '../assets/images/stripe.png';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
@@ -189,7 +189,7 @@ const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
             Pembayaran aman menggunakan Stripe
           </Typography>
           <Box sx={{ mt: 0.2, mb: 0.2 }}>
-            <img src={stripeLogo} alt="Powered by Stripe" style={{ height: 120, opacity: 0.75 }} />
+            <img src={stripeLogo} alt="Powered by Stripe" style={{ height: 80, opacity: 0.75 }} />
           </Box>
         </Box>
       </Paper>
