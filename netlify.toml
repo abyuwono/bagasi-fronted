@@ -1,6 +1,12 @@
 [build]
-  command = "CI= npm install && npm run build"
+  command = "npm install --legacy-peer-deps && npm run build"
   publish = "build"
+
+[build.environment]
+  CI = "false"
+  NODE_VERSION = "18.20.5"
+  NPM_VERSION = "10.8.2"
+  SKIP_PREFLIGHT_CHECK = "true"
 
 [[redirects]]
   from = "/*"
