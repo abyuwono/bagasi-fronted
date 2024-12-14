@@ -46,11 +46,11 @@ const formatDate = (date: string) => {
 };
 
 interface AdPaymentProps {
-  adTitle: string;
-  flightDate: string;
+  adTitle?: string;
+  flightDate?: string;
 }
 
-const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
+const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -124,11 +124,13 @@ const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
                 {adTitle}
               </Typography>
             </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" fontStyle="italic">
-                {formatDate(flightDate)}
-              </Typography>
-            </Grid>
+            {flightDate && (
+              <Grid item xs={12}>
+                <Typography variant="body1" fontStyle="italic">
+                  {formatDate(flightDate)}
+                </Typography>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Typography variant="h6" color="primary">
                 {formatPrice(AD_POSTING_PRICE)}
@@ -199,11 +201,11 @@ const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
 
 const AdPayment = () => {
   const location = useLocation();
-  const { adTitle, flightDate } = location.state as AdPaymentProps;
+  const state = location.state as AdPaymentProps | undefined;
 
   return (
     <Elements stripe={stripePromise}>
-      <PaymentForm adTitle={adTitle} flightDate={flightDate} />
+      <PaymentForm adTitle={state?.adTitle} flightDate={state?.flightDate} />
     </Elements>
   );
 };
