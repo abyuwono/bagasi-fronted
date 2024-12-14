@@ -148,7 +148,7 @@ const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
         <form onSubmit={handleSubmit}>
           <Box sx={{ mb: 3 }}>
             <Typography variant="subtitle1" gutterBottom>
-              Detail Kartu:
+              Kartu Debit / Kredit:
             </Typography>
             <CardElement
               options={{
@@ -184,11 +184,11 @@ const PaymentForm = ({ adTitle, flightDate }: AdPaymentProps) => {
           </Button>
         </form>
 
-        <Box mt={3} textAlign="center">
+        <Box mt={2} textAlign="center" sx={{ mb: 2 }}>
           <Typography variant="body2" color="text.secondary">
             Pembayaran aman menggunakan Stripe
           </Typography>
-          <Box mt={1}>
+          <Box mt={0.5}>
             <img src={stripeLogo} alt="Powered by Stripe" style={{ height: 48, opacity: 0.75 }} />
           </Box>
         </Box>
