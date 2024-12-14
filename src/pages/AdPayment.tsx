@@ -64,17 +64,42 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
       const token = localStorage.getItem('token');
       if (!token) {
         setError('Silakan login terlebih dahulu');
-        navigate('/login');
+        navigate('/login', { state: { from: '/ads/payment' } });
+        return;
+      }
+
+      // Verify token is valid
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (!response.ok) {
+          localStorage.removeItem('token');
+          setError('Sesi Anda telah berakhir. Silakan login kembali.');
+          navigate('/login', { state: { from: '/ads/payment' } });
+          return;
+        }
+      } catch (err) {
+        console.error('Error verifying token:', err);
+        localStorage.removeItem('token');
+        setError('Sesi Anda telah berakhir. Silakan login kembali.');
+        navigate('/login', { state: { from: '/ads/payment' } });
         return;
       }
 
       const data = await payments.createAdPostingIntent();
+      if (!data || !data.clientSecret) {
+        throw new Error('Invalid response from server');
+      }
       setClientSecret(data.clientSecret);
     } catch (err: any) {
       console.error('Error creating payment intent:', err);
       if (err?.response?.status === 403 || err?.response?.status === 401) {
+        localStorage.removeItem('token');
         setError('Sesi Anda telah berakhir. Silakan login kembali.');
-        navigate('/login');
+        navigate('/login', { state: { from: '/ads/payment' } });
         return;
       }
       setError('Gagal memproses pembayaran. Silakan coba lagi.');
