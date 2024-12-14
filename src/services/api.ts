@@ -97,6 +97,10 @@ export const payments = {
     return response.data;
   },
   createMembershipIntent: async (duration: number) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Authentication required');
+    }
     const response = await api.post('/payments/create-membership-intent', { duration });
     return response.data;
   },
