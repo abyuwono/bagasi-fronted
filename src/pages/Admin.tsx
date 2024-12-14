@@ -14,7 +14,7 @@ import {
   DialogActions,
   Alert,
 } from '@mui/material';
-import { startAuthentication } from '@simplewebauthn/browser';
+import { browserSupportsWebAuthn, startAuthentication } from '@simplewebauthn/browser';
 import { adminApi } from '../services/api';
 import UserManagement from '../components/admin/UserManagement';
 import AdManagement from '../components/admin/AdManagement';
@@ -46,8 +46,19 @@ const Admin: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
 
+  useEffect(() => {
+    if (!browserSupportsWebAuthn()) {
+      setError('Your browser does not support WebAuthn. Please use a modern browser.');
+    }
+  }, []);
+
   const handleAuth = async () => {
     try {
+      if (!browserSupportsWebAuthn()) {
+        setError('Your browser does not support WebAuthn');
+        return;
+      }
+
       // Get authentication options from server
       const optionsResponse = await adminApi.getAuthOptions();
       
@@ -88,6 +99,7 @@ const Admin: React.FC = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleAuth}
+                disabled={!browserSupportsWebAuthn()}
               >
                 Authenticate with Passkey
               </Button>
