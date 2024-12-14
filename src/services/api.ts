@@ -90,20 +90,36 @@ export const ads = {
 
 export const payments = {
   createPaymentIntent: async (amount: number) => {
-    const response = await api.post('/payments/create-payment-intent', { amount });
-    return response.data;
+    try {
+      const response = await api.post('/payments/create-payment-intent', { amount });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   },
   createAdPostingIntent: async () => {
-    const response = await api.post('/payments/create-ad-posting-intent');
-    return response.data;
+    try {
+      const response = await api.post('/payments/create-ad-posting-intent');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   },
   createMembershipIntent: async (duration: number) => {
-    const response = await api.post('/payments/create-membership-intent', { duration });
-    return response.data;
+    try {
+      const response = await api.post('/payments/create-membership-intent', { duration });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   },
   getMembershipPrice: async () => {
-    const response = await api.get('/payments/membership-price');
-    return response.data;
+    try {
+      const response = await api.get('/payments/membership-price');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   },
 };
 

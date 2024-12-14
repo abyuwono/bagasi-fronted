@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Grid,
   Divider,
+  Container
 } from '@mui/material';
 import {
   CardElement,
@@ -67,27 +68,15 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
         return;
       }
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/payments/create-ad-posting-intent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        if (response.status === 403) {
-          setError('Sesi Anda telah berakhir. Silakan login kembali.');
-          navigate('/login');
-          return;
-        }
-        throw new Error('Gagal membuat pembayaran');
-      }
-
-      const data = await response.json();
+      const data = await payments.createAdPostingIntent();
       setClientSecret(data.clientSecret);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error creating payment intent:', err);
+      if (err?.response?.status === 403 || err?.response?.status === 401) {
+        setError('Sesi Anda telah berakhir. Silakan login kembali.');
+        navigate('/login');
+        return;
+      }
       setError('Gagal memproses pembayaran. Silakan coba lagi.');
     }
   };
@@ -132,106 +121,113 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
       }
 
       if (paymentIntent.status === 'succeeded') {
-        navigate('/ads/payment-success');
-      } else {
-        throw new Error('Payment failed');
+        // Payment successful
+        navigate('/ads/success', {
+          state: {
+            message: 'Pembayaran berhasil! Iklan Anda akan segera ditampilkan.',
+            adTitle: adTitle,
+            flightDate: flightDate
+          }
+        });
       }
     } catch (err: any) {
-      setError(err.message || 'Pembayaran gagal. Silakan coba lagi.');
+      console.error('Payment error:', err);
+      setError(err.message || 'Gagal memproses pembayaran. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', p: 3 }}>
-      <Paper sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom align="center">
-          Bayar Buka Jasa Titip Baru
-        </Typography>
-
-        <Box sx={{ my: 3 }}>
-          <Typography variant="subtitle1" gutterBottom>
-            Detail Pembayaran:
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 4, mb: 4 }}>
+        <Paper sx={{ p: 4 }}>
+          <Typography variant="h5" gutterBottom align="center">
+            Bayar Buka Jasa Titip Baru
           </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="body1" fontWeight="bold">
-                {adTitle}
-              </Typography>
-            </Grid>
-            {flightDate && (
+          
+          <Box sx={{ my: 3 }}>
+            <Typography variant="subtitle1" gutterBottom>
+              Detail Pembayaran:
+            </Typography>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography variant="body1" fontStyle="italic">
-                  {formatDate(flightDate)}
+                <Typography variant="body1" fontWeight="bold">
+                  {adTitle}
                 </Typography>
               </Grid>
-            )}
-            <Grid item xs={12}>
-              <Typography variant="h6" color="primary">
-                {formatPrice(AD_POSTING_PRICE)}
-              </Typography>
+              {flightDate && (
+                <Grid item xs={12}>
+                  <Typography variant="body1" fontStyle="italic">
+                    {formatDate(flightDate)}
+                  </Typography>
+                </Grid>
+              )}
+              <Grid item xs={12}>
+                <Typography variant="h6" color="primary">
+                  {formatPrice(AD_POSTING_PRICE)}
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
+          </Box>
 
-        <Divider sx={{ my: 3 }} />
+          <Divider sx={{ my: 3 }} />
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
 
-        <form onSubmit={handleSubmit}>
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle1" gutterBottom>
-              Kartu Debit / Kredit:
-            </Typography>
-            <CardElement
-              options={{
-                style: {
-                  base: {
-                    fontSize: '16px',
-                    color: '#424770',
-                    '::placeholder': {
-                      color: '#aab7c4',
+          <form onSubmit={handleSubmit}>
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                Kartu Debit / Kredit:
+              </Typography>
+              <CardElement
+                options={{
+                  style: {
+                    base: {
+                      fontSize: '16px',
+                      color: '#424770',
+                      '::placeholder': {
+                        color: '#aab7c4',
+                      },
+                    },
+                    invalid: {
+                      color: '#9e2146',
                     },
                   },
-                  invalid: {
-                    color: '#9e2146',
-                  },
-                },
-              }}
-            />
-          </Box>
+                }}
+              />
+            </Box>
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            disabled={!stripe || loading}
-            sx={{ mt: 2 }}
-          >
-            {loading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              `Bayar ${formatPrice(AD_POSTING_PRICE)}`
-            )}
-          </Button>
-        </form>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              disabled={!stripe || loading}
+              sx={{ mt: 2 }}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                `Bayar ${formatPrice(AD_POSTING_PRICE)}`
+              )}
+            </Button>
+          </form>
 
-        <Box mt={2} textAlign="center" sx={{ mb: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            Pembayaran aman menggunakan Stripe
-          </Typography>
-          <Box sx={{ mt: 0.2, mb: 0.2 }}>
-            <img src={stripeLogo} alt="Powered by Stripe" style={{ height: 80, opacity: 0.75 }} />
+          <Box mt={2} textAlign="center" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              Pembayaran aman menggunakan Stripe
+            </Typography>
+            <Box sx={{ mt: 0.2, mb: 0.2 }}>
+              <img src={stripeLogo} alt="Powered by Stripe" style={{ height: 80, opacity: 0.75 }} />
+            </Box>
           </Box>
-        </Box>
-      </Paper>
-    </Box>
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 
