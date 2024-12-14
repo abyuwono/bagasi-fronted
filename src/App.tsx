@@ -13,6 +13,7 @@ import Membership from './pages/Membership';
 import Profile from './pages/Profile';
 import AdPayment from './pages/AdPayment';
 import PaymentSuccess from './pages/PaymentSuccess';
+import Admin from './pages/Admin';
 
 const theme = createTheme({
   palette: {
@@ -72,7 +73,7 @@ const App = () => {
             }
           />
           <Route path="/ads/:id" element={<AdDetails />} />
-          <Route path="/ads/payment" element={<AdPayment />} />
+          <Route path="/ads/:id/payment" element={<AdPayment />} />
           <Route path="/ads/payment-success" element={<PaymentSuccess />} />
           <Route
             path="/membership"
@@ -90,6 +91,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </Layout>
     </ThemeProvider>

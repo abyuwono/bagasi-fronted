@@ -117,4 +117,23 @@ export const profile = {
   }
 };
 
+export const adminApi = {
+  // Auth
+  getAuthOptions: () => axios.post('/api/admin/auth/generate-auth-options').then(res => res.data),
+  verifyAuth: (credential: any) => axios.post('/api/admin/auth/verify', { credential }).then(res => res.data),
+  
+  // Users
+  getUsers: () => axios.get('/api/admin/users').then(res => res.data),
+  updateUserStatus: (userId: string, status: { active?: boolean; verified?: boolean }) => 
+    axios.patch(`/api/admin/users/${userId}/status`, status).then(res => res.data),
+  updateUserWhatsapp: (userId: string, whatsapp: string) => 
+    axios.patch(`/api/admin/users/${userId}/whatsapp`, { whatsapp }).then(res => res.data),
+  
+  // Ads
+  getAds: () => axios.get('/api/admin/ads').then(res => res.data),
+  updateAdStatus: (adId: string, active: boolean) => 
+    axios.patch(`/api/admin/ads/${adId}/status`, { active }).then(res => res.data),
+  createAd: (adData: any) => axios.post('/api/admin/ads', adData).then(res => res.data),
+};
+
 export default api;
