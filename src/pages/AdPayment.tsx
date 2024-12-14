@@ -56,6 +56,41 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+  const createPaymentIntent = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Silakan login terlebih dahulu');
+        navigate('/login');
+        return;
+      }
+
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/payments/create-ad-posting-intent`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          setError('Sesi Anda telah berakhir. Silakan login kembali.');
+          navigate('/login');
+          return;
+        }
+        throw new Error('Gagal membuat pembayaran');
+      }
+
+      const data = await response.json();
+      setClientSecret(data.clientSecret);
+    } catch (err) {
+      console.error('Error creating payment intent:', err);
+      setError('Gagal memproses pembayaran. Silakan coba lagi.');
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -68,8 +103,9 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
       setLoading(true);
       setError(null);
 
-      // Create payment intent
-      const { clientSecret } = await payments.createAdPostingIntent();
+      if (!clientSecret) {
+        await createPaymentIntent();
+      }
 
       if (!clientSecret) {
         throw new Error('Failed to create payment intent');

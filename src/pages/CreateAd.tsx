@@ -117,11 +117,19 @@ const CreateAd = () => {
       setLoading(true);
       setError(null);
 
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Silakan login terlebih dahulu');
+        navigate('/login');
+        return;
+      }
+
       // Navigate to payment page with ad details
       navigate('/ads/payment', {
         state: {
           adTitle: 'Jastip dari ' + formik.values.departureCity + ' ke ' + formik.values.arrivalCity,
           flightDate: formik.values.departureDate,
+          adData: formik.values
         },
       });
     } catch (error) {

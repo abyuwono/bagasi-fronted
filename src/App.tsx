@@ -72,9 +72,9 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          <Route path="/ads/:id" element={<AdDetails />} />
-          <Route path="/ads/:id/payment" element={<AdPayment />} />
+          <Route path="/ads/payment" element={<AdPayment />} />
           <Route path="/ads/payment-success" element={<PaymentSuccess />} />
+          <Route path="/ads/:id" element={<AdDetails />} />
           <Route
             path="/membership"
             element={
