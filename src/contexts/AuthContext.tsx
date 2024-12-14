@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setLoading(false);
           return;
         }
-        const userData = await auth.getProfile();
+        const userData = await auth.checkAuth();
         setUser(userData);
       } catch (error) {
         // Silently handle errors and remove invalid token
