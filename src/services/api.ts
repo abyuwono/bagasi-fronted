@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
@@ -10,12 +10,13 @@ const getAuthHeaders = () => {
   };
 };
 
+// Create axios instance with default config
 const api = axios.create({
   baseURL: API_URL,
   headers: getAuthHeaders(),
 });
 
-// Add authentication token to all requests
+// Add request interceptor for authentication
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -42,55 +43,21 @@ api.interceptors.response.use(
   }
 );
 
-interface RegisterData {
-  email: string;
-  password: string;
-  whatsappNumber: string;
-  role: 'traveler' | 'shopper';
-}
-
-interface LoginData {
-  email: string;
-  password: string;
-}
-
+// Auth functions
 export const auth = {
-  register: async (data: RegisterData) => {
+  login: async ({ email, password }: { email: string; password: string }) => {
     try {
-      console.log('Registering user...');
-      const response = await api.post('/auth/register', data);
-      console.log('Registration response:', response.data);
+      const response = await api.post('/auth/login', { email, password });
       const { token, user } = response.data;
+      
       if (token) {
         localStorage.setItem('token', token);
-        console.log('Token stored after registration');
-      }
-      return response.data;
-    } catch (error: any) {
-      console.error('Registration error:', error.response?.data || error);
-      throw error;
-    }
-  },
-  login: async (data: LoginData) => {
-    try {
-      console.log('Logging in...');
-      const response = await api.post('/auth/login', data);
-      console.log('Login response:', response.data);
-      
-      // Check if user is active before storing token
-      if (response.data.user && response.data.user.active === false) {
-        localStorage.removeItem('token');
-        throw new Error('Account is deactivated');
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       }
       
-      const { token, user } = response.data;
-      if (token) {
-        localStorage.setItem('token', token);
-        console.log('Token stored after login:', token);
-      }
       return response.data;
     } catch (error: any) {
-      console.error('Login error:', error.response?.data || error);
+      console.error('Login error:', error.response?.data || error.message);
       throw error;
     }
   },
@@ -101,16 +68,35 @@ export const auth = {
       });
       return response.data;
     } catch (error: any) {
-      console.error('Check auth error:', error.response?.data || error);
+      console.error('Check auth error:', error.response?.data || error.message);
       throw error;
     }
   },
-  logout: () => {
-    localStorage.removeItem('token');
-    console.log('Token removed on logout');
+};
+
+// Payment functions
+export const payments = {
+  createPaymentIntent: async (amount: number) => {
+    try {
+      const response = await api.post('/payments/create-payment-intent', { amount });
+      return response.data;
+    } catch (error: any) {
+      console.error('Create payment intent error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+  confirmPayment: async (paymentIntentId: string) => {
+    try {
+      const response = await api.post('/payments/confirm', { paymentIntentId });
+      return response.data;
+    } catch (error: any) {
+      console.error('Confirm payment error:', error.response?.data || error.message);
+      throw error;
+    }
   },
 };
 
+// Ads functions
 export const ads = {
   getAll: async () => {
     const response = await api.get('/ads');
@@ -134,61 +120,7 @@ export const ads = {
   },
 };
 
-export const payments = {
-  createPaymentIntent: async (amount: number) => {
-    try {
-      const response = await api.post('/payments/create-payment-intent', { amount });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
-  createAdPostingIntent: async () => {
-    try {
-      const response = await api.post('/payments/create-ad-posting-intent');
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
-  createMembershipIntent: async (duration: number) => {
-    try {
-      // First check auth status
-      const authResponse = await api.get('/auth/me');
-      if (!authResponse.data.user || authResponse.data.user.active === false) {
-        throw new Error('Account is deactivated');
-      }
-
-      // If auth check passes, create payment intent
-      const response = await api.post('/payments/membership/create-intent', { duration });
-      return response.data;
-    } catch (error: any) {
-      console.error('Create membership intent error:', error.response?.data || error.message);
-      
-      if (error.response?.status === 403 && (
-        error.response?.data?.message === 'Account is deactivated' ||
-        error.message === 'Account is deactivated'
-      )) {
-        localStorage.removeItem('token');
-        throw new Error('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
-      } else if (error.response?.status === 401 || error.response?.status === 403) {
-        localStorage.removeItem('token');
-        throw new Error('Sesi Anda telah berakhir. Silakan login kembali.');
-      }
-      
-      throw new Error(error.response?.data?.message || error.message || 'Terjadi kesalahan saat memproses pembayaran');
-    }
-  },
-  getMembershipPrice: async () => {
-    try {
-      const response = await api.get('/payments/membership-price');
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
-};
-
+// Profile functions
 export const profile = {
   getProfile: async (userId: string) => {
     const response = await api.get(`/profile/${userId}`);
@@ -200,6 +132,7 @@ export const profile = {
   }
 };
 
+// Admin API functions
 export const adminApi = {
   // Auth
   getAuthOptions: () => axios.post('/api/admin/auth/generate-auth-options').then(res => res.data),

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as auth from '../services/api';
+import { login as authLogin, checkAuth as authCheckAuth } from '../services/api';
 import { User } from '../types';
 
 interface AuthContextType {
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         console.log('Checking auth state with token...');
-        const response = await auth.checkAuth();
+        const response = await authCheckAuth();
         console.log('Auth check response:', response);
 
         if (response.user) {
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Clear any existing token
       localStorage.removeItem('token');
       
-      const response = await auth.login({ email, password });
+      const response = await authLogin({ email, password });
       console.log('Login response:', response);
 
       if (!response.token) {
