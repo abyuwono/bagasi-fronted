@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.user && response.user.active === false) {
         setUser(null);
         setIsAuthenticated(false);
-        auth.removeToken();
+        localStorage.removeItem('token');
         throw new Error('Account is deactivated');
       }
       setUser(response.user);
@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Auth state check failed:', error.message);
       setUser(null);
       setIsAuthenticated(false);
-      auth.removeToken();
+      localStorage.removeItem('token');
       throw error;
     }
   };
@@ -55,6 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const response = await auth.login({ email, password });
       if (response.user && response.user.active === false) {
+        localStorage.removeItem('token');
         throw new Error('Account is deactivated');
       }
       setUser(response.user);
@@ -64,6 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Login failed:', error);
       setUser(null);
       setIsAuthenticated(false);
+      localStorage.removeItem('token');
       throw error;
     }
   };
