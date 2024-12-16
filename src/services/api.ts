@@ -24,8 +24,10 @@ api.interceptors.response.use(
 // Add authentication token to all requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
+  console.log('Token from localStorage:', token);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log('Request headers:', config.headers);
   }
   return config;
 });
@@ -49,6 +51,9 @@ export const auth = {
   },
   login: async (data: LoginData) => {
     const response = await api.post('/auth/login', data);
+    if (response.data && response.data.token) {
+      localStorage.setItem('token', response.data.token);
+    }
     return response.data;
   },
   checkAuth: async () => {
@@ -57,9 +62,12 @@ export const auth = {
       if (!token) {
         throw new Error('No token found');
       }
+      console.log('Making auth check request with token:', token);
       const response = await api.get('/auth/me');
+      console.log('Auth check response:', response.data);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Auth check error:', error.response || error);
       localStorage.removeItem('token');
       throw error;
     }

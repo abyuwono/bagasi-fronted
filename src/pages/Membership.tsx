@@ -56,23 +56,28 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
       // Verify token is valid
       const token = localStorage.getItem('token');
       if (!token) {
+        console.log('No token found in localStorage');
         onError('Silakan login terlebih dahulu');
         navigate('/login', { state: { from: '/membership' } });
         return;
       }
 
+      console.log('Checking auth token...');
       try {
         await auth.checkAuth();
-      } catch (err) {
-        console.error('Error verifying token:', err);
+        console.log('Auth check successful');
+      } catch (err: any) {
+        console.error('Auth check failed:', err.response || err);
         localStorage.removeItem('token');
-        onError('Sesi Anda telah berakhir. Silakan login kembali.');
+        onError(err?.response?.data?.message || 'Sesi Anda telah berakhir. Silakan login kembali.');
         navigate('/login', { state: { from: '/membership' } });
         return;
       }
 
+      console.log('Creating payment intent...');
       // Create payment intent
       const { clientSecret } = await payments.createMembershipIntent(duration);
+      console.log('Payment intent created');
 
       // Get card element
       const cardElement = elements.getElement(CardElement);
@@ -80,6 +85,7 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
         throw new Error('Card element not found');
       }
 
+      console.log('Confirming payment...');
       // Confirm payment
       const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
         clientSecret,
@@ -94,12 +100,15 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
       );
 
       if (stripeError) {
+        console.error('Stripe error:', stripeError);
         throw new Error(stripeError.message);
       }
 
       if (paymentIntent.status === 'succeeded') {
+        console.log('Payment successful');
         onSuccess();
       } else {
+        console.error('Payment failed:', paymentIntent);
         throw new Error('Payment failed');
       }
     } catch (err: any) {
@@ -110,7 +119,7 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
         navigate('/login', { state: { from: '/membership' } });
         return;
       }
-      onError(err.message || 'Gagal memproses pembayaran. Silakan coba lagi.');
+      onError(err?.response?.data?.message || err.message || 'Gagal memproses pembayaran. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
