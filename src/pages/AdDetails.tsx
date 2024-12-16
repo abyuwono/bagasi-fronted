@@ -20,7 +20,7 @@ import {
 import { WhatsApp } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useAuth } from '../contexts/AuthContext';
-import { ads } from '../services/api';
+import { getAd, bookAd } from '../services/api';
 import { Ad } from '../types';
 import RandomAvatar from '../components/RandomAvatar';
 import VerificationBadge from '../components/VerificationBadge';
@@ -62,26 +62,20 @@ const AdDetails = () => {
   useEffect(() => {
     const fetchAd = async () => {
       try {
-        if (!id) {
-          setError('ID iklan tidak valid');
-          return;
-        }
         setLoading(true);
-        const data = await ads.getById(id);
-        if (!data) {
-          setError('Iklan tidak ditemukan');
-          return;
-        }
+        const data = await getAd(id);
         setAd(data);
-      } catch (err: any) {
-        console.error('Error fetching ad:', err);
-        setError(err.response?.data?.message || 'Gagal memuat detail iklan. Silakan coba lagi nanti.');
+      } catch (error) {
+        console.error('Error fetching ad:', error);
+        setError('Failed to load ad details');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAd();
+    if (id) {
+      fetchAd();
+    }
   }, [id]);
 
   const handleBookingSubmit = async () => {
@@ -94,7 +88,7 @@ const AdDetails = () => {
         return;
       }
 
-      await ads.book(ad._id, { weight });
+      await bookAd(ad._id, { weight });
       setBookingDialogOpen(false);
       setShowContact(true);
     } catch (err) {

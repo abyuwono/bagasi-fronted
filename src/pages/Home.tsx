@@ -9,7 +9,7 @@ import {
   Button,
 } from '@mui/material';
 import AdCard from '../components/AdCard';
-import { ads } from '../services/api';
+import { getAds } from '../services/api';
 import { Ad } from '../types';
 
 const Home = () => {
@@ -21,10 +21,11 @@ const Home = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const data = await ads.getAll();
+        setLoading(true);
+        const data = await getAds();
         setAdList(data);
-      } catch (err) {
-        setError('Gagal memuat iklan. Silakan coba lagi nanti.');
+      } catch (error) {
+        console.error('Error fetching ads:', error);
       } finally {
         setLoading(false);
       }
