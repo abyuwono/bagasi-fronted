@@ -59,29 +59,39 @@ interface LoginData {
 export const auth = {
   register: async (data: RegisterData) => {
     try {
+      console.log('Registering user...');
       const response = await api.post('/auth/register', data);
+      console.log('Registration response:', response.data);
       const { token, user } = response.data;
       if (token) {
         localStorage.setItem('token', token);
         console.log('Token stored after registration');
       }
       return response.data;
-    } catch (error) {
-      console.error('Registration error:', error);
+    } catch (error: any) {
+      console.error('Registration error:', error.response?.data || error);
       throw error;
     }
   },
   login: async (data: LoginData) => {
     try {
+      console.log('Logging in...');
       const response = await api.post('/auth/login', data);
+      console.log('Login response:', response.data);
+      
+      // Check if the user is active
+      if (response.data.user && response.data.user.active === false) {
+        throw new Error('Account is deactivated');
+      }
+
       const { token, user } = response.data;
       if (token) {
         localStorage.setItem('token', token);
-        console.log('Token stored after login');
+        console.log('Token stored after login:', token);
       }
       return response.data;
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (error: any) {
+      console.error('Login error:', error.response?.data || error);
       throw error;
     }
   },
@@ -94,10 +104,19 @@ export const auth = {
       }
       console.log('Making auth check request with token');
       const response = await api.get('/auth/me');
-      console.log('Auth check successful');
+      
+      // Check if the user is active
+      if (response.data && response.data.active === false) {
+        throw new Error('Account is deactivated');
+      }
+      
+      console.log('Auth check successful:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('Auth check error:', error.response?.status, error.response?.data);
+      if (error.response?.data?.message === 'Account is deactivated') {
+        throw new Error('Account is deactivated');
+      }
       localStorage.removeItem('token');
       throw error;
     }
