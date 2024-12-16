@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { auth } from '../services/api';
+import { register } from '../services/api';
 import {
   Box,
   Button,
@@ -69,7 +69,7 @@ const Register = () => {
 
     try {
       setLoading(true);
-      await auth.register({
+      await register({
         email: formData.email,
         password: formData.password,
         whatsappNumber: formData.whatsappNumber,

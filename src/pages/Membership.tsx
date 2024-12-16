@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -13,16 +14,10 @@ import {
 } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
 import { loadStripe } from '@stripe/stripe-js';
-import {
-  CardElement,
-  Elements,
-  useStripe,
-  useElements,
-} from '@stripe/react-stripe-js';
+import { Elements, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useAuth } from '../contexts/AuthContext';
-import { payments, auth } from '../services/api';
+import { createMembershipIntent, getMembershipPrice } from '../services/api';
 import stripeLogo from '../assets/images/stripe.png';
-import { useNavigate } from 'react-router-dom';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
@@ -56,7 +51,7 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
 
       // Create payment intent
       console.log('Creating payment intent...');
-      const { clientSecret } = await payments.createMembershipIntent(duration);
+      const { clientSecret } = await createMembershipIntent(duration);
       console.log('Payment intent created');
 
       // Get card element
@@ -149,6 +144,7 @@ const Membership = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -180,8 +176,8 @@ const Membership = () => {
         }
 
         // Load membership price
-        const priceData = await payments.getMembershipPrice();
-        setPrice(priceData.price);
+        const priceData = await getMembershipPrice();
+        setPrice(priceData);
       } catch (err: any) {
         console.error('Error loading membership data:', err);
         setError('Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.');
@@ -202,6 +198,21 @@ const Membership = () => {
   const handleError = (message: string) => {
     setError(message);
     setSuccess(false);
+  };
+
+  const handleGetMembership = async () => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      const { clientSecret } = await createMembershipIntent(1);
+      setClientSecret(clientSecret);
+    } catch (error: any) {
+      console.error('Error creating payment intent:', error);
+      setError(error.message || 'Failed to start payment process');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -299,9 +310,28 @@ const Membership = () => {
           </Box>
         </Box>
 
-        <Elements stripe={stripePromise}>
-          <PaymentForm onSuccess={handleSuccess} onError={handleError} />
-        </Elements>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={handleGetMembership}
+          disabled={loading || !!clientSecret}
+          sx={{ mt: 2 }}
+        >
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            'BERLANGGANAN SEKARANG'
+          )}
+        </Button>
+
+        {clientSecret && (
+          <Box sx={{ mt: 4 }}>
+            <Elements stripe={stripePromise} options={{ clientSecret }}>
+              <PaymentForm onSuccess={handleSuccess} onError={handleError} />
+            </Elements>
+          </Box>
+        )}
 
         <Box mt={4}>
           <Typography variant="h6" gutterBottom>

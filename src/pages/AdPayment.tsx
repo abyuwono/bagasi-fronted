@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -18,10 +18,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { payments, auth } from '../services/api';
-
-// Import PNG logo
-import stripeLogo from '../assets/images/stripe.png';
+import { createAdPostingIntent } from '../services/api';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
@@ -70,7 +67,7 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
 
       // Verify token is valid
       try {
-        await auth.checkAuth();
+        // Removed auth.checkAuth() call
       } catch (err) {
         console.error('Error verifying token:', err);
         setError('Sesi Anda telah berakhir. Silakan login kembali.');
@@ -78,7 +75,7 @@ const PaymentForm = ({ adTitle = "Jasa Titip Baru", flightDate }: AdPaymentProps
         return;
       }
 
-      const data = await payments.createAdPostingIntent();
+      const data = await createAdPostingIntent();
       if (!data || !data.clientSecret) {
         throw new Error('Invalid response from server');
       }
