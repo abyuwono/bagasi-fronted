@@ -120,6 +120,26 @@ export const createAd = async (data: any) => {
   return response.data;
 };
 
+export const bookAd = async (adId: string, data: { weight: number }) => {
+  try {
+    const response = await api.post(`/ads/${adId}/book`, data);
+    return response.data;
+  } catch (error: any) {
+    console.error('Book ad error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const updateAdStatus = async (id: string, status: string) => {
+  try {
+    const response = await api.patch(`/ads/${id}/status`, { status });
+    return response.data;
+  } catch (error: any) {
+    console.error('Update ad status error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 // Profile functions
 export const getProfile = async (userId: string) => {
   const response = await api.get(`/profile/${userId}`);

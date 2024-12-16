@@ -55,9 +55,9 @@ const AdDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
-  const [bookingWeight, setBookingWeight] = useState('');
-  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [weight, setWeight] = useState('');
   const [showContact, setShowContact] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAd = async () => {
@@ -80,25 +80,23 @@ const AdDetails = () => {
 
   const handleBookingSubmit = async () => {
     try {
-      if (!ad || !user) return;
-
-      const weight = parseFloat(bookingWeight);
-      if (isNaN(weight) || weight <= 0 || weight > ad.availableWeight) {
-        setBookingError('Silakan masukkan berat yang valid');
+      if (!ad || !weight) {
+        setBookingError('Please enter the weight');
         return;
       }
 
-      await bookAd(ad._id, { weight });
+      await bookAd(ad._id, { weight: Number(weight) });
       setBookingDialogOpen(false);
       setShowContact(true);
-    } catch (err) {
-      setBookingError('Gagal memesan. Silakan coba lagi nanti.');
+    } catch (error) {
+      console.error('Booking error:', error);
+      setBookingError('Failed to book the ad');
     }
   };
 
   const handleWhatsAppClick = (number: string) => {
     const message = encodeURIComponent(
-      `Halo, saya ingin mengirim paket seberat ${bookingWeight}kg dari ${ad?.departureCity} ke ${ad?.arrivalCity}. Kapan kita bisa bertemu untuk serah terima paket?`
+      `Halo, saya ingin mengirim paket seberat ${weight}kg dari ${ad?.departureCity} ke ${ad?.arrivalCity}. Kapan kita bisa bertemu untuk serah terima paket?`
     );
     window.open(`https://wa.me/${number}?text=${message}`, '_blank');
   };
@@ -272,8 +270,8 @@ const AdDetails = () => {
               fullWidth
               label="Berat (KG)"
               type="number"
-              value={bookingWeight}
-              onChange={(e) => setBookingWeight(e.target.value)}
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
               error={!!bookingError}
               helperText={bookingError}
               InputProps={{
