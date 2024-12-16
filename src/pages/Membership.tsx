@@ -83,7 +83,7 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
               card: cardElement,
               billing_details: {
                 email: user.email,
-                name: user.name || undefined,
+                name: user.username,
               },
             },
           }
