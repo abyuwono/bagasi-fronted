@@ -41,83 +41,66 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
   const [loading, setLoading] = useState(false);
   const selectedPlan = 'monthly';
   const duration = selectedPlan === 'monthly' ? 1 : 12;
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
+      onError('Stripe belum siap. Silakan coba lagi.');
       return;
     }
 
     try {
       setLoading(true);
 
-      // Check if user is logged in
-      if (!user) {
-        console.log('User not logged in');
-        onError('Silakan login terlebih dahulu');
-        navigate('/login', { state: { from: '/membership' } });
-        return;
-      }
-
       // Create payment intent
       console.log('Creating payment intent...');
-      try {
-        const { clientSecret } = await payments.createMembershipIntent(duration);
-        console.log('Payment intent created');
+      const { clientSecret } = await payments.createMembershipIntent(duration);
+      console.log('Payment intent created');
 
-        // Get card element
-        const cardElement = elements.getElement(CardElement);
-        if (!cardElement) {
-          throw new Error('Card element not found');
-        }
+      // Get card element
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        throw new Error('Form kartu kredit tidak ditemukan');
+      }
 
-        console.log('Confirming payment...');
-        // Confirm payment
-        const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
-          clientSecret,
-          {
-            payment_method: {
-              card: cardElement,
-              billing_details: {
-                email: user.email,
-                name: user.username,
-              },
+      console.log('Confirming payment...');
+      // Confirm payment
+      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              email: user?.email,
+              name: user?.username,
             },
-          }
-        );
+          },
+        }
+      );
 
-        if (stripeError) {
-          console.error('Payment failed:', stripeError);
-          throw new Error(stripeError.message);
-        }
+      if (stripeError) {
+        console.error('Payment failed:', stripeError);
+        throw new Error(stripeError.message);
+      }
 
-        if (paymentIntent?.status === 'succeeded') {
-          console.log('Payment successful');
-          onSuccess();
-        } else {
-          console.error('Payment not successful:', paymentIntent);
-          throw new Error('Pembayaran gagal. Silakan coba lagi.');
-        }
-      } catch (err: any) {
-        console.error('Payment processing error:', err);
-        if (err?.response?.status === 403 && err?.response?.data?.message === 'Account is deactivated') {
-          localStorage.removeItem('token');
-          onError('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
-          navigate('/login');
-        } else if (err?.response?.status === 401 || err?.response?.status === 403) {
-          localStorage.removeItem('token');
-          onError('Sesi Anda telah berakhir. Silakan login kembali.');
-          navigate('/login', { state: { from: '/membership' } });
-        } else {
-          onError(err.message || 'Terjadi kesalahan saat memproses pembayaran');
-        }
+      if (paymentIntent?.status === 'succeeded') {
+        console.log('Payment successful');
+        onSuccess();
+      } else {
+        console.error('Payment not successful:', paymentIntent);
+        throw new Error('Pembayaran gagal. Silakan coba lagi.');
       }
     } catch (error: any) {
-      console.error('Form submission error:', error);
-      onError(error.message || 'Terjadi kesalahan saat memproses pembayaran');
+      console.error('Payment error:', error);
+      if (error?.response?.status === 403 && error?.response?.data?.message === 'Account is deactivated') {
+        onError('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
+      } else if (error?.response?.status === 401 || error?.response?.status === 403) {
+        onError('Sesi Anda telah berakhir. Silakan login kembali.');
+      } else {
+        onError(error.message || 'Terjadi kesalahan saat memproses pembayaran');
+      }
     } finally {
       setLoading(false);
     }
@@ -125,7 +108,7 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
 
   return (
     <form onSubmit={handleSubmit}>
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 2 }}>
         <CardElement
           options={{
             style: {
@@ -148,68 +131,119 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
         variant="contained"
         color="primary"
         fullWidth
-        disabled={!stripe || loading}
+        disabled={loading || !stripe}
         sx={{ mt: 2 }}
       >
         {loading ? (
           <CircularProgress size={24} color="inherit" />
         ) : (
-          'Berlangganan Sekarang'
+          'BERLANGGANAN SEKARANG'
         )}
       </Button>
     </form>
   );
 };
 
-const Membership: React.FC = () => {
-  const { user } = useAuth();
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+const Membership = () => {
   const [price, setPrice] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPrice = async () => {
+    const checkUserAndLoadPrice = async () => {
       try {
-        const { price } = await payments.getMembershipPrice();
-        setPrice(price);
-      } catch (err) {
-        console.error('Error fetching price:', err);
-        setError('Gagal memuat harga membership');
+        setLoading(true);
+        setError(null);
+
+        // Check if user is logged in
+        if (!user) {
+          navigate('/login', { state: { from: '/membership' } });
+          return;
+        }
+
+        // Check account status
+        try {
+          const authResponse = await auth.checkAuth();
+          if (!authResponse.user || authResponse.user.active === false) {
+            setError('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
+            return;
+          }
+        } catch (err: any) {
+          if (err?.response?.status === 403 && err?.response?.data?.message === 'Account is deactivated') {
+            setError('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
+            return;
+          }
+          throw err;
+        }
+
+        // Load membership price
+        const priceData = await payments.getMembershipPrice();
+        setPrice(priceData.price);
+      } catch (err: any) {
+        console.error('Error loading membership data:', err);
+        setError('Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPrice();
-  }, []);
+    checkUserAndLoadPrice();
+  }, [user, navigate]);
 
   const handleSuccess = () => {
     setSuccess(true);
-    // Refresh page after a short delay
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
+    setError(null);
+    // Optionally refresh user data or redirect
   };
 
-  const handleError = (errorMessage: string) => {
-    setError(errorMessage);
+  const handleError = (message: string) => {
+    setError(message);
+    setSuccess(false);
   };
 
-  if (!user) {
+  if (loading) {
     return (
-      <Box sx={{ textAlign: 'center', py: 4 }}>
-        <Typography variant="h6" gutterBottom>
-          Silakan login terlebih dahulu
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => window.location.href = '/login'}
-          sx={{ mt: 2 }}
-        >
-          Login
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box p={3}>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+        <Button variant="contained" color="primary" onClick={() => navigate('/')}>
+          Kembali ke Beranda
         </Button>
+      </Box>
+    );
+  }
+
+  if (success) {
+    return (
+      <Box p={3}>
+        <Alert severity="success" sx={{ mb: 2 }}>
+          Pembayaran berhasil! Akun Anda telah diaktifkan sebagai Shopper.
+        </Alert>
+        <Button variant="contained" color="primary" onClick={() => navigate('/')}>
+          Kembali ke Beranda
+        </Button>
+      </Box>
+    );
+  }
+
+  if (!price) {
+    return (
+      <Box p={3}>
+        <Alert severity="error">
+          Tidak dapat memuat harga membership. Silakan coba lagi nanti.
+        </Alert>
       </Box>
     );
   }
@@ -253,35 +287,17 @@ const Membership: React.FC = () => {
             Berlangganan untuk mengakses fitur lengkap jasa titip
           </Typography>
           <Box mt={3}>
-            {loading ? (
-              <CircularProgress size={24} />
-            ) : price ? (
-              <>
-                <Typography variant="h3" color="primary" gutterBottom>
-                  {formatPrice(price)}
-                  <Typography component="span" variant="h6" color="text.secondary">
-                    /bulan
-                  </Typography>
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                  *Berlangganan otomatis diperpanjang setiap bulan
-                </Typography>
-              </>
-            ) : null}
+            <Typography variant="h3" color="primary" gutterBottom>
+              {formatPrice(price)}
+              <Typography component="span" variant="h6" color="text.secondary">
+                /bulan
+              </Typography>
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+              *Berlangganan otomatis diperpanjang setiap bulan
+            </Typography>
           </Box>
         </Box>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
-
-        {success && (
-          <Alert severity="success" sx={{ mb: 3 }}>
-            Pembayaran berhasil! Halaman akan dimuat ulang...
-          </Alert>
-        )}
 
         <Elements stripe={stripePromise}>
           <PaymentForm onSuccess={handleSuccess} onError={handleError} />
