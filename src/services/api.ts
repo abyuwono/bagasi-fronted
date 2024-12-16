@@ -170,9 +170,17 @@ export const payments = {
   },
   createMembershipIntent: async (duration: number) => {
     try {
-      const response = await api.post('/payments/create-membership-intent', { duration });
+      const response = await api.post('/payments/membership/create-intent', { duration });
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Create membership intent error:', error.response?.data || error.message);
+      if (error.response?.status === 403 && error.response?.data?.message === 'Account is deactivated') {
+        localStorage.removeItem('token');
+        throw new Error('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
+      } else if (error.response?.status === 401 || error.response?.status === 403) {
+        localStorage.removeItem('token');
+        throw new Error('Sesi Anda telah berakhir. Silakan login kembali.');
+      }
       throw error;
     }
   },

@@ -64,12 +64,26 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
 
       console.log('Checking auth token...');
       try {
-        await auth.checkAuth();
+        const authResponse = await auth.checkAuth();
+        console.log('Auth check response:', authResponse);
+        
+        if (!authResponse.user || authResponse.user.active === false) {
+          console.error('Account is not active');
+          localStorage.removeItem('token');
+          onError('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
+          navigate('/login', { state: { from: '/membership' } });
+          return;
+        }
+        
         console.log('Auth check successful');
       } catch (err: any) {
         console.error('Auth check failed:', err.response || err);
         localStorage.removeItem('token');
-        onError(err?.response?.data?.message || 'Sesi Anda telah berakhir. Silakan login kembali.');
+        if (err.response?.data?.message === 'Account is deactivated') {
+          onError('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
+        } else {
+          onError('Sesi Anda telah berakhir. Silakan login kembali.');
+        }
         navigate('/login', { state: { from: '/membership' } });
         return;
       }
@@ -100,26 +114,20 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
       );
 
       if (stripeError) {
-        console.error('Stripe error:', stripeError);
+        console.error('Payment failed:', stripeError);
         throw new Error(stripeError.message);
       }
 
-      if (paymentIntent.status === 'succeeded') {
+      if (paymentIntent?.status === 'succeeded') {
         console.log('Payment successful');
         onSuccess();
       } else {
-        console.error('Payment failed:', paymentIntent);
-        throw new Error('Payment failed');
+        console.error('Payment not successful:', paymentIntent);
+        throw new Error('Pembayaran gagal. Silakan coba lagi.');
       }
-    } catch (err: any) {
-      console.error('Payment error:', err);
-      if (err?.response?.status === 403 || err?.response?.status === 401) {
-        localStorage.removeItem('token');
-        onError('Sesi Anda telah berakhir. Silakan login kembali.');
-        navigate('/login', { state: { from: '/membership' } });
-        return;
-      }
-      onError(err?.response?.data?.message || err.message || 'Gagal memproses pembayaran. Silakan coba lagi.');
+    } catch (error: any) {
+      console.error('Payment error:', error);
+      onError(error.message || 'Terjadi kesalahan saat memproses pembayaran');
     } finally {
       setLoading(false);
     }
