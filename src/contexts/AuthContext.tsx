@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login as authLogin, checkAuth as authCheckAuth } from '../services/api';
+import { login, checkAuth } from '../services/api';
 import { User } from '../types';
 
 interface AuthContextType {
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         console.log('Checking auth state with token...');
-        const response = await authCheckAuth();
+        const response = await checkAuth();
         console.log('Auth check response:', response);
 
         if (response.user) {
@@ -58,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuthState();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const handleLogin = async (email: string, password: string) => {
     try {
       setLoading(true);
       console.log('Attempting login...');
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Clear any existing token
       localStorage.removeItem('token');
       
-      const response = await authLogin({ email, password });
+      const response = await login({ email, password });
       console.log('Login response:', response);
 
       if (!response.token) {
@@ -106,13 +106,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const value = {
     user,
     isAuthenticated,
-    login,
+    login: handleLogin,
     logout,
     loading
   };
 
   if (loading) {
-    // You might want to show a loading spinner here
     return <div>Loading...</div>;
   }
 

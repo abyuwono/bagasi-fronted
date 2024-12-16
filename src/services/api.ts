@@ -44,92 +44,91 @@ api.interceptors.response.use(
 );
 
 // Auth functions
-export const auth = {
-  login: async ({ email, password }: { email: string; password: string }) => {
-    try {
-      const response = await api.post('/auth/login', { email, password });
-      const { token, user } = response.data;
-      
-      if (token) {
-        localStorage.setItem('token', token);
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      }
-      
-      return response.data;
-    } catch (error: any) {
-      console.error('Login error:', error.response?.data || error.message);
-      throw error;
+export const login = async ({ email, password }: { email: string; password: string }) => {
+  try {
+    const response = await api.post('/auth/login', { email, password });
+    const { token, user } = response.data;
+    
+    if (token) {
+      localStorage.setItem('token', token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
-  },
-  checkAuth: async () => {
-    try {
-      const response = await api.get('/auth/me', {
-        headers: getAuthHeaders()
-      });
-      return response.data;
-    } catch (error: any) {
-      console.error('Check auth error:', error.response?.data || error.message);
-      throw error;
-    }
-  },
+    
+    return response.data;
+  } catch (error: any) {
+    console.error('Login error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const checkAuth = async () => {
+  try {
+    const response = await api.get('/auth/me', {
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error('Check auth error:', error.response?.data || error.message);
+    throw error;
+  }
 };
 
 // Payment functions
-export const payments = {
-  createPaymentIntent: async (amount: number) => {
-    try {
-      const response = await api.post('/payments/create-payment-intent', { amount });
-      return response.data;
-    } catch (error: any) {
-      console.error('Create payment intent error:', error.response?.data || error.message);
-      throw error;
-    }
-  },
-  confirmPayment: async (paymentIntentId: string) => {
-    try {
-      const response = await api.post('/payments/confirm', { paymentIntentId });
-      return response.data;
-    } catch (error: any) {
-      console.error('Confirm payment error:', error.response?.data || error.message);
-      throw error;
-    }
-  },
+export const createPaymentIntent = async (amount: number) => {
+  try {
+    const response = await api.post('/payments/create-payment-intent', { amount });
+    return response.data;
+  } catch (error: any) {
+    console.error('Create payment intent error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const createMembershipIntent = async (duration: number) => {
+  try {
+    const response = await api.post('/payments/membership/create-intent', { duration });
+    return response.data;
+  } catch (error: any) {
+    console.error('Create membership intent error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const confirmPayment = async (paymentIntentId: string) => {
+  try {
+    const response = await api.post('/payments/confirm', { paymentIntentId });
+    return response.data;
+  } catch (error: any) {
+    console.error('Confirm payment error:', error.response?.data || error.message);
+    throw error;
+  }
 };
 
 // Ads functions
-export const ads = {
-  getAll: async () => {
-    const response = await api.get('/ads');
-    return response.data;
-  },
-  getById: async (id: string) => {
-    const response = await api.get(`/ads/${id}`);
-    return response.data;
-  },
-  create: async (data: any) => {
-    const response = await api.post('/ads', data);
-    return response.data;
-  },
-  book: async (id: string, data: any) => {
-    const response = await api.post(`/ads/${id}/book`, data);
-    return response.data;
-  },
-  updateStatus: async (id: string, status: string) => {
-    const response = await api.patch(`/ads/${id}/status`, { status });
-    return response.data;
-  },
+export const getAds = async () => {
+  const response = await api.get('/ads');
+  return response.data;
+};
+
+export const getAd = async (id: string) => {
+  const response = await api.get(`/ads/${id}`);
+  return response.data;
+};
+
+export const createAd = async (data: any) => {
+  const response = await api.post('/ads', data);
+  return response.data;
 };
 
 // Profile functions
-export const profile = {
-  getProfile: async (userId: string) => {
-    const response = await api.get(`/profile/${userId}`);
-    return response.data;
-  },
-  addReview: async (userId: string, data: { rating: number; comment: string }) => {
-    const response = await api.post(`/profile/${userId}/reviews`, data);
-    return response.data;
-  }
+export const getProfile = async (userId: string) => {
+  const response = await api.get(`/profile/${userId}`);
+  return response.data;
+};
+
+export const updateProfile = async (userId: string, data: any) => {
+  const response = await api.put(`/profile/${userId}`, data);
+  return response.data;
 };
 
 // Admin API functions
