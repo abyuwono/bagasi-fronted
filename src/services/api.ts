@@ -2,43 +2,41 @@ import axios, { AxiosError } from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : '',
+  };
+};
+
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: getAuthHeaders(),
 });
 
 // Add authentication token to all requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  console.log('Token from localStorage:', token);
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-    console.log('Request headers:', JSON.stringify(config.headers));
-  } else {
-    console.log('No token found in localStorage');
-  }
-  return config;
-}, (error) => {
-  console.error('Request interceptor error:', error);
-  return Promise.reject(error);
-});
-
-// Add response interceptor to handle auth errors
-api.interceptors.response.use(
-  (response) => {
-    console.log('Response:', response.config.url, response.status);
-    return response;
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
   },
   (error) => {
-    console.error('Response error:', error.config?.url, error.response?.status, error.response?.data);
-    
-    // Don't remove token for deactivated account error
-    if ((error.response?.status === 401 || error.response?.status === 403) && 
-        error.config?.url !== '/auth/login' && 
-        error.response?.data?.message !== 'Account is deactivated') {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle token expiration
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or invalid
       localStorage.removeItem('token');
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -98,27 +96,12 @@ export const auth = {
   },
   checkAuth: async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.error('No token found in checkAuth');
-        throw new Error('No token found');
-      }
-      console.log('Making auth check request with token');
-      const response = await api.get('/auth/me');
-      
-      // Check if the user is active
-      if (response.data && response.data.active === false) {
-        throw new Error('Account is deactivated');
-      }
-      
-      console.log('Auth check successful:', response.data);
+      const response = await api.get('/auth/me', {
+        headers: getAuthHeaders()
+      });
       return response.data;
     } catch (error: any) {
-      console.error('Auth check error:', error.response?.status, error.response?.data);
-      if (error.response?.data?.message === 'Account is deactivated') {
-        throw new Error('Account is deactivated');
-      }
-      localStorage.removeItem('token');
+      console.error('Check auth error:', error.response?.data || error);
       throw error;
     }
   },

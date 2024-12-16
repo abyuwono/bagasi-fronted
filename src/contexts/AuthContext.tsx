@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import * as auth from '../services/api';
 import { User } from '../types';
-import { auth } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
-  loading: boolean;
+  isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: any) => Promise<void>;
   logout: () => void;
-  checkAuthState: () => Promise<void>;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,82 +17,107 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
-  const checkAuthState = async () => {
-    try {
-      const response = await auth.checkAuth();
-      if (response.user && response.user.active === false) {
+  // Check auth state on mount and token change
+  useEffect(() => {
+    const checkAuthState = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setUser(null);
+          setIsAuthenticated(false);
+          setLoading(false);
+          return;
+        }
+
+        console.log('Checking auth state with token...');
+        const response = await auth.checkAuth();
+        console.log('Auth check response:', response);
+
+        if (response.user) {
+          setUser(response.user);
+          setIsAuthenticated(true);
+        } else {
+          // If no user in response, clear auth state
+          localStorage.removeItem('token');
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } catch (error: any) {
+        console.error('Auth state check failed:', error);
+        // Clear auth state on error
+        localStorage.removeItem('token');
         setUser(null);
         setIsAuthenticated(false);
-        localStorage.removeItem('token');
-        throw new Error('Account is deactivated');
-      }
-      setUser(response.user);
-      setIsAuthenticated(true);
-      return response;
-    } catch (error: any) {
-      console.error('Auth state check failed:', error.message);
-      setUser(null);
-      setIsAuthenticated(false);
-      localStorage.removeItem('token');
-      throw error;
-    }
-  };
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        await checkAuthState();
       } finally {
         setLoading(false);
       }
     };
 
-    loadUser();
+    checkAuthState();
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await auth.login({ email, password });
-      if (response.user && response.user.active === false) {
-        localStorage.removeItem('token');
-        throw new Error('Account is deactivated');
-      }
-      setUser(response.user);
-      setIsAuthenticated(true);
-      return response;
-    } catch (error: any) {
-      console.error('Login failed:', error);
-      setUser(null);
-      setIsAuthenticated(false);
+      setLoading(true);
+      console.log('Attempting login...');
+      
+      // Clear any existing token
       localStorage.removeItem('token');
-      throw error;
-    }
-  };
+      
+      const response = await auth.login({ email, password });
+      console.log('Login response:', response);
 
-  const register = async (data: any) => {
-    try {
-      const { token, user } = await auth.register(data);
-      if (!token) {
+      if (!response.token) {
         throw new Error('No token received from server');
       }
-      setUser(user);
-      return await checkAuthState(); // Verify the token works
-    } catch (error) {
-      console.error('Registration failed:', error);
-      auth.logout();
+
+      // Store token first
+      localStorage.setItem('token', response.token);
+
+      if (response.user) {
+        // Set user state after confirming token is stored
+        setUser(response.user);
+        setIsAuthenticated(true);
+        console.log('Login successful, user state updated');
+      } else {
+        throw new Error('No user data in response');
+      }
+    } catch (error: any) {
+      console.error('Login failed:', error);
+      localStorage.removeItem('token');
+      setUser(null);
+      setIsAuthenticated(false);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = () => {
-    auth.logout();
+    console.log('Logging out...');
+    localStorage.removeItem('token');
     setUser(null);
     setIsAuthenticated(false);
+    navigate('/login');
   };
 
+  const value = {
+    user,
+    isAuthenticated,
+    login,
+    logout,
+    loading
+  };
+
+  if (loading) {
+    // You might want to show a loading spinner here
+    return <div>Loading...</div>;
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, checkAuthState }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
@@ -105,5 +130,3 @@ export const useAuth = () => {
   }
   return context;
 };
-
-export default AuthContext;
