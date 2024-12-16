@@ -20,8 +20,9 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { useAuth } from '../contexts/AuthContext';
-import { payments } from '../services/api';
+import { payments, auth } from '../services/api';
 import stripeLogo from '../assets/images/stripe.png';
+import { useNavigate } from 'react-router-dom';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
@@ -40,6 +41,7 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
   const [loading, setLoading] = useState(false);
   const selectedPlan = 'monthly';
   const duration = selectedPlan === 'monthly' ? 1 : 12;
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -50,6 +52,24 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
 
     try {
       setLoading(true);
+
+      // Verify token is valid
+      const token = localStorage.getItem('token');
+      if (!token) {
+        onError('Silakan login terlebih dahulu');
+        navigate('/login', { state: { from: '/membership' } });
+        return;
+      }
+
+      try {
+        await auth.checkAuth();
+      } catch (err) {
+        console.error('Error verifying token:', err);
+        localStorage.removeItem('token');
+        onError('Sesi Anda telah berakhir. Silakan login kembali.');
+        navigate('/login', { state: { from: '/membership' } });
+        return;
+      }
 
       // Create payment intent
       const { clientSecret } = await payments.createMembershipIntent(duration);
@@ -83,7 +103,14 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
         throw new Error('Payment failed');
       }
     } catch (err: any) {
-      onError(err.message || 'Payment failed');
+      console.error('Payment error:', err);
+      if (err?.response?.status === 403 || err?.response?.status === 401) {
+        localStorage.removeItem('token');
+        onError('Sesi Anda telah berakhir. Silakan login kembali.');
+        navigate('/login', { state: { from: '/membership' } });
+        return;
+      }
+      onError(err.message || 'Gagal memproses pembayaran. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
