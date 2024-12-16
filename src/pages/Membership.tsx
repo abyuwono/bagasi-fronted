@@ -42,6 +42,7 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
   const selectedPlan = 'monthly';
   const duration = selectedPlan === 'monthly' ? 1 : 12;
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -53,80 +54,69 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
     try {
       setLoading(true);
 
-      // Verify token is valid
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.log('No token found in localStorage');
+      // Check if user is logged in
+      if (!user) {
+        console.log('User not logged in');
         onError('Silakan login terlebih dahulu');
         navigate('/login', { state: { from: '/membership' } });
         return;
       }
 
-      console.log('Checking auth token...');
+      // Create payment intent
+      console.log('Creating payment intent...');
       try {
-        const authResponse = await auth.checkAuth();
-        console.log('Auth check response:', authResponse);
-        
-        if (!authResponse.user || authResponse.user.active === false) {
-          console.error('Account is not active');
+        const { clientSecret } = await payments.createMembershipIntent(duration);
+        console.log('Payment intent created');
+
+        // Get card element
+        const cardElement = elements.getElement(CardElement);
+        if (!cardElement) {
+          throw new Error('Card element not found');
+        }
+
+        console.log('Confirming payment...');
+        // Confirm payment
+        const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
+          clientSecret,
+          {
+            payment_method: {
+              card: cardElement,
+              billing_details: {
+                email: user.email,
+                name: user.name || undefined,
+              },
+            },
+          }
+        );
+
+        if (stripeError) {
+          console.error('Payment failed:', stripeError);
+          throw new Error(stripeError.message);
+        }
+
+        if (paymentIntent?.status === 'succeeded') {
+          console.log('Payment successful');
+          onSuccess();
+        } else {
+          console.error('Payment not successful:', paymentIntent);
+          throw new Error('Pembayaran gagal. Silakan coba lagi.');
+        }
+      } catch (err: any) {
+        console.error('Payment processing error:', err);
+        if (err?.response?.status === 403 && err?.response?.data?.message === 'Account is deactivated') {
           localStorage.removeItem('token');
           onError('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
-          navigate('/login', { state: { from: '/membership' } });
-          return;
-        }
-        
-        console.log('Auth check successful');
-      } catch (err: any) {
-        console.error('Auth check failed:', err.response || err);
-        localStorage.removeItem('token');
-        if (err.response?.data?.message === 'Account is deactivated') {
-          onError('Akun Anda belum aktif. Silakan hubungi admin untuk mengaktifkan akun.');
-        } else {
+          navigate('/login');
+        } else if (err?.response?.status === 401 || err?.response?.status === 403) {
+          localStorage.removeItem('token');
           onError('Sesi Anda telah berakhir. Silakan login kembali.');
+          navigate('/login', { state: { from: '/membership' } });
+        } else {
+          onError(err.message || 'Terjadi kesalahan saat memproses pembayaran');
         }
-        navigate('/login', { state: { from: '/membership' } });
-        return;
-      }
-
-      console.log('Creating payment intent...');
-      // Create payment intent
-      const { clientSecret } = await payments.createMembershipIntent(duration);
-      console.log('Payment intent created');
-
-      // Get card element
-      const cardElement = elements.getElement(CardElement);
-      if (!cardElement) {
-        throw new Error('Card element not found');
-      }
-
-      console.log('Confirming payment...');
-      // Confirm payment
-      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              // Add billing details if needed
-            },
-          },
-        }
-      );
-
-      if (stripeError) {
-        console.error('Payment failed:', stripeError);
-        throw new Error(stripeError.message);
-      }
-
-      if (paymentIntent?.status === 'succeeded') {
-        console.log('Payment successful');
-        onSuccess();
-      } else {
-        console.error('Payment not successful:', paymentIntent);
-        throw new Error('Pembayaran gagal. Silakan coba lagi.');
       }
     } catch (error: any) {
-      console.error('Payment error:', error);
+      console.error('Form submission error:', error);
       onError(error.message || 'Terjadi kesalahan saat memproses pembayaran');
     } finally {
       setLoading(false);
