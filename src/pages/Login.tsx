@@ -45,22 +45,25 @@ const Login = () => {
       try {
         setError(null);
         setLoading(true);
-        console.log('Attempting login with email:', values.email);
+        
+        // Clear any existing tokens
+        localStorage.removeItem('token');
+        
+        console.log('Attempting login with:', values.email);
         await login(values.email, values.password);
         navigate(from);
       } catch (err: any) {
         console.error('Login error:', err);
-        // Check for specific error messages
-        if (err.message === 'Account is deactivated' || err.response?.data?.message === 'Account is deactivated') {
+        
+        if (err.response?.data?.message === 'Account is deactivated' || 
+            err.message === 'Account is deactivated') {
           setError('Akun Anda telah dinonaktifkan. Silakan hubungi admin untuk mengaktifkan kembali.');
         } else if (err.response?.status === 401) {
-          setError('Email atau password salah');
+          setError('Email atau password salah. Silakan coba lagi.');
         } else if (err.response?.data?.message) {
           setError(err.response.data.message);
-        } else if (err.message) {
-          setError(err.message);
         } else {
-          setError('Gagal masuk ke sistem. Silakan coba lagi.');
+          setError('Terjadi kesalahan saat login. Silakan coba lagi nanti.');
         }
       } finally {
         setLoading(false);

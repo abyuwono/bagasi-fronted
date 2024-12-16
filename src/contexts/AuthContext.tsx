@@ -16,20 +16,26 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const checkAuthState = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
+      const response = await auth.checkAuth();
+      if (response.user && response.user.active === false) {
         setUser(null);
-        return;
+        setIsAuthenticated(false);
+        auth.removeToken();
+        throw new Error('Account is deactivated');
       }
-      const userData = await auth.checkAuth();
-      setUser(userData);
-    } catch (error) {
-      console.error('Auth state check failed:', error);
+      setUser(response.user);
+      setIsAuthenticated(true);
+      return response;
+    } catch (error: any) {
+      console.error('Auth state check failed:', error.message);
       setUser(null);
-      auth.logout();
+      setIsAuthenticated(false);
+      auth.removeToken();
+      throw error;
     }
   };
 
@@ -47,15 +53,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
-      const { token, user } = await auth.login({ email, password });
-      if (!token) {
-        throw new Error('No token received from server');
+      const response = await auth.login({ email, password });
+      if (response.user && response.user.active === false) {
+        throw new Error('Account is deactivated');
       }
-      setUser(user);
-      return await checkAuthState(); // Verify the token works
-    } catch (error) {
+      setUser(response.user);
+      setIsAuthenticated(true);
+      return response;
+    } catch (error: any) {
       console.error('Login failed:', error);
-      auth.logout();
+      setUser(null);
+      setIsAuthenticated(false);
       throw error;
     }
   };
@@ -78,6 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     auth.logout();
     setUser(null);
+    setIsAuthenticated(false);
   };
 
   return (

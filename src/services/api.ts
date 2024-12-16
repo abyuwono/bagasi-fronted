@@ -79,11 +79,12 @@ export const auth = {
       const response = await api.post('/auth/login', data);
       console.log('Login response:', response.data);
       
-      // Check if the user is active
+      // Check if user is active before storing token
       if (response.data.user && response.data.user.active === false) {
+        localStorage.removeItem('token');
         throw new Error('Account is deactivated');
       }
-
+      
       const { token, user } = response.data;
       if (token) {
         localStorage.setItem('token', token);
