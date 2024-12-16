@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { useNavigate, Link as RouterLink, useLocation } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -27,8 +27,13 @@ const validationSchema = yup.object({
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Get the redirect path from location state, default to home
+  const from = location.state?.from || '/';
 
   const formik = useFormik({
     initialValues: {
@@ -39,11 +44,21 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         setError(null);
+        setLoading(true);
         await login(values.email, values.password);
-        navigate('/');
+        navigate(from);
       } catch (err: any) {
-        // Use the error message from the server, or a generic message
-        setError(err.response?.data?.message || 'Gagal masuk ke sistem. Silakan coba lagi.');
+        console.error('Login error:', err);
+        // Check for specific error messages
+        if (err.response?.data?.message === 'Account is deactivated') {
+          setError('Akun Anda telah dinonaktifkan. Silakan hubungi admin untuk mengaktifkan kembali.');
+        } else if (err.response?.status === 401) {
+          setError('Email atau password salah');
+        } else {
+          setError(err.response?.data?.message || 'Gagal masuk ke sistem. Silakan coba lagi.');
+        }
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -51,15 +66,24 @@ const Login = () => {
   return (
     <Box
       sx={{
+        minHeight: '100vh',
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '80vh',
+        justifyContent: 'center',
+        py: 4,
       }}
     >
-      <Paper sx={{ p: 4, maxWidth: 400, width: '100%' }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          maxWidth: 400,
+          width: '100%',
+          mx: 2,
+        }}
+      >
         <Typography variant="h5" align="center" gutterBottom>
-          Masuk
+          Masuk ke Akun Anda
         </Typography>
 
         {error && (
@@ -76,10 +100,12 @@ const Login = () => {
             label="Email"
             value={formik.values.email}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             error={formik.touched.email && Boolean(formik.errors.email)}
             helperText={formik.touched.email && formik.errors.email}
             margin="normal"
           />
+
           <TextField
             fullWidth
             id="password"
@@ -88,30 +114,32 @@ const Login = () => {
             type="password"
             value={formik.values.password}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
             margin="normal"
           />
+
           <Button
             color="primary"
             variant="contained"
             fullWidth
             type="submit"
-            disabled={formik.isSubmitting}
-            sx={{ mt: 3 }}
+            disabled={loading}
+            sx={{ mt: 3, mb: 2 }}
           >
-            {formik.isSubmitting ? <CircularProgress size={24} /> : 'Masuk'}
+            {loading ? <CircularProgress size={24} /> : 'Masuk'}
           </Button>
-        </form>
 
-        <Box mt={2} textAlign="center">
-          <Typography variant="body2">
-            Belum punya akun?{' '}
-            <Link component={RouterLink} to="/register">
-              Daftar di sini
-            </Link>
-          </Typography>
-        </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="body2">
+              Belum punya akun?{' '}
+              <Link component={RouterLink} to="/register">
+                Daftar di sini
+              </Link>
+            </Typography>
+          </Box>
+        </form>
       </Paper>
     </Box>
   );

@@ -33,8 +33,11 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error('Response error:', error.config?.url, error.response?.status, error.response?.data);
-    if ((error.response?.status === 401 || error.response?.status === 403) && error.config?.url !== '/auth/login') {
-      // Clear token on auth errors
+    
+    // Don't remove token for deactivated account error
+    if ((error.response?.status === 401 || error.response?.status === 403) && 
+        error.config?.url !== '/auth/login' && 
+        error.response?.data?.message !== 'Account is deactivated') {
       localStorage.removeItem('token');
     }
     return Promise.reject(error);
