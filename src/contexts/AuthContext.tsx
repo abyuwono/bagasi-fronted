@@ -8,6 +8,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => void;
+  checkAuthState: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,19 +17,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const checkAuthState = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setUser(null);
+        return;
+      }
+      const userData = await auth.checkAuth();
+      setUser(userData);
+    } catch (error) {
+      console.error('Auth state check failed:', error);
+      setUser(null);
+      auth.logout();
+    }
+  };
+
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setLoading(false);
-          return;
-        }
-        const userData = await auth.checkAuth();
-        setUser(userData);
-      } catch (error) {
-        // Silently handle errors and remove invalid token
-        localStorage.removeItem('token');
+        await checkAuthState();
       } finally {
         setLoading(false);
       }
@@ -40,9 +48,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     try {
       const { token, user } = await auth.login({ email, password });
-      localStorage.setItem('token', token);
+      if (!token) {
+        throw new Error('No token received from server');
+      }
       setUser(user);
+      return await checkAuthState(); // Verify the token works
     } catch (error) {
+      console.error('Login failed:', error);
+      auth.logout();
       throw error;
     }
   };
@@ -50,20 +63,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (data: any) => {
     try {
       const { token, user } = await auth.register(data);
-      localStorage.setItem('token', token);
+      if (!token) {
+        throw new Error('No token received from server');
+      }
       setUser(user);
+      return await checkAuthState(); // Verify the token works
     } catch (error) {
+      console.error('Registration failed:', error);
+      auth.logout();
       throw error;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    auth.logout();
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, checkAuthState }}>
       {children}
     </AuthContext.Provider>
   );

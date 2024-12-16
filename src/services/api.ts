@@ -9,28 +9,37 @@ const api = axios.create({
   },
 });
 
-// Add response interceptor to handle 401 errors silently
-api.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError) => {
-    if (error.response?.status === 401 && error.config?.url === '/auth/me') {
-      // Silently handle 401 for /auth/me endpoint
-      return Promise.reject(error);
-    }
-    return Promise.reject(error);
-  }
-);
-
 // Add authentication token to all requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   console.log('Token from localStorage:', token);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log('Request headers:', config.headers);
+    console.log('Request headers:', JSON.stringify(config.headers));
+  } else {
+    console.log('No token found in localStorage');
   }
   return config;
+}, (error) => {
+  console.error('Request interceptor error:', error);
+  return Promise.reject(error);
 });
+
+// Add response interceptor to handle auth errors
+api.interceptors.response.use(
+  (response) => {
+    console.log('Response:', response.config.url, response.status);
+    return response;
+  },
+  (error) => {
+    console.error('Response error:', error.config?.url, error.response?.status, error.response?.data);
+    if ((error.response?.status === 401 || error.response?.status === 403) && error.config?.url !== '/auth/login') {
+      // Clear token on auth errors
+      localStorage.removeItem('token');
+    }
+    return Promise.reject(error);
+  }
+);
 
 interface RegisterData {
   email: string;
@@ -46,31 +55,53 @@ interface LoginData {
 
 export const auth = {
   register: async (data: RegisterData) => {
-    const response = await api.post('/auth/register', data);
-    return response.data;
+    try {
+      const response = await api.post('/auth/register', data);
+      const { token, user } = response.data;
+      if (token) {
+        localStorage.setItem('token', token);
+        console.log('Token stored after registration');
+      }
+      return response.data;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
   },
   login: async (data: LoginData) => {
-    const response = await api.post('/auth/login', data);
-    if (response.data && response.data.token) {
-      localStorage.setItem('token', response.data.token);
+    try {
+      const response = await api.post('/auth/login', data);
+      const { token, user } = response.data;
+      if (token) {
+        localStorage.setItem('token', token);
+        console.log('Token stored after login');
+      }
+      return response.data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
     }
-    return response.data;
   },
   checkAuth: async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
+        console.error('No token found in checkAuth');
         throw new Error('No token found');
       }
-      console.log('Making auth check request with token:', token);
+      console.log('Making auth check request with token');
       const response = await api.get('/auth/me');
-      console.log('Auth check response:', response.data);
+      console.log('Auth check successful');
       return response.data;
     } catch (error: any) {
-      console.error('Auth check error:', error.response || error);
+      console.error('Auth check error:', error.response?.status, error.response?.data);
       localStorage.removeItem('token');
       throw error;
     }
+  },
+  logout: () => {
+    localStorage.removeItem('token');
+    console.log('Token removed on logout');
   },
 };
 
