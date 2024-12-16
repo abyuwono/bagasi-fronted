@@ -84,6 +84,16 @@ export const createPaymentIntent = async (amount: number) => {
   }
 };
 
+export const createAdPostingIntent = async () => {
+  try {
+    const response = await api.post('/payments/ad/create-intent');
+    return response.data;
+  } catch (error: any) {
+    console.error('Create ad posting intent error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const createMembershipIntent = async (duration: number) => {
   try {
     const response = await api.post('/payments/membership/create-intent', { duration });
