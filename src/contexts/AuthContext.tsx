@@ -41,8 +41,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const loadUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
       try {
         await checkAuthState();
+      } catch (error) {
+        console.error('Failed to load user:', error);
       } finally {
         setLoading(false);
       }
