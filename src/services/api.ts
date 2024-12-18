@@ -121,7 +121,7 @@ export const auth = {
       console.log('Token removed on logout');
       
       // Call logout endpoint to cleanup session
-      await api.post('/auth/logout');
+      await api.post('auth/logout');
     } catch (error) {
       // Log error but don't throw since token is already removed
       console.error('Logout error:', error);
