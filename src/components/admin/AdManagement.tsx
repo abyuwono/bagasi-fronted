@@ -78,6 +78,8 @@ interface Ad {
   user: User;
   createdAt: string;
   status: string;
+  customDisplayName?: string;
+  customRating?: number;
 }
 
 interface NewAd {
@@ -90,6 +92,8 @@ interface NewAd {
   currency: string;
   additionalNotes?: string;
   userId: string;
+  customDisplayName?: string;
+  customRating?: number;
 }
 
 const getDefaultDates = () => {
@@ -121,6 +125,8 @@ const AdManagement: React.FC = () => {
     currency: 'IDR',
     additionalNotes: '',
     userId: '',
+    customDisplayName: '',
+    customRating: undefined,
   });
 
   useEffect(() => {
@@ -195,6 +201,8 @@ const AdManagement: React.FC = () => {
         currency: 'IDR',
         additionalNotes: '',
         userId: '',
+        customDisplayName: '',
+        customRating: undefined,
       });
     } catch (err) {
       setError('Failed to create ad');
@@ -243,6 +251,26 @@ const AdManagement: React.FC = () => {
                   margin="normal"
                 />
               )}
+            />
+
+            <TextField
+              label="Custom Display Name (Optional)"
+              value={newAd.customDisplayName || ''}
+              onChange={(e) => setNewAd({ ...newAd, customDisplayName: e.target.value })}
+              helperText="Leave empty to use user's actual name"
+              fullWidth
+              margin="normal"
+            />
+
+            <TextField
+              label="Custom Rating (Optional)"
+              type="number"
+              inputProps={{ min: 0, max: 5, step: 0.1 }}
+              value={newAd.customRating || ''}
+              onChange={(e) => setNewAd({ ...newAd, customRating: Number(e.target.value) || undefined })}
+              helperText="Leave empty to use user's actual rating"
+              fullWidth
+              margin="normal"
             />
 
             <Autocomplete

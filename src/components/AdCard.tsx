@@ -8,6 +8,8 @@ import {
   Chip,
   Rating,
   Stack,
+  Tooltip,
+  VerifiedIcon,
 } from '@mui/material';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -20,6 +22,9 @@ interface AdCardProps {
 }
 
 const AdCard: React.FC<AdCardProps> = ({ ad }) => {
+  const displayName = ad.customDisplayName || ad.user?.username || 'Anonymous';
+  const rating = ad.customRating !== undefined ? ad.customRating : (ad.user?.rating || 0);
+
   return (
     <Card>
       <CardContent>
@@ -37,9 +42,9 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
         <Box display="flex" alignItems="center" mb={2}>
           <Box display="flex" alignItems="center">
             <Typography variant="subtitle1" sx={{ mr: 1 }}>
-              {ad.user.username}
+              {displayName}
             </Typography>
-            {ad.user.isVerified && (
+            {ad.user?.isVerified && (
               <VerificationBadge
                 sx={{
                   fontSize: '1.2rem',
@@ -50,9 +55,9 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
             )}
           </Box>
           <Stack direction="row" spacing={1} alignItems="center">
-            <Rating value={ad.user.rating} precision={0.5} readOnly size="small" />
+            <Rating value={rating} precision={0.1} readOnly size="small" />
             <Typography variant="body2" color="text.secondary">
-              ({ad.user.totalReviews})
+              ({rating.toFixed(1)})
             </Typography>
           </Stack>
         </Box>
