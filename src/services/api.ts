@@ -225,7 +225,11 @@ export const profile = {
 export const adminApi = {
   // Auth
   login: (data: { username: string; password: string }) => {
-    return api.post('admin/auth/login', data).then(res => res.data);
+    console.log('Attempting login with:', { username: data.username }); // Log for debugging
+    return api.post('/admin/auth/login', data).then(res => {
+      console.log('Login response:', res.data); // Log for debugging
+      return res.data;
+    });
   },
   // Users
   getUsers: () => api.get('/admin/users').then(res => res.data),
