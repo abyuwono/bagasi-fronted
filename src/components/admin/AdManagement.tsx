@@ -171,17 +171,13 @@ const AdManagement: React.FC = () => {
   };
 
   const getAdStatus = (ad: Ad) => {
-    if (isAdExpired(ad)) {
-      return 'Expired';
-    }
-    return ad.active ? 'Active' : 'Inactive';
+    if (isAdExpired(ad)) return 'Expired';
+    return ad.status === 'active' ? 'Active' : 'Inactive';
   };
 
   const getStatusColor = (ad: Ad) => {
-    if (isAdExpired(ad)) {
-      return 'error';
-    }
-    return ad.active ? 'success' : 'default';
+    if (isAdExpired(ad)) return 'error';
+    return ad.status === 'active' ? 'success' : 'default';
   };
 
   const handleNewAdSubmit = async () => {
@@ -386,7 +382,7 @@ const AdManagement: React.FC = () => {
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                     <Switch
-                      checked={ad.active}
+                      checked={ad.status === 'active'}
                       onChange={(e) => handleStatusChange(ad._id, e.target.checked)}
                       color={getStatusColor(ad)}
                       disabled={isAdExpired(ad)}
