@@ -118,7 +118,10 @@ export const auth = {
       if (error.response?.data?.message === 'Account is deactivated') {
         throw new Error('Account is deactivated');
       }
-      localStorage.removeItem('token');
+      // Only remove token for auth-related errors
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        localStorage.removeItem('token');
+      }
       throw error;
     }
   },
