@@ -4,40 +4,45 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
-// Add authentication token to all requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  console.log('Token from localStorage:', token);
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-    console.log('Request headers:', JSON.stringify(config.headers));
-  } else {
-    console.log('No token found in localStorage');
+// Add request interceptor to add token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-}, (error) => {
-  console.error('Request interceptor error:', error);
-  return Promise.reject(error);
-});
+);
 
 // Add response interceptor to handle auth errors
 api.interceptors.response.use(
-  (response) => {
-    console.log('Response:', response.config.url, response.status);
-    return response;
-  },
+  (response) => response,
   (error) => {
     console.error('Response error:', error.config?.url, error.response?.status, error.response?.data);
     
-    // Only remove token for auth errors that are not related to account deactivation
+    // Only remove token for 401 unauthorized errors
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
     }
+    
+    // For deactivated accounts (403), keep the token and let the app handle it
+    if (error.response?.status === 403 && error.response?.data?.message === 'Account is deactivated') {
+      return Promise.resolve({
+        data: {
+          user: {
+            ...error.config?.user,
+            active: false
+          }
+        }
+      });
+    }
+    
     return Promise.reject(error);
   }
 );
@@ -101,17 +106,9 @@ export const auth = {
         console.error('No token found in checkAuth');
         throw new Error('No token found');
       }
-      console.log('Making auth check request with token');
       const response = await api.get('/auth/me');
       
-      // If account is deactivated, throw a specific error
-      if (response.data.user && response.data.user.active === false) {
-        const error = new Error('Account is deactivated');
-        error.name = 'DeactivatedAccountError';
-        throw error;
-      }
-      
-      console.log('Auth check successful:', response.data);
+      // Return user data regardless of active status
       return response.data;
     } catch (error: any) {
       console.error('Auth check error:', error.response?.status, error.response?.data);
