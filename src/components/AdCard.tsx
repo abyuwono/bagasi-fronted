@@ -77,7 +77,7 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
           </Typography>
         </Box>
         <Typography variant="h6" color="primary" gutterBottom>
-          Rp {ad.pricePerKg.toLocaleString()} / KG
+          {ad.currency} {ad.pricePerKg.toLocaleString()} / KG
         </Typography>
 
         {ad.additionalNotes && (
