@@ -28,11 +28,13 @@ api.interceptors.response.use(
     
     // Only remove token for 401 unauthorized errors
     if (error.response?.status === 401) {
+      console.log('Removing token due to 401 error');
       localStorage.removeItem('token');
     }
     
-    // For deactivated accounts (403), clear token and let the app handle it
+    // For deactivated accounts (403), clear token
     if (error.response?.status === 403 && error.response?.data?.message?.includes('dinonaktifkan')) {
+      console.log('Removing token due to deactivated account');
       localStorage.removeItem('token');
     }
     
