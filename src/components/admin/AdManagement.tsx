@@ -20,8 +20,41 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Autocomplete,
 } from '@mui/material';
 import { adminApi } from '../../services/api';
+
+const AUSTRALIAN_CITIES = [
+  'Sydney',
+  'Melbourne',
+  'Brisbane',
+  'Perth',
+  'Adelaide',
+  'Gold Coast',
+  'Canberra',
+  'Newcastle',
+  'Hobart',
+  'Darwin',
+];
+
+const INDONESIAN_CITIES = [
+  'Jakarta',
+  'Surabaya',
+  'Bandung',
+  'Medan',
+  'Semarang',
+  'Makassar',
+  'Palembang',
+  'Denpasar',
+];
+
+const CURRENCIES = [
+  { code: 'AUD', label: 'Dollar Australia (AUD)' },
+  { code: 'IDR', label: 'Rupiah Indonesia (IDR)' },
+  { code: 'USD', label: 'Dollar Amerika (USD)' },
+  { code: 'SGD', label: 'Dollar Singapura (SGD)' },
+  { code: 'KRW', label: 'Won Korea (KRW)' },
+];
 
 interface User {
   _id: string;
@@ -32,33 +65,59 @@ interface User {
 
 interface Ad {
   _id: string;
-  title: string;
-  description: string;
-  price: number;
-  location: string;
+  departureCity: string;
+  arrivalCity: string;
+  departureDate: string;
+  returnDate: string;
+  availableWeight: number;
+  pricePerKg: number;
+  currency: string;
+  additionalNotes?: string;
   active: boolean;
   user: User;
   createdAt: string;
 }
 
 interface NewAd {
-  title: string;
-  description: string;
-  price: number;
-  location: string;
+  departureCity: string;
+  arrivalCity: string;
+  departureDate: string;
+  returnDate: string;
+  availableWeight: number;
+  pricePerKg: number;
+  currency: string;
+  additionalNotes?: string;
   userId: string;
 }
+
+const getDefaultDates = () => {
+  const today = new Date();
+  const flightDate = new Date(today);
+  flightDate.setDate(today.getDate() + 21);
+  const lastDropDate = new Date(flightDate);
+  lastDropDate.setDate(flightDate.getDate() - 3);
+  
+  return {
+    flightDate: flightDate.toISOString().split('T')[0],
+    lastDropDate: lastDropDate.toISOString().split('T')[0],
+  };
+};
 
 const AdManagement: React.FC = () => {
   const [ads, setAds] = useState<Ad[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isNewAdDialogOpen, setIsNewAdDialogOpen] = useState(false);
+  const { flightDate, lastDropDate } = getDefaultDates();
   const [newAd, setNewAd] = useState<NewAd>({
-    title: '',
-    description: '',
-    price: 0,
-    location: '',
+    departureCity: '',
+    arrivalCity: '',
+    departureDate: flightDate,
+    returnDate: lastDropDate,
+    availableWeight: 0,
+    pricePerKg: 0,
+    currency: 'IDR',
+    additionalNotes: '',
     userId: '',
   });
 
@@ -87,7 +146,7 @@ const AdManagement: React.FC = () => {
 
   const handleStatusChange = async (adId: string, active: boolean) => {
     try {
-      const response = await adminApi.updateAdStatus(adId, active);
+      await adminApi.updateAdStatus(adId, active);
       setAds(ads.map(ad => 
         ad._id === adId ? { ...ad, active } : ad
       ));
@@ -98,74 +157,36 @@ const AdManagement: React.FC = () => {
 
   const handleNewAdSubmit = async () => {
     try {
-      const response = await adminApi.createAd(newAd);
-      setAds([...ads, response]);
+      await adminApi.createAd(newAd);
       setIsNewAdDialogOpen(false);
+      fetchAds();
       setNewAd({
-        title: '',
-        description: '',
-        price: 0,
-        location: '',
+        departureCity: '',
+        arrivalCity: '',
+        departureDate: flightDate,
+        returnDate: lastDropDate,
+        availableWeight: 0,
+        pricePerKg: 0,
+        currency: 'IDR',
+        additionalNotes: '',
         userId: '',
       });
     } catch (err) {
-      setError('Failed to create new ad');
+      setError('Failed to create ad');
     }
   };
 
   return (
     <Box>
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       
-      <Box sx={{ mb: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setIsNewAdDialogOpen(true)}
-        >
-          Create New Ad
-        </Button>
-      </Box>
-
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Location</TableCell>
-              <TableCell>User</TableCell>
-              <TableCell>Active</TableCell>
-              <TableCell>Created At</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ads.map((ad) => (
-              <TableRow key={ad._id}>
-                <TableCell>{ad.title}</TableCell>
-                <TableCell>{ad.description}</TableCell>
-                <TableCell>{ad.price}</TableCell>
-                <TableCell>{ad.location}</TableCell>
-                <TableCell>{ad.user.name}</TableCell>
-                <TableCell>
-                  <Switch
-                    checked={ad.active}
-                    onChange={(e) => handleStatusChange(ad._id, e.target.checked)}
-                  />
-                </TableCell>
-                <TableCell>
-                  {new Date(ad.createdAt).toLocaleDateString()}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Button
+        variant="contained"
+        onClick={() => setIsNewAdDialogOpen(true)}
+        sx={{ mb: 2 }}
+      >
+        Create New Ad
+      </Button>
 
       <Dialog 
         open={isNewAdDialogOpen} 
@@ -175,54 +196,117 @@ const AdManagement: React.FC = () => {
       >
         <DialogTitle>Create New Ad</DialogTitle>
         <DialogContent>
-          <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel>User</InputLabel>
-            <Select
-              value={newAd.userId}
-              onChange={(e) => setNewAd({ ...newAd, userId: e.target.value })}
-            >
-              {users.map((user) => (
-                <MenuItem key={user._id} value={user._id}>
-                  {user.name} ({user.email})
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          
-          <TextField
-            margin="dense"
-            label="Title"
-            fullWidth
-            value={newAd.title}
-            onChange={(e) => setNewAd({ ...newAd, title: e.target.value })}
-          />
-          
-          <TextField
-            margin="dense"
-            label="Description"
-            fullWidth
-            multiline
-            rows={4}
-            value={newAd.description}
-            onChange={(e) => setNewAd({ ...newAd, description: e.target.value })}
-          />
-          
-          <TextField
-            margin="dense"
-            label="Price"
-            type="number"
-            fullWidth
-            value={newAd.price}
-            onChange={(e) => setNewAd({ ...newAd, price: Number(e.target.value) })}
-          />
-          
-          <TextField
-            margin="dense"
-            label="Location"
-            fullWidth
-            value={newAd.location}
-            onChange={(e) => setNewAd({ ...newAd, location: e.target.value })}
-          />
+          <Box sx={{ mt: 2 }}>
+            <Autocomplete
+              options={users}
+              getOptionLabel={(option) => `${option.name} (${option.email})`}
+              onChange={(_, value) => setNewAd({ ...newAd, userId: value?._id || '' })}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Select User"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              )}
+            />
+
+            <Autocomplete
+              options={AUSTRALIAN_CITIES}
+              value={newAd.departureCity}
+              onChange={(_, value) => setNewAd({ ...newAd, departureCity: value || '' })}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Departure City"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              )}
+            />
+
+            <Autocomplete
+              options={INDONESIAN_CITIES}
+              value={newAd.arrivalCity}
+              onChange={(_, value) => setNewAd({ ...newAd, arrivalCity: value || '' })}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Arrival City"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              )}
+            />
+
+            <TextField
+              label="Flight Date"
+              type="date"
+              value={newAd.departureDate}
+              onChange={(e) => setNewAd({ ...newAd, departureDate: e.target.value })}
+              fullWidth
+              margin="normal"
+              InputLabelProps={{ shrink: true }}
+            />
+
+            <TextField
+              label="Last Drop Date"
+              type="date"
+              value={newAd.returnDate}
+              onChange={(e) => setNewAd({ ...newAd, returnDate: e.target.value })}
+              fullWidth
+              margin="normal"
+              InputLabelProps={{ shrink: true }}
+            />
+
+            <TextField
+              label="Available Weight (KG)"
+              type="number"
+              value={newAd.availableWeight}
+              onChange={(e) => setNewAd({ ...newAd, availableWeight: Number(e.target.value) })}
+              fullWidth
+              margin="normal"
+              inputProps={{ min: 0, max: 32 }}
+            />
+
+            <TextField
+              label="Price per KG"
+              type="number"
+              value={newAd.pricePerKg}
+              onChange={(e) => setNewAd({ ...newAd, pricePerKg: Number(e.target.value) })}
+              fullWidth
+              margin="normal"
+              inputProps={{ min: 0 }}
+            />
+
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Currency</InputLabel>
+              <Select
+                value={newAd.currency}
+                onChange={(e) => setNewAd({ ...newAd, currency: e.target.value })}
+                label="Currency"
+              >
+                {CURRENCIES.map((currency) => (
+                  <MenuItem key={currency.code} value={currency.code}>
+                    {currency.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <TextField
+              label="Additional Notes"
+              multiline
+              rows={4}
+              value={newAd.additionalNotes}
+              onChange={(e) => setNewAd({ ...newAd, additionalNotes: e.target.value })}
+              fullWidth
+              margin="normal"
+            />
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsNewAdDialogOpen(false)}>Cancel</Button>
@@ -231,6 +315,42 @@ const AdManagement: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>From</TableCell>
+              <TableCell>To</TableCell>
+              <TableCell>Flight Date</TableCell>
+              <TableCell>Last Drop</TableCell>
+              <TableCell>Weight</TableCell>
+              <TableCell>Price/KG</TableCell>
+              <TableCell>User</TableCell>
+              <TableCell>Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {ads.map((ad) => (
+              <TableRow key={ad._id}>
+                <TableCell>{ad.departureCity}</TableCell>
+                <TableCell>{ad.arrivalCity}</TableCell>
+                <TableCell>{new Date(ad.departureDate).toLocaleDateString()}</TableCell>
+                <TableCell>{new Date(ad.returnDate).toLocaleDateString()}</TableCell>
+                <TableCell>{ad.availableWeight} KG</TableCell>
+                <TableCell>{ad.pricePerKg} {ad.currency}</TableCell>
+                <TableCell>{ad.user.name}</TableCell>
+                <TableCell>
+                  <Switch
+                    checked={ad.active}
+                    onChange={(e) => handleStatusChange(ad._id, e.target.checked)}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };
