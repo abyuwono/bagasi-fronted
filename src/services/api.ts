@@ -220,9 +220,9 @@ export const profile = {
 
 export const adminApi = {
   // Auth
-  getAuthOptions: () => api.post('/admin/auth/generate-auth-options').then(res => res.data),
-  verifyAuth: (credential: any) => api.post('/admin/auth/verify', { credential }).then(res => res.data),
-  
+  login: (data: { username: string; password: string }) => {
+    return api.post('admin/auth/login', data).then(res => res.data);
+  },
   // Users
   getUsers: () => api.get('/admin/users').then(res => res.data),
   updateUserStatus: (userId: string, status: { active?: boolean; verified?: boolean }) => 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
@@ -7,14 +7,9 @@ import {
   Tabs,
   Tab,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   TextField,
-  DialogActions,
   Alert,
 } from '@mui/material';
-import { platformAuthenticatorIsAvailable, startAuthentication } from '@simplewebauthn/browser';
 import { adminApi } from '../services/api';
 import UserManagement from '../components/admin/UserManagement';
 import AdManagement from '../components/admin/AdManagement';
@@ -45,40 +40,18 @@ const Admin: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  useEffect(() => {
-    const checkWebAuthnSupport = async () => {
-      const supported = await platformAuthenticatorIsAvailable();
-      if (!supported) {
-        setError('Your browser does not support WebAuthn. Please use a modern browser.');
-      }
-    };
-    checkWebAuthnSupport();
-  }, []);
-
-  const handleAuth = async () => {
+  const handleLogin = async () => {
     try {
-      const supported = await platformAuthenticatorIsAvailable();
-      if (!supported) {
-        setError('Your browser does not support WebAuthn');
-        return;
-      }
-
-      // Get authentication options from server
-      const optionsResponse = await adminApi.getAuthOptions();
-      
-      // Start the authentication process
-      const credential = await startAuthentication(optionsResponse);
-      
-      // Verify the authentication with the server
-      const verificationResponse = await adminApi.verifyAuth(credential);
-      
-      if (verificationResponse.success) {
+      const response = await adminApi.login({ username, password });
+      if (response.success) {
         setIsAuthenticated(true);
         setError(null);
       }
-    } catch (err) {
-      setError('Authentication failed. Please try again.');
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Login failed');
     }
   };
 
@@ -92,20 +65,36 @@ const Admin: React.FC = () => {
         <Box sx={{ mt: 8 }}>
           <Paper sx={{ p: 4 }}>
             <Typography variant="h5" gutterBottom align="center">
-              Admin Authentication
+              Admin Login
             </Typography>
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
               </Alert>
             )}
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Box component="form" sx={{ mt: 2 }}>
+              <TextField
+                fullWidth
+                label="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                margin="normal"
+              />
               <Button
+                fullWidth
                 variant="contained"
-                color="primary"
-                onClick={handleAuth}
+                onClick={handleLogin}
+                sx={{ mt: 3 }}
               >
-                Authenticate with Passkey
+                Login
               </Button>
             </Box>
           </Paper>
