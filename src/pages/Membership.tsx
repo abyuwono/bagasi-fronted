@@ -84,7 +84,7 @@ const PaymentForm = ({ onSuccess, onError }: { onSuccess: () => void; onError: (
 
       if (stripeError) {
         console.error('Payment failed:', stripeError);
-        setStripeError(stripeError.message);
+        setStripeError(stripeError.message || 'Pembayaran gagal. Silakan coba lagi.');
         return;
       }
 
