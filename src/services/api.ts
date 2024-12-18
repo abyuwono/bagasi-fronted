@@ -114,9 +114,17 @@ export const auth = {
       throw error;
     }
   },
-  logout: () => {
-    localStorage.removeItem('token');
-    console.log('Token removed on logout');
+  logout: async () => {
+    try {
+      // Call logout endpoint to cleanup session
+      await api.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Always remove token
+      localStorage.removeItem('token');
+      console.log('Token removed on logout');
+    }
   },
 };
 
