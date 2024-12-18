@@ -65,6 +65,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem('token');
         throw new Error('Account is deactivated');
       }
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+      }
       setUser(response.user);
       setIsAuthenticated(true);
       return response;
