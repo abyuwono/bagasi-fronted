@@ -31,16 +31,9 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
     }
     
-    // For deactivated accounts (403), keep the token and let the app handle it
-    if (error.response?.status === 403 && error.response?.data?.message === 'Account is deactivated') {
-      return Promise.resolve({
-        data: {
-          user: {
-            ...error.config?.user,
-            active: false
-          }
-        }
-      });
+    // For deactivated accounts (403), clear token and let the app handle it
+    if (error.response?.status === 403 && error.response?.data?.message?.includes('dinonaktifkan')) {
+      localStorage.removeItem('token');
     }
     
     return Promise.reject(error);
