@@ -68,7 +68,7 @@ interface Ad {
   departureCity: string;
   arrivalCity: string;
   departureDate: string;
-  returnDate: string;
+  expiresAt: string;
   availableWeight: number;
   pricePerKg: number;
   currency: string;
@@ -82,7 +82,7 @@ interface NewAd {
   departureCity: string;
   arrivalCity: string;
   departureDate: string;
-  returnDate: string;
+  expiresAt: string;
   availableWeight: number;
   pricePerKg: number;
   currency: string;
@@ -113,7 +113,7 @@ const AdManagement: React.FC = () => {
     departureCity: '',
     arrivalCity: '',
     departureDate: flightDate,
-    returnDate: lastDropDate,
+    expiresAt: lastDropDate,
     availableWeight: 0,
     pricePerKg: 0,
     currency: 'IDR',
@@ -164,7 +164,7 @@ const AdManagement: React.FC = () => {
         departureCity: '',
         arrivalCity: '',
         departureDate: flightDate,
-        returnDate: lastDropDate,
+        expiresAt: lastDropDate,
         availableWeight: 0,
         pricePerKg: 0,
         currency: 'IDR',
@@ -253,10 +253,10 @@ const AdManagement: React.FC = () => {
             />
 
             <TextField
-              label="Last Drop Date"
+              label="Expires At"
               type="date"
-              value={newAd.returnDate}
-              onChange={(e) => setNewAd({ ...newAd, returnDate: e.target.value })}
+              value={newAd.expiresAt}
+              onChange={(e) => setNewAd({ ...newAd, expiresAt: e.target.value })}
               fullWidth
               margin="normal"
               InputLabelProps={{ shrink: true }}
@@ -323,7 +323,7 @@ const AdManagement: React.FC = () => {
               <TableCell>From</TableCell>
               <TableCell>To</TableCell>
               <TableCell>Flight Date</TableCell>
-              <TableCell>Last Drop</TableCell>
+              <TableCell>Expires At</TableCell>
               <TableCell>Weight</TableCell>
               <TableCell>Price/KG</TableCell>
               <TableCell>User</TableCell>
@@ -339,12 +339,12 @@ const AdManagement: React.FC = () => {
                   {ad.departureDate ? new Date(ad.departureDate).toLocaleDateString('id-ID') : '-'}
                 </TableCell>
                 <TableCell>
-                  {ad.returnDate ? new Date(ad.returnDate).toLocaleDateString('id-ID') : '-'}
+                  {ad.expiresAt ? new Date(ad.expiresAt).toLocaleDateString('id-ID') : '-'}
                 </TableCell>
                 <TableCell>{ad.availableWeight} KG</TableCell>
                 <TableCell>{ad.pricePerKg} {ad.currency}</TableCell>
                 <TableCell>
-                  {ad.user ? `${ad.user.name || ''} ${ad.user.whatsapp ? `(${ad.user.whatsapp})` : ''}` : '-'}
+                  {ad.user?.email || ad.user?.name || '-'}
                 </TableCell>
                 <TableCell>
                   <Switch
