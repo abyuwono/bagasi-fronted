@@ -74,13 +74,21 @@ const Admin: React.FC = () => {
                 {error}
               </Alert>
             )}
-            <Box component="form" sx={{ mt: 2 }}>
+            <Box
+              component="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
+              sx={{ mt: 2 }}
+            >
               <TextField
                 fullWidth
                 label="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 margin="normal"
+                autoFocus
               />
               <TextField
                 fullWidth
@@ -89,12 +97,19 @@ const Admin: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 margin="normal"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleLogin();
+                  }
+                }}
               />
               <Button
                 fullWidth
                 variant="contained"
                 onClick={handleLogin}
                 sx={{ mt: 3 }}
+                type="submit"
               >
                 Login
               </Button>
