@@ -29,6 +29,8 @@ export interface Ad {
   pricePerKg: number;
   additionalNotes?: string;
   status: 'active' | 'expired' | 'booked';
+  customDisplayName?: string;
+  customRating?: number;
 }
 
 export interface Booking {
