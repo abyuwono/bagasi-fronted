@@ -68,14 +68,6 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
         <Typography color="textSecondary" gutterBottom>
           Drop-in Terakhir: {format(new Date(ad.expiresAt), 'PPP', { locale: id })}
         </Typography>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            Available Weight: {ad.availableWeight} kg
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Price: {ad.currency} {ad.pricePerKg.toLocaleString()}/kg
-          </Typography>
-        </Box>
         <Typography variant="h6" color="primary" gutterBottom>
           {ad.currency} {ad.pricePerKg.toLocaleString()} / KG
         </Typography>
