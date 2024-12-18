@@ -232,17 +232,43 @@ export const adminApi = {
     });
   },
   // Users
-  getUsers: () => api.get('/admin/users').then(res => res.data),
-  updateUserStatus: (userId: string, status: { active?: boolean; verified?: boolean }) => 
-    api.patch(`/admin/users/${userId}/status`, status).then(res => res.data),
-  updateUserWhatsapp: (userId: string, whatsapp: string) => 
-    api.patch(`/admin/users/${userId}/whatsapp`, { whatsapp }).then(res => res.data),
-  
+  getUsers: () => {
+    const token = localStorage.getItem('token');
+    return api.get('/admin/users', {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => res.data);
+  },
+  updateUserStatus: (userId: string, status: { active?: boolean; verified?: boolean }) => {
+    const token = localStorage.getItem('token');
+    return api.patch(`/admin/users/${userId}/status`, status, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => res.data);
+  },
+  updateUserWhatsapp: (userId: string, whatsapp: string) => {
+    const token = localStorage.getItem('token');
+    return api.patch(`/admin/users/${userId}/whatsapp`, { whatsapp }, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => res.data);
+  },
   // Ads
-  getAds: () => api.get('/admin/ads').then(res => res.data),
-  updateAdStatus: (adId: string, active: boolean) => 
-    api.patch(`/admin/ads/${adId}/status`, { active }).then(res => res.data),
-  createAd: (adData: any) => api.post('/admin/ads', adData).then(res => res.data),
+  getAds: () => {
+    const token = localStorage.getItem('token');
+    return api.get('/admin/ads', {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => res.data);
+  },
+  updateAdStatus: (adId: string, active: boolean) => {
+    const token = localStorage.getItem('token');
+    return api.patch(`/admin/ads/${adId}/status`, { active }, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => res.data);
+  },
+  createAd: (adData: any) => {
+    const token = localStorage.getItem('token');
+    return api.post('/admin/ads', adData, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => res.data);
+  }
 };
 
 export default api;
