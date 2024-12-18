@@ -170,6 +170,20 @@ const AdManagement: React.FC = () => {
     return new Date(ad.expiresAt) <= now;
   };
 
+  const getAdStatus = (ad: Ad) => {
+    if (isAdExpired(ad)) {
+      return 'Expired';
+    }
+    return ad.active ? 'Active' : 'Inactive';
+  };
+
+  const getStatusColor = (ad: Ad) => {
+    if (isAdExpired(ad)) {
+      return 'error';
+    }
+    return ad.active ? 'success' : 'default';
+  };
+
   const handleNewAdSubmit = async () => {
     try {
       await adminApi.createAd(newAd);
@@ -370,15 +384,21 @@ const AdManagement: React.FC = () => {
                   {ad.user?.email || ad.user?.name || '-'}
                 </TableCell>
                 <TableCell>
-                  <Switch
-                    checked={ad.active}
-                    onChange={(e) => handleStatusChange(ad._id, e.target.checked)}
-                    color="primary"
-                    disabled={isAdExpired(ad)}
-                  />
-                  <Typography variant="caption" color="textSecondary" display="block">
-                    {isAdExpired(ad) ? 'Expired' : ad.active ? 'Active' : 'Inactive'}
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                    <Switch
+                      checked={ad.active}
+                      onChange={(e) => handleStatusChange(ad._id, e.target.checked)}
+                      color={getStatusColor(ad)}
+                      disabled={isAdExpired(ad)}
+                    />
+                    <Typography 
+                      variant="caption" 
+                      color={getStatusColor(ad)}
+                      sx={{ mt: 0.5 }}
+                    >
+                      {getAdStatus(ad)}
+                    </Typography>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
