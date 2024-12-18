@@ -257,11 +257,14 @@ export const adminApi = {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => res.data);
   },
-  updateAdStatus: (adId: string, active: boolean) => {
-    const token = localStorage.getItem('token');
-    return api.patch(`/admin/ads/${adId}/status`, { active }, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(res => res.data);
+  updateAdStatus: async (adId: string, active: boolean) => {
+    try {
+      const response = await api.patch(`/admin/ads/${adId}/status`, { active });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to update ad status:', error);
+      throw error;
+    }
   },
   createAd: (adData: any) => {
     const token = localStorage.getItem('token');

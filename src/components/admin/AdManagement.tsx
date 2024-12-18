@@ -335,15 +335,22 @@ const AdManagement: React.FC = () => {
               <TableRow key={ad._id}>
                 <TableCell>{ad.departureCity}</TableCell>
                 <TableCell>{ad.arrivalCity}</TableCell>
-                <TableCell>{new Date(ad.departureDate).toLocaleDateString()}</TableCell>
-                <TableCell>{new Date(ad.returnDate).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  {ad.departureDate ? new Date(ad.departureDate).toLocaleDateString('id-ID') : '-'}
+                </TableCell>
+                <TableCell>
+                  {ad.returnDate ? new Date(ad.returnDate).toLocaleDateString('id-ID') : '-'}
+                </TableCell>
                 <TableCell>{ad.availableWeight} KG</TableCell>
                 <TableCell>{ad.pricePerKg} {ad.currency}</TableCell>
-                <TableCell>{ad.user.name}</TableCell>
+                <TableCell>
+                  {ad.user ? `${ad.user.name || ''} ${ad.user.whatsapp ? `(${ad.user.whatsapp})` : ''}` : '-'}
+                </TableCell>
                 <TableCell>
                   <Switch
                     checked={ad.active}
                     onChange={(e) => handleStatusChange(ad._id, e.target.checked)}
+                    color="primary"
                   />
                 </TableCell>
               </TableRow>
