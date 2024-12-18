@@ -116,14 +116,15 @@ export const auth = {
   },
   logout: async () => {
     try {
+      // Remove token first to prevent 401 errors
+      localStorage.removeItem('token');
+      console.log('Token removed on logout');
+      
       // Call logout endpoint to cleanup session
       await api.post('/auth/logout');
     } catch (error) {
+      // Log error but don't throw since token is already removed
       console.error('Logout error:', error);
-    } finally {
-      // Always remove token
-      localStorage.removeItem('token');
-      console.log('Token removed on logout');
     }
   },
 };
