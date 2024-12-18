@@ -135,12 +135,12 @@ const AdDetails = () => {
               {ad.departureCity} → {ad.arrivalCity}
             </Typography>
 
-            <Box mb={3}>
-              <Typography variant="h5" color="primary">
-                Rp {ad.pricePerKg.toLocaleString()} / KG
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="h4" color="primary" gutterBottom>
+                {ad.currency} {ad.pricePerKg.toLocaleString()}/kg
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary">
-                {ad.availableWeight} KG tersedia
+              <Typography variant="body1" gutterBottom>
+                Available Weight: {ad.availableWeight} kg
               </Typography>
             </Box>
 

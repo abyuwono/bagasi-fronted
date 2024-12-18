@@ -27,6 +27,7 @@ export interface Ad {
   expiresAt: string;
   availableWeight: number;
   pricePerKg: number;
+  currency: 'AUD' | 'IDR' | 'USD' | 'SGD' | 'KRW';
   additionalNotes?: string;
   status: 'active' | 'expired' | 'booked';
   customDisplayName?: string;
