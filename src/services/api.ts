@@ -34,10 +34,8 @@ api.interceptors.response.use(
   (error) => {
     console.error('Response error:', error.config?.url, error.response?.status, error.response?.data);
     
-    // Don't remove token for deactivated account error
-    if ((error.response?.status === 401 || error.response?.status === 403) && 
-        error.config?.url !== '/auth/login' && 
-        error.response?.data?.message !== 'Account is deactivated') {
+    // Only remove token for auth errors that are not related to account deactivation
+    if (error.response?.status === 401) {
       localStorage.removeItem('token');
     }
     return Promise.reject(error);
@@ -106,18 +104,13 @@ export const auth = {
       console.log('Making auth check request with token');
       const response = await api.get('/auth/me');
       
-      // Only check active status if it's explicitly false
-      if (response.data?.user?.active === false) {
-        throw new Error('Account is deactivated');
-      }
-      
+      // Return response data regardless of account status
       console.log('Auth check successful:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('Auth check error:', error.response?.status, error.response?.data);
-      // Only remove token for auth errors except deactivation
-      if ((error.response?.status === 401 || error.response?.status === 403) && 
-          error.response?.data?.message !== 'Account is deactivated') {
+      // Only remove token for 401 unauthorized errors
+      if (error.response?.status === 401) {
         localStorage.removeItem('token');
       }
       throw error;
