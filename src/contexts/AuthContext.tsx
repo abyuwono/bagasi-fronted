@@ -86,8 +86,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (!token) {
         throw new Error('No token received from server');
       }
+      localStorage.setItem('token', token);
       setUser(user);
-      return await checkAuthState(); // Verify the token works
+      setIsAuthenticated(true);
+      return { token, user };
     } catch (error) {
       console.error('Registration failed:', error);
       auth.logout();
