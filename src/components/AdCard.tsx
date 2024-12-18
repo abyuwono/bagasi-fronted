@@ -1,16 +1,16 @@
 import React from 'react';
 import {
+  Box,
   Card,
   CardContent,
   Typography,
   Button,
-  Box,
   Chip,
   Rating,
   Stack,
   Tooltip,
-  VerifiedIcon,
 } from '@mui/material';
+import VerifiedIcon from '@mui/icons-material/Verified';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { Ad } from '../types';
