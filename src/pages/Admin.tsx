@@ -47,6 +47,8 @@ const Admin: React.FC = () => {
     try {
       const response = await adminApi.login({ username, password });
       if (response.success) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('isAdmin', 'true');
         setIsAuthenticated(true);
         setError(null);
       }
