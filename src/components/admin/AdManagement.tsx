@@ -21,6 +21,7 @@ import {
   FormControl,
   InputLabel,
   Autocomplete,
+  Typography,
 } from '@mui/material';
 import { adminApi } from '../../services/api';
 
@@ -76,6 +77,7 @@ interface Ad {
   active: boolean;
   user: User;
   createdAt: string;
+  status: string;
 }
 
 interface NewAd {
@@ -146,13 +148,26 @@ const AdManagement: React.FC = () => {
 
   const handleStatusChange = async (adId: string, active: boolean) => {
     try {
-      await adminApi.updateAdStatus(adId, active);
+      const response = await adminApi.updateAdStatus(adId, active);
+      if (response.error) {
+        setError(response.error);
+        // Refresh ads to get current state
+        fetchAds();
+        return;
+      }
       setAds(ads.map(ad => 
-        ad._id === adId ? { ...ad, active } : ad
+        ad._id === adId ? { ...ad, active: response.active, status: response.status } : ad
       ));
-    } catch (err) {
-      setError('Failed to update ad status');
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to update ad status');
+      // Refresh ads to get current state
+      fetchAds();
     }
+  };
+
+  const isAdExpired = (ad: Ad) => {
+    const now = new Date();
+    return new Date(ad.expiresAt) <= now;
   };
 
   const handleNewAdSubmit = async () => {
@@ -178,7 +193,15 @@ const AdManagement: React.FC = () => {
 
   return (
     <Box>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      {error && (
+        <Alert 
+          severity="error" 
+          sx={{ mb: 2 }}
+          onClose={() => setError(null)}
+        >
+          {error}
+        </Alert>
+      )}
       
       <Button
         variant="contained"
@@ -351,7 +374,11 @@ const AdManagement: React.FC = () => {
                     checked={ad.active}
                     onChange={(e) => handleStatusChange(ad._id, e.target.checked)}
                     color="primary"
+                    disabled={isAdExpired(ad)}
                   />
+                  <Typography variant="caption" color="textSecondary" display="block">
+                    {isAdExpired(ad) ? 'Expired' : ad.active ? 'Active' : 'Inactive'}
+                  </Typography>
                 </TableCell>
               </TableRow>
             ))}
