@@ -106,8 +106,8 @@ export const auth = {
       console.log('Making auth check request with token');
       const response = await api.get('/auth/me');
       
-      // Check if the user is active
-      if (response.data && response.data.active === false) {
+      // Only check active status if it's explicitly false
+      if (response.data?.user?.active === false) {
         throw new Error('Account is deactivated');
       }
       
@@ -115,11 +115,9 @@ export const auth = {
       return response.data;
     } catch (error: any) {
       console.error('Auth check error:', error.response?.status, error.response?.data);
-      if (error.response?.data?.message === 'Account is deactivated') {
-        throw new Error('Account is deactivated');
-      }
-      // Only remove token for auth-related errors
-      if (error.response?.status === 401 || error.response?.status === 403) {
+      // Only remove token for auth errors except deactivation
+      if ((error.response?.status === 401 || error.response?.status === 403) && 
+          error.response?.data?.message !== 'Account is deactivated') {
         localStorage.removeItem('token');
       }
       throw error;
