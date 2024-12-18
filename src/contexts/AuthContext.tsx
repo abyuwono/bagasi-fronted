@@ -89,7 +89,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('token', token);
       setUser(user);
       setIsAuthenticated(true);
-      return { token, user };
     } catch (error) {
       console.error('Registration failed:', error);
       auth.logout();
