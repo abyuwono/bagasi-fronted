@@ -54,7 +54,7 @@ const Register = () => {
   const handleSendOTP = async (email: string) => {
     try {
       setIsVerifying(true);
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/otp/send`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const Register = () => {
   const handleVerifyOTP = async () => {
     try {
       setIsVerifying(true);
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/otp/verify`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
