@@ -63,7 +63,7 @@ const Register = () => {
       }
 
       const phoneNumber = parsePhoneNumber(numberWithCountry);
-      if (!phoneNumber.isValid() || !phoneNumber.getType() === 'MOBILE') {
+      if (!phoneNumber.isValid() || phoneNumber.getType() !== 'MOBILE') {
         return 'Mohon masukkan nomor handphone yang valid';
       }
 
