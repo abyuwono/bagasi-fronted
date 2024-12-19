@@ -250,6 +250,12 @@ export const adminApi = {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => res.data);
   },
+  toggleUserActive: (userId: string) => {
+    const token = localStorage.getItem('token');
+    return api.post(`/admin/users/${userId}/toggle-active`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => res.data);
+  },
   // Ads
   getAds: () => {
     const token = localStorage.getItem('token');

@@ -17,17 +17,20 @@ import {
   DialogActions,
   Button,
   Alert,
+  Typography
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { adminApi } from '../../services/api';
 
 interface User {
   _id: string;
-  name: string;
+  username: string;
   email: string;
   whatsappNumber: string;
-  active: boolean;
-  verified: boolean;
+  isActive: boolean;
+  isVerified: boolean;
+  rating: number;
+  totalReviews: number;
   createdAt: string;
 }
 
@@ -50,14 +53,25 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  const handleStatusChange = async (userId: string, field: 'active' | 'verified', value: boolean) => {
+  const handleActiveToggle = async (userId: string) => {
     try {
-      const response = await adminApi.updateUserStatus(userId, { [field]: value });
-      setUsers(users.map(user => 
-        user._id === userId ? { ...user, [field]: value } : user
+      const response = await adminApi.toggleUserActive(userId);
+      setUsers(users.map(user =>
+        user._id === userId ? { ...user, isActive: response.isActive } : user
       ));
     } catch (err) {
-      setError(`Failed to update user ${field}`);
+      setError('Failed to update user status');
+    }
+  };
+
+  const handleVerificationToggle = async (userId: string) => {
+    try {
+      const response = await adminApi.toggleUserVerification(userId);
+      setUsers(users.map(user =>
+        user._id === userId ? { ...user, isVerified: response.isVerified } : user
+      ));
+    } catch (err) {
+      setError('Failed to update user verification');
     }
   };
 
@@ -82,6 +96,7 @@ const UserManagement: React.FC = () => {
 
   return (
     <Box>
+      <Typography variant="h5" gutterBottom>User Management</Typography>
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
@@ -91,35 +106,37 @@ const UserManagement: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>WhatsApp Number</TableCell>
+              <TableCell>Rating</TableCell>
+              <TableCell>Reviews</TableCell>
               <TableCell>Active</TableCell>
               <TableCell>Verified</TableCell>
-              <TableCell>Created At</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {users.map((user) => (
               <TableRow key={user._id}>
-                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.whatsappNumber}</TableCell>
+                <TableCell>{user.rating}</TableCell>
+                <TableCell>{user.totalReviews || 0}</TableCell>
                 <TableCell>
                   <Switch
-                    checked={user.active}
-                    onChange={(e) => handleStatusChange(user._id, 'active', e.target.checked)}
+                    checked={user.isActive}
+                    onChange={() => handleActiveToggle(user._id)}
+                    color="primary"
                   />
                 </TableCell>
                 <TableCell>
                   <Switch
-                    checked={user.verified}
-                    onChange={(e) => handleStatusChange(user._id, 'verified', e.target.checked)}
+                    checked={user.isVerified || false}
+                    onChange={() => handleVerificationToggle(user._id)}
+                    color="success"
                   />
-                </TableCell>
-                <TableCell>
-                  {new Date(user.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleWhatsappEdit(user)}>
