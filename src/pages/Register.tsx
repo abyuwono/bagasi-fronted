@@ -46,6 +46,62 @@ const Register = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
   const [error, setError] = useState<string | null>(null);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const handleSendOTP = async (email: string) => {
+    try {
+      setIsVerifying(true);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/otp/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send OTP');
+      }
+
+      setShowOtpInput(true);
+      setError(null);
+    } catch (err) {
+      setError('Gagal mengirim OTP. Silakan coba lagi.');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    try {
+      setIsVerifying(true);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/otp/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          email: formik.values.email,
+          otp 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid OTP');
+      }
+
+      setIsEmailVerified(true);
+      setShowOtpInput(false);
+      setError(null);
+    } catch (err) {
+      setError('Kode OTP tidak valid. Silakan coba lagi.');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
 
   const validateWhatsapp = (value: string) => {
     if (!value) {
@@ -114,6 +170,10 @@ const Register = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      if (!isEmailVerified) {
+        setError('Silakan verifikasi email Anda terlebih dahulu');
+        return;
+      }
       try {
         const { confirmPassword, ...registerData } = values;
         // Format the phone number before submitting
@@ -188,8 +248,40 @@ const Register = () => {
             onChange={formik.handleChange}
             error={formik.touched.email && Boolean(formik.errors.email)}
             helperText={formik.touched.email && formik.errors.email}
-            margin="normal"
+            disabled={isEmailVerified}
           />
+          {!isEmailVerified && !showOtpInput && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleSendOTP(formik.values.email)}
+              disabled={!formik.values.email || Boolean(formik.errors.email) || isVerifying}
+              sx={{ mt: 1 }}
+            >
+              Kirim Kode OTP
+            </Button>
+          )}
+          {showOtpInput && !isEmailVerified && (
+            <Box sx={{ mt: 2 }}>
+              <TextField
+                fullWidth
+                id="otp"
+                label="Kode OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                helperText="Masukkan kode OTP yang dikirim ke email Anda"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleVerifyOTP}
+                disabled={!otp || isVerifying}
+                sx={{ mt: 1 }}
+              >
+                Verifikasi OTP
+              </Button>
+            </Box>
+          )}
           <TextField
             fullWidth
             id="password"
