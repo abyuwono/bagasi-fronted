@@ -51,24 +51,41 @@ const Home = () => {
   return (
     <Box>
       <Helmet>
-        <title>Bagasi - Jasa Titip Terpercaya</title>
-        <meta name="description" content="Bagasi adalah platform jasa titip terpercaya yang menghubungkan traveler dengan pembeli. Temukan jasa titip dari berbagai negara dengan harga terbaik." />
+        <html lang="id" />
+        <title>Bagasi Marketplace - Jasa Titip (JasTip) Terpercaya | Belanja dari Luar Negeri</title>
+        <meta name="title" content="Bagasi Marketplace - Platform Jasa Titip (JasTip) Terpercaya | Belanja dari Luar Negeri" />
+        <meta name="description" content="Bagasi adalah platform jasa titip (jastip) terpercaya untuk belanja barang dari luar negeri. Temukan jastip terpercaya dengan rating tinggi dan verifikasi resmi. Belanja aman dan mudah dari berbagai negara." />
+        <meta name="keywords" content="jastip, jasa titip, titip beli, jastip luar negeri, jastip terpercaya, marketplace jastip, belanja luar negeri, traveler jastip, bagasi" />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Bagasi - Jasa Titip Terpercaya" />
-        <meta property="og:description" content="Bagasi adalah platform jasa titip terpercaya yang menghubungkan traveler dengan pembeli. Temukan jasa titip dari berbagai negara dengan harga terbaik." />
-        <meta property="og:site_name" content="Bagasi" />
-        <meta property="og:url" content={window.location.href} />
+        <meta property="og:url" content="https://market.bagasi.id/" />
+        <meta property="og:title" content="Bagasi - Platform Jasa Titip (JasTip) Terpercaya" />
+        <meta property="og:description" content="Temukan jastip terpercaya untuk belanja barang dari luar negeri. Belanja aman dan mudah dengan traveler terverifikasi di Bagasi." />
+        <meta property="og:image" content="/og-image.jpg" />
         
         {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Bagasi - Jasa Titip Terpercaya" />
-        <meta name="twitter:description" content="Bagasi adalah platform jasa titip terpercaya yang menghubungkan traveler dengan pembeli. Temukan jasa titip dari berbagai negara dengan harga terbaik." />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://market.bagasi.id/" />
+        <meta property="twitter:title" content="Bagasi - Platform Jasa Titip (JasTip) Terpercaya" />
+        <meta property="twitter:description" content="Temukan jastip terpercaya untuk belanja barang dari luar negeri. Belanja aman dan mudah dengan traveler terverifikasi di Bagasi." />
+        <meta property="twitter:image" content="/og-image.jpg" />
         
-        {/* Additional SEO */}
-        <meta name="keywords" content="jasa titip, titip barang, jastip, marketplace, travel, shopping, bagasi" />
-        <link rel="canonical" href={window.location.href} />
+        {/* Additional Meta Tags */}
+        <meta name="author" content="Bagasi" />
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="google" content="notranslate" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="theme-color" content="#34D399" />
+        
+        {/* Preconnect */}
+        <link rel="preconnect" href="https://api.bagasi.id" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </Helmet>
       <Box mb={4}>
         <Typography variant="h4" gutterBottom align="center">
