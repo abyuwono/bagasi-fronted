@@ -9,6 +9,7 @@ import {
   Button,
 } from '@mui/material';
 import AdCard from '../components/AdCard';
+import Footer from '../components/Footer';
 import { ads } from '../services/api';
 import { Ad } from '../types';
 import { Helmet } from 'react-helmet-async';
@@ -49,7 +50,7 @@ const Home = () => {
   }
 
   return (
-    <Box>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Helmet>
         <html lang="id" />
         <title>Bagasi Marketplace - Jasa Titip (JasTip) Terpercaya | Belanja dari Luar Negeri</title>
@@ -146,6 +147,7 @@ const Home = () => {
           </Grid>
         )}
       </Grid>
+      <Footer />
     </Box>
   );
 };
