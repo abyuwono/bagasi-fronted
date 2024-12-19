@@ -21,6 +21,7 @@ import { useAuth } from '../contexts/AuthContext';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
 import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js/mobile';
+import { Helmet } from 'react-helmet-async';
 
 const validationSchema = yup.object({
   email: yup
@@ -145,6 +146,27 @@ const Register = () => {
         minHeight: '80vh',
       }}
     >
+      <Helmet>
+        <title>Daftar di Bagasi - Jadi Traveler atau Pembeli di Platform Jasa Titip</title>
+        <meta name="title" content="Daftar di Bagasi - Jadi Traveler atau Pembeli di Platform Jasa Titip" />
+        <meta name="description" content="Daftar sekarang di Bagasi untuk menjadi traveler jasa titip atau pembeli. Dapatkan akses ke platform jasa titip terpercaya dengan verifikasi resmi." />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://market.bagasi.id/register" />
+        <meta property="og:title" content="Daftar di Bagasi - Jadi Traveler atau Pembeli di Platform Jasa Titip" />
+        <meta property="og:description" content="Daftar sekarang di Bagasi untuk menjadi traveler jasa titip atau pembeli. Dapatkan akses ke platform jasa titip terpercaya dengan verifikasi resmi." />
+        <meta property="og:image" content="/og-image.jpg" />
+        
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://market.bagasi.id/register" />
+        <meta property="twitter:title" content="Daftar di Bagasi - Jadi Traveler atau Pembeli di Platform Jasa Titip" />
+        <meta property="twitter:description" content="Daftar sekarang di Bagasi untuk menjadi traveler jasa titip atau pembeli. Dapatkan akses ke platform jasa titip terpercaya dengan verifikasi resmi." />
+        <meta property="twitter:image" content="/og-image.jpg" />
+        
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <Paper sx={{ p: 4, maxWidth: 400, width: '100%' }}>
         <Typography variant="h5" align="center" gutterBottom>
           Daftar

@@ -13,6 +13,7 @@ import {
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useAuth } from '../contexts/AuthContext';
+import { Helmet } from 'react-helmet-async';
 
 const validationSchema = yup.object({
   email: yup
@@ -81,6 +82,27 @@ const Login = () => {
         py: 4,
       }}
     >
+      <Helmet>
+        <title>Masuk ke Bagasi - Platform Jasa Titip Terpercaya</title>
+        <meta name="title" content="Masuk ke Bagasi - Platform Jasa Titip Terpercaya" />
+        <meta name="description" content="Masuk ke akun Bagasi Anda untuk mengakses layanan jasa titip terpercaya. Belanja dari luar negeri dengan mudah dan aman bersama Bagasi." />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://market.bagasi.id/login" />
+        <meta property="og:title" content="Masuk ke Bagasi - Platform Jasa Titip Terpercaya" />
+        <meta property="og:description" content="Masuk ke akun Bagasi Anda untuk mengakses layanan jasa titip terpercaya. Belanja dari luar negeri dengan mudah dan aman bersama Bagasi." />
+        <meta property="og:image" content="/og-image.jpg" />
+        
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://market.bagasi.id/login" />
+        <meta property="twitter:title" content="Masuk ke Bagasi - Platform Jasa Titip Terpercaya" />
+        <meta property="twitter:description" content="Masuk ke akun Bagasi Anda untuk mengakses layanan jasa titip terpercaya. Belanja dari luar negeri dengan mudah dan aman bersama Bagasi." />
+        <meta property="twitter:image" content="/og-image.jpg" />
+        
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <Paper
         elevation={3}
         sx={{
