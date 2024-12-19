@@ -26,27 +26,33 @@ import {
 import { adminApi } from '../../services/api';
 
 const AUSTRALIAN_CITIES = [
-  'Sydney',
-  'Melbourne',
-  'Brisbane',
-  'Perth',
-  'Adelaide',
-  'Gold Coast',
-  'Canberra',
-  'Newcastle',
-  'Hobart',
-  'Darwin',
+  { value: 'divider-au', label: '--- AUSTRALIA ---', disabled: true },
+  { value: 'sydney', label: 'Sydney' },
+  { value: 'melbourne', label: 'Melbourne' },
+  { value: 'brisbane', label: 'Brisbane' },
+  { value: 'perth', label: 'Perth' },
+  { value: 'adelaide', label: 'Adelaide' },
+  { value: 'goldcoast', label: 'Gold Coast' },
+  { value: 'canberra', label: 'Canberra' },
+  { value: 'newcastle', label: 'Newcastle' },
+  { value: 'wollongong', label: 'Wollongong' },
+  { value: 'hobart', label: 'Hobart' },
+  { value: 'darwin', label: 'Darwin' }
 ];
 
 const INDONESIAN_CITIES = [
-  'Jakarta',
-  'Surabaya',
-  'Bandung',
-  'Medan',
-  'Semarang',
-  'Makassar',
-  'Palembang',
-  'Denpasar',
+  { value: 'divider-id', label: '--- INDONESIA ---', disabled: true },
+  { value: 'jakarta', label: 'Jakarta' },
+  { value: 'surabaya', label: 'Surabaya' },
+  { value: 'medan', label: 'Medan' },
+  { value: 'bandung', label: 'Bandung' },
+  { value: 'semarang', label: 'Semarang' },
+  { value: 'makassar', label: 'Makassar' },
+  { value: 'palembang', label: 'Palembang' },
+  { value: 'tangerang', label: 'Tangerang' },
+  { value: 'depok', label: 'Depok' },
+  { value: 'yogyakarta', label: 'Yogyakarta' },
+  { value: 'denpasar', label: 'Denpasar' }
 ];
 
 const CURRENCIES = [

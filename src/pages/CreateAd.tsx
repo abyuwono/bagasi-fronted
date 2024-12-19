@@ -19,27 +19,33 @@ import * as yup from 'yup';
 import AdPostingConfirmation from '../components/AdPostingConfirmation';
 
 const AUSTRALIAN_CITIES = [
-  'Sydney',
-  'Melbourne',
-  'Brisbane',
-  'Perth',
-  'Adelaide',
-  'Gold Coast',
-  'Canberra',
-  'Newcastle',
-  'Hobart',
-  'Darwin',
+  { value: 'divider-au', label: '--- AUSTRALIA ---', disabled: true },
+  { value: 'sydney', label: 'Sydney' },
+  { value: 'melbourne', label: 'Melbourne' },
+  { value: 'brisbane', label: 'Brisbane' },
+  { value: 'perth', label: 'Perth' },
+  { value: 'adelaide', label: 'Adelaide' },
+  { value: 'goldcoast', label: 'Gold Coast' },
+  { value: 'canberra', label: 'Canberra' },
+  { value: 'newcastle', label: 'Newcastle' },
+  { value: 'wollongong', label: 'Wollongong' },
+  { value: 'hobart', label: 'Hobart' },
+  { value: 'darwin', label: 'Darwin' }
 ];
 
 const INDONESIAN_CITIES = [
-  'Jakarta',
-  'Surabaya',
-  'Bandung',
-  'Medan',
-  'Semarang',
-  'Makassar',
-  'Palembang',
-  'Denpasar',
+  { value: 'divider-id', label: '--- INDONESIA ---', disabled: true },
+  { value: 'jakarta', label: 'Jakarta' },
+  { value: 'surabaya', label: 'Surabaya' },
+  { value: 'medan', label: 'Medan' },
+  { value: 'bandung', label: 'Bandung' },
+  { value: 'semarang', label: 'Semarang' },
+  { value: 'makassar', label: 'Makassar' },
+  { value: 'palembang', label: 'Palembang' },
+  { value: 'tangerang', label: 'Tangerang' },
+  { value: 'depok', label: 'Depok' },
+  { value: 'yogyakarta', label: 'Yogyakarta' },
+  { value: 'denpasar', label: 'Denpasar' }
 ];
 
 const CURRENCIES = [
@@ -112,32 +118,31 @@ const CreateAd = () => {
     },
   });
 
-  const handleConfirmation = async () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+    
     try {
-      setLoading(true);
-      setError(null);
-
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('Silakan login terlebih dahulu');
-        navigate('/login');
-        return;
-      }
+      const formData = {
+        ...formik.values,
+        departureCity: formik.values.departureCity,
+        arrivalCity: formik.values.arrivalCity
+      };
 
       // Navigate to payment page with ad details
       navigate('/ads/payment', {
         state: {
-          adTitle: 'Jastip dari ' + formik.values.departureCity + ' ke ' + formik.values.arrivalCity,
-          flightDate: formik.values.departureDate,
-          adData: formik.values
+          adTitle: 'Jastip dari ' + formData.departureCity + ' ke ' + formData.arrivalCity,
+          flightDate: formData.departureDate,
+          adData: formData
         },
       });
     } catch (error) {
-      console.error('Error:', error);
-      setError('Gagal memproses pembayaran. Silakan coba lagi.');
+      console.error('Error creating ad:', error);
+      setError('Failed to create ad. Please try again.');
     } finally {
       setLoading(false);
-      setShowConfirmation(false);
     }
   };
 
@@ -153,7 +158,7 @@ const CreateAd = () => {
         </Alert>
       )}
 
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <Box mb={3}>
           <FormControl fullWidth error={formik.touched.departureCity && Boolean(formik.errors.departureCity)}>
             <InputLabel>Dari</InputLabel>
@@ -164,8 +169,8 @@ const CreateAd = () => {
               label="Dari"
             >
               {AUSTRALIAN_CITIES.map((city) => (
-                <MenuItem key={city} value={city}>
-                  {city}
+                <MenuItem key={city.value} value={city.value}>
+                  {city.label}
                 </MenuItem>
               ))}
             </Select>
@@ -185,8 +190,8 @@ const CreateAd = () => {
               label="Ke"
             >
               {INDONESIAN_CITIES.map((city) => (
-                <MenuItem key={city} value={city}>
-                  {city}
+                <MenuItem key={city.value} value={city.value}>
+                  {city.label}
                 </MenuItem>
               ))}
             </Select>
@@ -305,7 +310,7 @@ const CreateAd = () => {
       <AdPostingConfirmation
         open={showConfirmation}
         onClose={() => setShowConfirmation(false)}
-        onConfirm={handleConfirmation}
+        onConfirm={() => handleSubmit}
         adData={formik.values}
         postingFee={AD_POSTING_FEE}
       />
