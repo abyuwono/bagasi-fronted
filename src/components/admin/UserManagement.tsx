@@ -35,7 +35,7 @@ const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
 
   useEffect(() => {
     fetchUsers();
@@ -63,16 +63,16 @@ const UserManagement: React.FC = () => {
 
   const handleWhatsappEdit = (user: User) => {
     setEditingUser(user);
-    setWhatsappNumber(user.whatsapp);
+    setWhatsapp(user.whatsapp);
   };
 
   const handleWhatsappSave = async () => {
     if (!editingUser) return;
 
     try {
-      const response = await adminApi.updateUserWhatsapp(editingUser._id, whatsappNumber);
+      const response = await adminApi.updateUserWhatsapp(editingUser._id, whatsapp);
       setUsers(users.map(user =>
-        user._id === editingUser._id ? { ...user, whatsapp: whatsappNumber } : user
+        user._id === editingUser._id ? { ...user, whatsapp } : user
       ));
       setEditingUser(null);
     } catch (err) {
@@ -141,8 +141,8 @@ const UserManagement: React.FC = () => {
             label="WhatsApp Number"
             type="text"
             fullWidth
-            value={whatsappNumber}
-            onChange={(e) => setWhatsappNumber(e.target.value)}
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
