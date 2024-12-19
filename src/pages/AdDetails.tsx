@@ -25,6 +25,7 @@ import { Ad } from '../types';
 import RandomAvatar from '../components/RandomAvatar';
 import VerificationBadge from '../components/VerificationBadge';
 import FormattedNotes from '../components/FormattedNotes';
+import { generateAdUrl } from '../utils/url';
 
 const monthsInIndonesian = [
   'Januari',
@@ -49,7 +50,7 @@ const formatDateInIndonesian = (date: Date) => {
 };
 
 const AdDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id, slug, date } = useParams<{ id: string; slug?: string; date?: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [ad, setAd] = useState<Ad | null>(null);
@@ -64,27 +65,26 @@ const AdDetails = () => {
   useEffect(() => {
     const fetchAd = async () => {
       try {
-        if (!id) {
-          setError('ID iklan tidak valid');
-          return;
+        const response = await ads.getAd(id!);
+        setAd(response);
+        
+        const currentPath = window.location.pathname;
+        const expectedPath = generateAdUrl(response);
+        
+        // Redirect if URL doesn't match expected format
+        if (currentPath !== expectedPath && !currentPath.match(/^\/ads\/[^\/]+$/)) {
+          navigate(expectedPath, { replace: true });
         }
-        setLoading(true);
-        const data = await ads.getById(id);
-        if (!data) {
-          setError('Iklan tidak ditemukan');
-          return;
-        }
-        setAd(data);
-      } catch (err: any) {
-        console.error('Error fetching ad:', err);
-        setError(err.response?.data?.message || 'Gagal memuat detail iklan. Silakan coba lagi nanti.');
+      } catch (error) {
+        console.error('Error fetching ad:', error);
+        setError('Ad not found');
       } finally {
         setLoading(false);
       }
     };
 
     fetchAd();
-  }, [id]);
+  }, [id, navigate]);
 
   const handleBookingSubmit = async () => {
     try {

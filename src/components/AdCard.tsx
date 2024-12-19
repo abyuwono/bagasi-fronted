@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { Ad } from '../types';
 import { id } from 'date-fns/locale';
 import VerificationBadge from './VerificationBadge';
+import { generateAdUrl } from '../utils/url';
 
 interface AdCardProps {
   ad: Ad;
@@ -81,9 +82,11 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
         <Box display="flex" justifyContent="flex-end">
           <Button
             component={Link}
-            to={`/ads/${ad._id}`}
+            to={generateAdUrl(ad)}
             variant="contained"
-            color="primary"
+            size="small"
+            fullWidth
+            sx={{ mt: 2 }}
           >
             Lihat Detail
           </Button>

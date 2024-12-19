@@ -74,6 +74,7 @@ const App = () => {
           />
           <Route path="/ads/payment" element={<AdPayment />} />
           <Route path="/ads/payment-success" element={<PaymentSuccess />} />
+          <Route path="/ads/:slug/:date/:id" element={<AdDetails />} />
           <Route path="/ads/:id" element={<AdDetails />} />
           <Route
             path="/membership"
