@@ -18,7 +18,7 @@ import {
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useAuth } from '../contexts/AuthContext';
-import MuiTelInput from 'mui-tel-input';
+import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
 import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js/mobile';
 import { Helmet } from 'react-helmet-async';
@@ -444,17 +444,31 @@ const Register = () => {
             <Typography variant="body2" color="textSecondary" gutterBottom>
               Nomor WhatsApp
             </Typography>
-            <MuiTelInput
+            <PhoneInput
+              country={'id'}
               value={formik.values.phone}
-              onChange={(value) => {
-                formik.setFieldValue('phone', value);
+              onChange={(phone) => formik.setFieldValue('phone', '+' + phone)}
+              inputProps={{
+                name: 'phone',
+                required: true,
               }}
-              defaultCountry="ID"
-              onlyCountries={['ID']}
-              error={formik.touched.phone && Boolean(formik.errors.phone)}
-              helperText={formik.touched.phone && formik.errors.phone}
-              disabled={isWhatsappVerified}
+              containerStyle={{
+                width: '100%',
+              }}
+              inputStyle={{
+                width: '100%',
+                height: '56px',
+              }}
+              buttonStyle={{
+                backgroundColor: 'transparent',
+                borderColor: formik.touched.phone && formik.errors.phone ? '#d32f2f' : undefined,
+              }}
             />
+            {formik.touched.phone && formik.errors.phone && (
+              <Typography variant="caption" color="error">
+                {formik.errors.phone}
+              </Typography>
+            )}
           </Box>
 
           {!isWhatsappVerified && !showWhatsappOtpInput && (
