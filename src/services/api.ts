@@ -244,7 +244,7 @@ export const adminApi = {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => res.data);
   },
-  updateUserWhatsapp: (userId: string, data: { whatsapp: string }) => {
+  updateUserWhatsapp: (userId: string, data: { whatsappNumber: string }) => {
     const token = localStorage.getItem('token');
     return api.patch(`/admin/users/${userId}/whatsapp`, data, {
       headers: { Authorization: `Bearer ${token}` }

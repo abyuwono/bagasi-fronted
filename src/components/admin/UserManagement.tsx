@@ -25,7 +25,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  whatsapp: string;
+  whatsappNumber: string;
   active: boolean;
   verified: boolean;
   createdAt: string;
@@ -35,7 +35,7 @@ const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [whatsapp, setWhatsapp] = useState('');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
 
   useEffect(() => {
     fetchUsers();
@@ -63,16 +63,16 @@ const UserManagement: React.FC = () => {
 
   const handleWhatsappEdit = (user: User) => {
     setEditingUser(user);
-    setWhatsapp(user.whatsapp);
+    setWhatsappNumber(user.whatsappNumber);
   };
 
   const handleWhatsappSave = async () => {
     if (!editingUser) return;
 
     try {
-      const response = await adminApi.updateUserWhatsapp(editingUser._id, { whatsapp });
+      const response = await adminApi.updateUserWhatsapp(editingUser._id, { whatsappNumber });
       setUsers(users.map(user =>
-        user._id === editingUser._id ? { ...user, whatsapp } : user
+        user._id === editingUser._id ? { ...user, whatsappNumber } : user
       ));
       setEditingUser(null);
     } catch (err) {
@@ -93,7 +93,7 @@ const UserManagement: React.FC = () => {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>WhatsApp</TableCell>
+              <TableCell>WhatsApp Number</TableCell>
               <TableCell>Active</TableCell>
               <TableCell>Verified</TableCell>
               <TableCell>Created At</TableCell>
@@ -105,7 +105,7 @@ const UserManagement: React.FC = () => {
               <TableRow key={user._id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.whatsapp}</TableCell>
+                <TableCell>{user.whatsappNumber}</TableCell>
                 <TableCell>
                   <Switch
                     checked={user.active}
@@ -141,8 +141,8 @@ const UserManagement: React.FC = () => {
             label="WhatsApp Number"
             type="text"
             fullWidth
-            value={whatsapp}
-            onChange={(e) => setWhatsapp(e.target.value)}
+            value={whatsappNumber}
+            onChange={(e) => setWhatsappNumber(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
