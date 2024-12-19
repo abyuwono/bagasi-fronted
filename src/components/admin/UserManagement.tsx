@@ -70,7 +70,7 @@ const UserManagement: React.FC = () => {
     if (!editingUser) return;
 
     try {
-      const response = await adminApi.updateUserWhatsapp(editingUser._id, whatsapp);
+      const response = await adminApi.updateUserWhatsapp(editingUser._id, { whatsapp });
       setUsers(users.map(user =>
         user._id === editingUser._id ? { ...user, whatsapp } : user
       ));
