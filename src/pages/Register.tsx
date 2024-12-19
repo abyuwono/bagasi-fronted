@@ -50,11 +50,11 @@ const Register = () => {
   const { register } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [showOtpInput, setShowOtpInput] = useState(false);
-  const [otp, setOtp] = useState('');
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [countdown, setCountdown] = useState(60);
-  const [canResend, setCanResend] = useState(false);
+  const [showEmailOtpInput, setShowEmailOtpInput] = useState(false);
+  const [emailOtp, setEmailOtp] = useState('');
+  const [isEmailVerifying, setIsEmailVerifying] = useState(false);
+  const [emailCountdown, setEmailCountdown] = useState(60);
+  const [canResendEmail, setCanResendEmail] = useState(false);
 
   const [isWhatsappVerified, setIsWhatsappVerified] = useState(false);
   const [showWhatsappOtpInput, setShowWhatsappOtpInput] = useState(false);
@@ -65,17 +65,17 @@ const Register = () => {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (showOtpInput && countdown > 0) {
+    if (showEmailOtpInput && emailCountdown > 0) {
       timer = setInterval(() => {
-        setCountdown((prev) => prev - 1);
+        setEmailCountdown((prev) => prev - 1);
       }, 1000);
-    } else if (countdown === 0) {
-      setCanResend(true);
+    } else if (emailCountdown === 0) {
+      setCanResendEmail(true);
     }
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [showOtpInput, countdown]);
+  }, [showEmailOtpInput, emailCountdown]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -91,9 +91,9 @@ const Register = () => {
     };
   }, [showWhatsappOtpInput, whatsappCountdown]);
 
-  const handleSendOTP = async (email: string) => {
+  const handleSendEmailOTP = async (email: string) => {
     try {
-      setIsVerifying(true);
+      setIsEmailVerifying(true);
       const response = await fetch(`${process.env.REACT_APP_API_URL}/otp/send`, {
         method: 'POST',
         headers: {
@@ -106,20 +106,20 @@ const Register = () => {
         throw new Error('Failed to send OTP');
       }
 
-      setShowOtpInput(true);
+      setShowEmailOtpInput(true);
       setError(null);
-      setCountdown(60);
-      setCanResend(false);
+      setEmailCountdown(60);
+      setCanResendEmail(false);
     } catch (err) {
       setError('Gagal mengirim OTP. Silakan coba lagi.');
     } finally {
-      setIsVerifying(false);
+      setIsEmailVerifying(false);
     }
   };
 
-  const handleVerifyOTP = async () => {
+  const handleVerifyEmailOTP = async () => {
     try {
-      setIsVerifying(true);
+      setIsEmailVerifying(true);
       const response = await fetch(`${process.env.REACT_APP_API_URL}/otp/verify`, {
         method: 'POST',
         headers: {
@@ -127,7 +127,7 @@ const Register = () => {
         },
         body: JSON.stringify({ 
           email: formik.values.email,
-          otp 
+          otp: emailOtp 
         }),
       });
 
@@ -136,20 +136,20 @@ const Register = () => {
       }
 
       setIsEmailVerified(true);
-      setShowOtpInput(false);
+      setShowEmailOtpInput(false);
       setError(null);
     } catch (err) {
       setError('Kode OTP tidak valid. Silakan coba lagi.');
     } finally {
-      setIsVerifying(false);
+      setIsEmailVerifying(false);
     }
   };
 
-  const handleResendOTP = async () => {
-    if (!canResend) return;
-    setCountdown(60);
-    setCanResend(false);
-    await handleSendOTP(formik.values.email);
+  const handleResendEmailOTP = async () => {
+    if (!canResendEmail) return;
+    setEmailCountdown(60);
+    setCanResendEmail(false);
+    await handleSendEmailOTP(formik.values.email);
   };
 
   const handleSendWhatsAppOTP = async (phoneNumber: string) => {
@@ -213,30 +213,21 @@ const Register = () => {
     await handleSendWhatsAppOTP(formik.values.phone);
   };
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const validateWhatsapp = (value: string) => {
-    if (!value) {
-      return 'Nomor WhatsApp wajib diisi';
-    }
-
+    if (!value) return 'Nomor WhatsApp wajib diisi';
     try {
-      // Remove any spaces from the input
-      const cleanNumber = value.replace(/\s+/g, '');
-      
-      // If number doesn't start with +, assume it's Indonesian
-      const numberWithCountry = cleanNumber.startsWith('+') ? cleanNumber : `+62${cleanNumber.startsWith('0') ? cleanNumber.slice(1) : cleanNumber}`;
-      
-      if (!isValidPhoneNumber(numberWithCountry)) {
-        return 'Format nomor WhatsApp tidak valid';
+      const phoneNumber = parsePhoneNumber(value, 'ID');
+      if (!phoneNumber || !isValidPhoneNumber(value, 'ID')) {
+        return 'Nomor WhatsApp tidak valid';
       }
-
-      const phoneNumber = parsePhoneNumber(numberWithCountry);
-      if (!phoneNumber.isValid() || phoneNumber.getType() !== 'MOBILE') {
-        return 'Mohon masukkan nomor handphone yang valid';
-      }
-
-      return undefined;
+      return '';
     } catch (error) {
-      return 'Format nomor WhatsApp tidak valid';
+      return 'Nomor WhatsApp tidak valid';
     }
   };
 
@@ -368,45 +359,45 @@ const Register = () => {
             helperText={formik.touched.email && formik.errors.email}
             disabled={isEmailVerified}
           />
-          {!isEmailVerified && !showOtpInput && (
+          {!isEmailVerified && !showEmailOtpInput && (
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleSendOTP(formik.values.email)}
-              disabled={!formik.values.email || Boolean(formik.errors.email) || isVerifying}
+              onClick={() => handleSendEmailOTP(formik.values.email)}
+              disabled={!formik.values.email || !validateEmail(formik.values.email) || isEmailVerifying}
               sx={{ mt: 1 }}
             >
               Kirim Kode OTP
             </Button>
           )}
-          {showOtpInput && !isEmailVerified && (
+          {showEmailOtpInput && !isEmailVerified && (
             <Box sx={{ mt: 2 }}>
               <TextField
                 fullWidth
-                id="otp"
+                id="emailOtp"
                 label="Kode OTP"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
+                value={emailOtp}
+                onChange={(e) => setEmailOtp(e.target.value)}
                 helperText="Masukkan kode OTP yang dikirim ke email Anda"
               />
               <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={handleVerifyOTP}
-                  disabled={!otp || isVerifying}
+                  onClick={handleVerifyEmailOTP}
+                  disabled={!emailOtp || isEmailVerifying}
                 >
                   Verifikasi OTP
                 </Button>
-                {countdown > 0 ? (
+                {emailCountdown > 0 ? (
                   <Typography variant="body2" color="textSecondary">
-                    Kirim ulang dalam {countdown}s
+                    Kirim ulang dalam {emailCountdown}s
                   </Typography>
                 ) : (
                   <Link
                     component="button"
                     variant="body2"
-                    onClick={handleResendOTP}
+                    onClick={handleResendEmailOTP}
                     sx={{ textDecoration: 'none' }}
                   >
                     Kirim Ulang OTP
@@ -476,7 +467,7 @@ const Register = () => {
               variant="contained"
               color="primary"
               onClick={() => handleSendWhatsAppOTP(formik.values.phone)}
-              disabled={!formik.values.phone || Boolean(formik.errors.phone) || isWhatsappVerifying}
+              disabled={!formik.values.phone || validateWhatsapp(formik.values.phone) !== '' || isWhatsappVerifying}
               sx={{ mt: 1 }}
             >
               Kirim OTP WhatsApp
