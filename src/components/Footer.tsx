@@ -22,16 +22,40 @@ const Footer = () => {
             <Typography variant="h6" color="text.primary" gutterBottom>
               Tautan
             </Typography>
-            <Link component={RouterLink} to="/" color="text.secondary" display="block" sx={{ mb: 1 }}>
+            <Link 
+              component={RouterLink} 
+              to="/" 
+              color="text.secondary" 
+              display="block" 
+              sx={{ mb: 1, textDecoration: 'none' }}
+            >
               Beranda
             </Link>
-            <Link component={RouterLink} to="/register" color="text.secondary" display="block" sx={{ mb: 1 }}>
+            <Link 
+              component={RouterLink} 
+              to="/register" 
+              color="text.secondary" 
+              display="block" 
+              sx={{ mb: 1, textDecoration: 'none' }}
+            >
               Daftar Sebagai Traveler
             </Link>
-            <Link component={RouterLink} to="/register" color="text.secondary" display="block" sx={{ mb: 1 }}>
+            <Link 
+              component={RouterLink} 
+              to="/register" 
+              color="text.secondary" 
+              display="block" 
+              sx={{ mb: 1, textDecoration: 'none' }}
+            >
               Daftar Sebagai Pembeli
             </Link>
-            <Link component={RouterLink} to="/login" color="text.secondary" display="block">
+            <Link 
+              component={RouterLink} 
+              to="/login" 
+              color="text.secondary" 
+              display="block"
+              sx={{ textDecoration: 'none' }}
+            >
               Masuk
             </Link>
           </Grid>
@@ -41,10 +65,10 @@ const Footer = () => {
               Kontak
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Email: info@bagasi.id
+              Email: ask@bagasi.id
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              WhatsApp: +62 812-345-6789
+              WhatsApp: +62 818-550-557
             </Typography>
           </Grid>
         </Grid>
@@ -52,7 +76,7 @@ const Footer = () => {
         <Divider sx={{ my: 3 }} />
 
         <Typography variant="body2" color="text.secondary" align="center">
-          © {currentYear} Bagasi. Hak Cipta Dilindungi.
+          {currentYear} Bagasi. Hak Cipta Dilindungi.
         </Typography>
       </Container>
     </Box>
