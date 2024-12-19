@@ -94,6 +94,7 @@ interface NewAd {
   userId: string;
   customDisplayName?: string;
   customRating?: number;
+  customWhatsapp?: string;
 }
 
 const getDefaultDates = () => {
@@ -127,6 +128,7 @@ const AdManagement: React.FC = () => {
     userId: '',
     customDisplayName: '',
     customRating: undefined,
+    customWhatsapp: undefined,
   });
 
   useEffect(() => {
@@ -203,6 +205,7 @@ const AdManagement: React.FC = () => {
         userId: '',
         customDisplayName: '',
         customRating: undefined,
+        customWhatsapp: undefined,
       });
     } catch (err) {
       setError('Failed to create ad');
@@ -269,6 +272,15 @@ const AdManagement: React.FC = () => {
               value={newAd.customRating || ''}
               onChange={(e) => setNewAd({ ...newAd, customRating: Number(e.target.value) || undefined })}
               helperText="Leave empty to use user's actual rating"
+              fullWidth
+              margin="normal"
+            />
+
+            <TextField
+              label="Custom WhatsApp (Optional)"
+              value={newAd.customWhatsapp || ''}
+              onChange={(e) => setNewAd({ ...newAd, customWhatsapp: e.target.value || undefined })}
+              helperText="Leave empty to use user's actual WhatsApp"
               fullWidth
               margin="normal"
             />

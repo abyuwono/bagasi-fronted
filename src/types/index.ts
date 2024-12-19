@@ -32,6 +32,7 @@ export interface Ad {
   status: 'active' | 'expired' | 'booked';
   customDisplayName?: string;
   customRating?: number;
+  customWhatsapp?: string;
 }
 
 export interface Booking {

@@ -103,11 +103,18 @@ const AdDetails = () => {
     }
   };
 
-  const handleWhatsAppClick = (number: string) => {
-    const message = encodeURIComponent(
-      `Halo, saya ingin mengirim paket seberat ${bookingWeight}kg dari ${ad?.departureCity} ke ${ad?.arrivalCity}. Kapan kita bisa bertemu untuk serah terima paket?`
-    );
-    window.open(`https://wa.me/${number}?text=${message}`, '_blank');
+  const displayName = ad?.customDisplayName || ad?.user?.username || 'Anonymous';
+  const rating = ad?.customRating !== undefined ? ad.customRating : (ad?.user?.rating || 0);
+  const whatsappNumber = ad?.customWhatsapp || ad?.user?.whatsappNumber;
+
+  const handleWhatsAppClick = () => {
+    if (!user?.membership?.type || !whatsappNumber) {
+      setSubscriptionDialogOpen(true);
+      return;
+    }
+
+    const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, '')}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   if (loading) {
@@ -125,9 +132,6 @@ const AdDetails = () => {
       </Alert>
     );
   }
-
-  const displayName = ad.customDisplayName || ad.user?.username || 'Anonymous';
-  const rating = ad.customRating !== undefined ? ad.customRating : (ad.user?.rating || 0);
 
   return (
     <Box>
@@ -171,7 +175,7 @@ const AdDetails = () => {
           <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ p: 3 }}>
               <Box display="flex" flexDirection="column">
-                <Box display="flex" alignItems="center" mb={0.5}>
+                <Box display="flex" alignItems="center" mb={0.2}>
                   <Typography variant="h6">
                     {displayName}
                   </Typography>
@@ -188,7 +192,7 @@ const AdDetails = () => {
                     </Tooltip>
                   )}
                 </Box>
-                <Box display="flex" alignItems="center" mb={1}>
+                <Box display="flex" alignItems="center" mb={0.7}>
                   <Rating value={rating} precision={0.1} readOnly />
                   <Typography variant="body2" color="text.secondary" ml={1}>
                     ({rating.toFixed(1)})
@@ -206,7 +210,7 @@ const AdDetails = () => {
                       color="success"
                       fullWidth
                       startIcon={<WhatsApp />}
-                      onClick={() => handleWhatsAppClick(ad.user?.whatsappNumber!)}
+                      onClick={handleWhatsAppClick}
                     >
                       Kirim Pesan
                     </Button>
