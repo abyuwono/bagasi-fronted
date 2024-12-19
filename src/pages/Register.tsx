@@ -18,7 +18,7 @@ import {
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useAuth } from '../contexts/AuthContext';
-import PhoneInput from 'react-phone-input-2';
+import MuiTelInput from 'mui-tel-input';
 import 'react-phone-input-2/lib/material.css';
 import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js/mobile';
 import { Helmet } from 'react-helmet-async';
@@ -36,6 +36,9 @@ const validationSchema = yup.object({
     .string()
     .oneOf([yup.ref('password')], 'Password harus sama')
     .required('Konfirmasi password wajib diisi'),
+  phone: yup
+    .string()
+    .required('Nomor WhatsApp wajib diisi'),
   role: yup
     .string()
     .oneOf(['traveler', 'shopper'], 'Silakan pilih peran yang valid')
@@ -184,7 +187,7 @@ const Register = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          phoneNumber: formik.values.whatsappNumber,
+          phoneNumber: formik.values.phone,
           otp: whatsappOtp 
         }),
       });
@@ -207,7 +210,7 @@ const Register = () => {
     if (!canResendWhatsapp) return;
     setWhatsappCountdown(60);
     setCanResendWhatsapp(false);
-    await handleSendWhatsAppOTP(formik.values.whatsappNumber);
+    await handleSendWhatsAppOTP(formik.values.phone);
   };
 
   const validateWhatsapp = (value: string) => {
@@ -242,7 +245,7 @@ const Register = () => {
       email: '',
       password: '',
       confirmPassword: '',
-      whatsappNumber: '',
+      phone: '',
       role: '',
     },
     validate: (values) => {
@@ -259,7 +262,7 @@ const Register = () => {
       }
 
       if (!isWhatsappVerified) {
-        errors.whatsappNumber = 'Nomor WhatsApp belum diverifikasi';
+        errors.phone = 'Nomor WhatsApp belum diverifikasi';
       }
 
       if (!values.password) {
@@ -272,9 +275,9 @@ const Register = () => {
         errors.confirmPassword = 'Password harus sama';
       }
 
-      const whatsappError = validateWhatsapp(values.whatsappNumber);
+      const whatsappError = validateWhatsapp(values.phone);
       if (whatsappError) {
-        errors.whatsappNumber = whatsappError;
+        errors.phone = whatsappError;
       }
 
       if (!values.role) {
@@ -292,13 +295,13 @@ const Register = () => {
       try {
         const { confirmPassword, ...registerData } = values;
         // Format the phone number before submitting
-        const cleanNumber = values.whatsappNumber.replace(/\s+/g, '');
+        const cleanNumber = values.phone.replace(/\s+/g, '');
         const numberWithCountry = cleanNumber.startsWith('+') ? cleanNumber : `+62${cleanNumber.startsWith('0') ? cleanNumber.slice(1) : cleanNumber}`;
         const phoneNumber = parsePhoneNumber(numberWithCountry);
         
         await register({
           ...registerData,
-          whatsappNumber: phoneNumber.format('E.164') // Format to E.164 standard
+          phone: phoneNumber.format('E.164') // Format to E.164 standard
         });
         navigate('/');
       } catch (err: any) {
@@ -441,50 +444,25 @@ const Register = () => {
             <Typography variant="body2" color="textSecondary" gutterBottom>
               Nomor WhatsApp
             </Typography>
-            <PhoneInput
-              country={'id'}
-              value={formik.values.whatsappNumber}
-              onChange={(phone) => formik.setFieldValue('whatsappNumber', '+' + phone)}
-              inputProps={{
-                name: 'whatsappNumber',
-                required: true,
+            <MuiTelInput
+              value={formik.values.phone}
+              onChange={(value) => {
+                formik.setFieldValue('phone', value);
               }}
-              containerStyle={{
-                width: '100%',
-              }}
-              inputStyle={{
-                width: '100%',
-                height: '56px',
-              }}
-              buttonStyle={{
-                backgroundColor: 'transparent',
-                borderColor: formik.touched.whatsappNumber && formik.errors.whatsappNumber ? '#d32f2f' : undefined,
-              }}
+              defaultCountry="ID"
+              onlyCountries={['ID']}
+              error={formik.touched.phone && Boolean(formik.errors.phone)}
+              helperText={formik.touched.phone && formik.errors.phone}
+              disabled={isWhatsappVerified}
             />
-            {formik.touched.whatsappNumber && formik.errors.whatsappNumber && (
-              <Typography variant="caption" color="error">
-                {formik.errors.whatsappNumber}
-              </Typography>
-            )}
           </Box>
 
-          <TextField
-            fullWidth
-            id="whatsappNumber"
-            name="whatsappNumber"
-            label="Nomor WhatsApp"
-            value={formik.values.whatsappNumber}
-            onChange={formik.handleChange}
-            error={formik.touched.whatsappNumber && Boolean(formik.errors.whatsappNumber)}
-            helperText={formik.touched.whatsappNumber && formik.errors.whatsappNumber}
-            disabled={isWhatsappVerified}
-          />
           {!isWhatsappVerified && !showWhatsappOtpInput && (
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleSendWhatsAppOTP(formik.values.whatsappNumber)}
-              disabled={!formik.values.whatsappNumber || Boolean(formik.errors.whatsappNumber) || isWhatsappVerifying}
+              onClick={() => handleSendWhatsAppOTP(formik.values.phone)}
+              disabled={!formik.values.phone || Boolean(formik.errors.phone) || isWhatsappVerifying}
               sx={{ mt: 1 }}
             >
               Kirim OTP WhatsApp
