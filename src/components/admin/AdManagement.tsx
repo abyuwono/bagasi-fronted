@@ -25,7 +25,13 @@ import {
 } from '@mui/material';
 import { adminApi } from '../../services/api';
 
-const AUSTRALIAN_CITIES = [
+interface CityOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+const AUSTRALIAN_CITIES: CityOption[] = [
   { value: 'divider-au', label: '--- AUSTRALIA ---', disabled: true },
   { value: 'sydney', label: 'Sydney' },
   { value: 'melbourne', label: 'Melbourne' },
@@ -40,7 +46,7 @@ const AUSTRALIAN_CITIES = [
   { value: 'darwin', label: 'Darwin' }
 ];
 
-const INDONESIAN_CITIES = [
+const INDONESIAN_CITIES: CityOption[] = [
   { value: 'divider-id', label: '--- INDONESIA ---', disabled: true },
   { value: 'jakarta', label: 'Jakarta' },
   { value: 'surabaya', label: 'Surabaya' },
@@ -89,8 +95,8 @@ interface Ad {
 }
 
 interface NewAd {
-  departureCity: string;
-  arrivalCity: string;
+  departureCity: CityOption | null;
+  arrivalCity: CityOption | null;
   departureDate: string;
   expiresAt: string;
   availableWeight: number;
@@ -121,10 +127,11 @@ const AdManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isNewAdDialogOpen, setIsNewAdDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { flightDate, lastDropDate } = getDefaultDates();
   const [newAd, setNewAd] = useState<NewAd>({
-    departureCity: '',
-    arrivalCity: '',
+    departureCity: null,
+    arrivalCity: null,
     departureDate: flightDate,
     expiresAt: lastDropDate,
     availableWeight: 0,
@@ -194,14 +201,20 @@ const AdManagement: React.FC = () => {
     return ad.status === 'active' ? 'success' : 'default';
   };
 
-  const handleNewAdSubmit = async () => {
+  const handleCreateAd = async () => {
     try {
-      await adminApi.createAd(newAd);
+      setLoading(true);
+      const adData = {
+        ...newAd,
+        departureCity: newAd.departureCity?.value || '',
+        arrivalCity: newAd.arrivalCity?.value || '',
+      };
+      await adminApi.createAd(adData);
       setIsNewAdDialogOpen(false);
       fetchAds();
       setNewAd({
-        departureCity: '',
-        arrivalCity: '',
+        departureCity: null,
+        arrivalCity: null,
         departureDate: flightDate,
         expiresAt: lastDropDate,
         availableWeight: 0,
@@ -213,8 +226,11 @@ const AdManagement: React.FC = () => {
         customRating: undefined,
         customWhatsapp: undefined,
       });
-    } catch (err) {
+    } catch (error) {
+      console.error('Error creating ad:', error);
       setError('Failed to create ad');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -294,14 +310,13 @@ const AdManagement: React.FC = () => {
             <Autocomplete
               options={AUSTRALIAN_CITIES}
               value={newAd.departureCity}
-              onChange={(_, value) => setNewAd({ ...newAd, departureCity: value || '' })}
+              onChange={(_, value) => setNewAd({ ...newAd, departureCity: value })}
+              getOptionDisabled={(option) => !!option.disabled}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Departure City"
                   required
-                  fullWidth
-                  margin="normal"
                 />
               )}
             />
@@ -309,14 +324,13 @@ const AdManagement: React.FC = () => {
             <Autocomplete
               options={INDONESIAN_CITIES}
               value={newAd.arrivalCity}
-              onChange={(_, value) => setNewAd({ ...newAd, arrivalCity: value || '' })}
+              onChange={(_, value) => setNewAd({ ...newAd, arrivalCity: value })}
+              getOptionDisabled={(option) => !!option.disabled}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Arrival City"
                   required
-                  fullWidth
-                  margin="normal"
                 />
               )}
             />
@@ -389,7 +403,7 @@ const AdManagement: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsNewAdDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleNewAdSubmit} variant="contained">
+          <Button onClick={handleCreateAd} variant="contained" disabled={loading}>
             Create
           </Button>
         </DialogActions>
