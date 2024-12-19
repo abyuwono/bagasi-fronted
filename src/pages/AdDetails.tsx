@@ -24,6 +24,7 @@ import { ads } from '../services/api';
 import { Ad } from '../types';
 import RandomAvatar from '../components/RandomAvatar';
 import VerificationBadge from '../components/VerificationBadge';
+import FormattedNotes from '../components/FormattedNotes';
 
 const monthsInIndonesian = [
   'Januari',
@@ -161,13 +162,11 @@ const AdDetails = () => {
             </Typography>
 
             {ad.additionalNotes && (
-              <Box mt={2}>
+              <Box sx={{ mt: 2 }}>
                 <Typography variant="h6" gutterBottom>
                   Catatan Tambahan
                 </Typography>
-                <Typography variant="body1" paragraph>
-                  {ad.additionalNotes}
-                </Typography>
+                <FormattedNotes notes={ad.additionalNotes} />
               </Box>
             )}
           </Grid>
