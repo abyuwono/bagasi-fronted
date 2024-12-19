@@ -124,12 +124,12 @@ const AdDetails = () => {
 
   const generateSEOTitle = (ad: Ad) => {
     const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: idLocale });
-    return `Jasa Titip ${ad.departureCity} - ${ad.arrivalCity} ${date} by ${ad.user.name} | Bagasi`;
+    return `Jasa Titip ${ad.departureCity} - ${ad.arrivalCity} ${date} by ${ad.user.username} | Bagasi`;
   };
 
   const generateSEODescription = (ad: Ad) => {
     const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: idLocale });
-    return `Jasa titip dari ${ad.departureCity} ke ${ad.arrivalCity} pada ${date}. ${ad.currency} ${ad.pricePerKg.toLocaleString()}/kg. ${ad.notes}`;
+    return `Jasa titip dari ${ad.departureCity} ke ${ad.arrivalCity} pada ${date}. ${ad.currency} ${ad.pricePerKg.toLocaleString()}/kg. ${ad.notes || ''}`;
   };
 
   if (loading) {
@@ -186,7 +186,7 @@ const AdDetails = () => {
               },
               "seller": {
                 "@type": "Person",
-                "name": ad.user.name
+                "name": ad.user.username
               }
             })}
           </script>
