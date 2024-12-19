@@ -65,15 +65,17 @@ const AdDetails = () => {
   useEffect(() => {
     const fetchAd = async () => {
       try {
-        const response = await ads.getAd(id!);
+        const response = await ads.getById(id!);
         setAd(response);
         
-        const currentPath = window.location.pathname;
-        const expectedPath = generateAdUrl(response);
-        
-        // Redirect if URL doesn't match expected format
-        if (currentPath !== expectedPath && !currentPath.match(/^\/ads\/[^\/]+$/)) {
-          navigate(expectedPath, { replace: true });
+        if (response) {
+          const currentPath = window.location.pathname;
+          const expectedPath = generateAdUrl(response);
+          
+          // Redirect if URL doesn't match expected format
+          if (currentPath !== expectedPath && !currentPath.match(/^\/ads\/[^\/]+$/)) {
+            navigate(expectedPath, { replace: true });
+          }
         }
       } catch (error) {
         console.error('Error fetching ad:', error);
