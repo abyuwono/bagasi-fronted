@@ -129,7 +129,7 @@ const AdDetails = () => {
 
   const generateSEODescription = (ad: Ad) => {
     const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: idLocale });
-    return `Jasa titip dari ${ad.departureCity} ke ${ad.arrivalCity} pada ${date}. ${ad.currency} ${ad.pricePerKg.toLocaleString()}/kg. ${ad.notes || ''}`;
+    return `Jasa titip dari ${ad.departureCity} ke ${ad.arrivalCity} pada ${date}. ${ad.currency} ${ad.pricePerKg.toLocaleString()}/kg${ad.additionalNotes ? `. ${ad.additionalNotes}` : ''}`;
   };
 
   if (loading) {
