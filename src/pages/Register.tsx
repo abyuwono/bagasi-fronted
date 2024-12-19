@@ -20,6 +20,7 @@ import * as yup from 'yup';
 import { useAuth } from '../contexts/AuthContext';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
+import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js/mobile';
 
 const validationSchema = yup.object({
   email: yup
@@ -38,9 +39,6 @@ const validationSchema = yup.object({
     .string()
     .oneOf(['traveler', 'shopper'], 'Silakan pilih peran yang valid')
     .required('Peran wajib dipilih'),
-  whatsappNumber: yup
-    .string()
-    .required('Nomor WhatsApp wajib diisi'),
 });
 
 const Register = () => {
@@ -48,19 +46,84 @@ const Register = () => {
   const { register } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
+  const validateWhatsapp = (value: string) => {
+    if (!value) {
+      return 'Nomor WhatsApp wajib diisi';
+    }
+
+    try {
+      // Remove any spaces from the input
+      const cleanNumber = value.replace(/\s+/g, '');
+      
+      // If number doesn't start with +, assume it's Indonesian
+      const numberWithCountry = cleanNumber.startsWith('+') ? cleanNumber : `+62${cleanNumber.startsWith('0') ? cleanNumber.slice(1) : cleanNumber}`;
+      
+      if (!isValidPhoneNumber(numberWithCountry)) {
+        return 'Format nomor WhatsApp tidak valid';
+      }
+
+      const phoneNumber = parsePhoneNumber(numberWithCountry);
+      if (!phoneNumber.isValid() || !phoneNumber.getType() === 'MOBILE') {
+        return 'Mohon masukkan nomor handphone yang valid';
+      }
+
+      return undefined;
+    } catch (error) {
+      return 'Format nomor WhatsApp tidak valid';
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
       confirmPassword: '',
-      role: '',
       whatsappNumber: '',
+      role: '',
+    },
+    validate: (values) => {
+      const errors: any = {};
+      
+      if (!values.email) {
+        errors.email = 'Email wajib diisi';
+      } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+        errors.email = 'Format email tidak valid';
+      }
+
+      if (!values.password) {
+        errors.password = 'Password wajib diisi';
+      } else if (values.password.length < 6) {
+        errors.password = 'Password minimal 6 karakter';
+      }
+
+      if (values.password !== values.confirmPassword) {
+        errors.confirmPassword = 'Password harus sama';
+      }
+
+      const whatsappError = validateWhatsapp(values.whatsappNumber);
+      if (whatsappError) {
+        errors.whatsappNumber = whatsappError;
+      }
+
+      if (!values.role) {
+        errors.role = 'Pilih salah satu role';
+      }
+
+      return errors;
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
         const { confirmPassword, ...registerData } = values;
-        await register(registerData);
+        // Format the phone number before submitting
+        const cleanNumber = values.whatsappNumber.replace(/\s+/g, '');
+        const numberWithCountry = cleanNumber.startsWith('+') ? cleanNumber : `+62${cleanNumber.startsWith('0') ? cleanNumber.slice(1) : cleanNumber}`;
+        const phoneNumber = parsePhoneNumber(numberWithCountry);
+        
+        await register({
+          ...registerData,
+          whatsappNumber: phoneNumber.format('E.164') // Format to E.164 standard
+        });
         navigate('/');
       } catch (err: any) {
         const errorMessage = err.response?.data?.message || err.message || 'Gagal mendaftar. Silakan coba lagi.';
@@ -171,12 +234,12 @@ const Register = () => {
               <FormControlLabel
                 value="traveler"
                 control={<Radio />}
-                label="JUAL Sisa Bagasi (Traveler)"
+                label="JUAL Jasa Titip Bagasi (Traveler)"
               />
               <FormControlLabel
                 value="shopper"
                 control={<Radio />}
-                label="BELI Sisa Bagasi"
+                label="BELI Jasa Titip Bagasi"
               />
             </RadioGroup>
             {formik.touched.role && formik.errors.role && (
