@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { WhatsApp } from '@mui/icons-material';
 import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { id as idLocale } from 'date-fns/locale';
 import { useAuth } from '../contexts/AuthContext';
 import { ads } from '../services/api';
 import { Ad } from '../types';
@@ -123,12 +123,12 @@ const AdDetails = () => {
   };
 
   const generateSEOTitle = (ad: Ad) => {
-    const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: id });
+    const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: idLocale });
     return `Jasa Titip ${ad.departureCity} - ${ad.arrivalCity} ${date} by ${ad.user.name} | Bagasi`;
   };
 
   const generateSEODescription = (ad: Ad) => {
-    const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: id });
+    const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: idLocale });
     return `Jasa titip dari ${ad.departureCity} ke ${ad.arrivalCity} pada ${date}. ${ad.currency} ${ad.pricePerKg.toLocaleString()}/kg. ${ad.notes}`;
   };
 
