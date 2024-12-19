@@ -171,7 +171,7 @@ const AdDetails = () => {
           <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ p: 3 }}>
               <Box display="flex" flexDirection="column">
-                <Box display="flex" alignItems="center" mb={1}>
+                <Box display="flex" alignItems="center" mb={0.5}>
                   <Typography variant="h6">
                     {displayName}
                   </Typography>
@@ -188,7 +188,7 @@ const AdDetails = () => {
                     </Tooltip>
                   )}
                 </Box>
-                <Box display="flex" alignItems="center" mb={2}>
+                <Box display="flex" alignItems="center" mb={1}>
                   <Rating value={rating} precision={0.1} readOnly />
                   <Typography variant="body2" color="text.secondary" ml={1}>
                     ({rating.toFixed(1)})
