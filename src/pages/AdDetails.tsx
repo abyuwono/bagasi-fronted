@@ -143,7 +143,7 @@ const AdDetails = () => {
                 {ad.currency} {ad.pricePerKg.toLocaleString()}/kg
               </Typography>
               <Typography variant="body1" gutterBottom>
-                Available Weight: {ad.availableWeight} kg
+                Berat Bagasi Tersedia: {ad.availableWeight} KG
               </Typography>
             </Box>
 
@@ -170,8 +170,8 @@ const AdDetails = () => {
 
           <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ p: 3 }}>
-              <Box display="flex" alignItems="center" mb={2}>
-                <Box display="flex" alignItems="center">
+              <Box display="flex" flexDirection="column">
+                <Box display="flex" alignItems="center" mb={1}>
                   <Typography variant="h6">
                     {displayName}
                   </Typography>
@@ -188,7 +188,7 @@ const AdDetails = () => {
                     </Tooltip>
                   )}
                 </Box>
-                <Box ml={2} display="flex" alignItems="center">
+                <Box display="flex" alignItems="center" mb={2}>
                   <Rating value={rating} precision={0.1} readOnly />
                   <Typography variant="body2" color="text.secondary" ml={1}>
                     ({rating.toFixed(1)})
