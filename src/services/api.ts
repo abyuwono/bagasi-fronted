@@ -278,6 +278,10 @@ export const adminApi = {
       throw error;
     }
   },
+  updateAd: async (adId: string, data: any) => {
+    const response = await api.put(`/admin/ads/${adId}`, data);
+    return response.data;
+  },
   createAd: (adData: any) => {
     const token = localStorage.getItem('token');
     return api.post('/admin/ads', adData, {

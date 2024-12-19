@@ -22,6 +22,7 @@ import {
   InputLabel,
   Autocomplete,
   Typography,
+  ButtonGroup,
 } from '@mui/material';
 import { adminApi } from '../../services/api';
 
@@ -136,6 +137,83 @@ interface NewAd {
   customWhatsapp?: string;
 }
 
+interface AdNotesDialogProps {
+  open: boolean;
+  onClose: () => void;
+  ad: any;
+  onSave: (notes: string) => void;
+}
+
+const AdNotesDialog: React.FC<AdNotesDialogProps> = ({ open, onClose, ad, onSave }) => {
+  const [notes, setNotes] = useState(ad.additionalNotes || '');
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+
+  const handleSave = () => {
+    onSave(notes);
+    onClose();
+  };
+
+  const handleFormat = (format: 'bold' | 'italic') => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const selectedText = range.toString();
+    if (!selectedText) return;
+
+    let formattedText = selectedText;
+    if (format === 'bold') {
+      formattedText = `**${selectedText}**`;
+      setIsBold(!isBold);
+    } else if (format === 'italic') {
+      formattedText = `*${selectedText}*`;
+      setIsItalic(!isItalic);
+    }
+
+    const newText = notes.substring(0, range.startOffset) + 
+                   formattedText + 
+                   notes.substring(range.endOffset);
+    setNotes(newText);
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle>Edit Additional Notes</DialogTitle>
+      <DialogContent>
+        <Box sx={{ mb: 2 }}>
+          <ButtonGroup variant="outlined" size="small">
+            <Button 
+              onClick={() => handleFormat('bold')}
+              variant={isBold ? "contained" : "outlined"}
+            >
+              <b>B</b>
+            </Button>
+            <Button 
+              onClick={() => handleFormat('italic')}
+              variant={isItalic ? "contained" : "outlined"}
+            >
+              <i>I</i>
+            </Button>
+          </ButtonGroup>
+        </Box>
+        <TextField
+          multiline
+          rows={6}
+          fullWidth
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Enter additional notes..."
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSave} variant="contained">Save</Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 const getDefaultDates = () => {
   const today = new Date();
   const flightDate = new Date(today);
@@ -170,6 +248,8 @@ const AdManagement: React.FC = () => {
     customRating: undefined,
     customWhatsapp: undefined,
   });
+  const [selectedAd, setSelectedAd] = useState<any>(null);
+  const [isNotesDialogOpen, setIsNotesDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchAds();
@@ -258,6 +338,21 @@ const AdManagement: React.FC = () => {
       setError('Failed to create ad');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEditNotes = (ad: any) => {
+    setSelectedAd(ad);
+    setIsNotesDialogOpen(true);
+  };
+
+  const handleSaveNotes = async (notes: string) => {
+    try {
+      await adminApi.updateAd(selectedAd._id, { additionalNotes: notes });
+      fetchAds();
+    } catch (error) {
+      console.error('Error updating notes:', error);
+      setError('Failed to update notes');
     }
   };
 
@@ -448,6 +543,7 @@ const AdManagement: React.FC = () => {
               <TableCell>Price/KG</TableCell>
               <TableCell>User</TableCell>
               <TableCell>Status</TableCell>
+              <TableCell>Notes</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -483,11 +579,27 @@ const AdManagement: React.FC = () => {
                     </Typography>
                   </Box>
                 </TableCell>
+                <TableCell>
+                  <Button
+                    size="small"
+                    onClick={() => handleEditNotes(ad)}
+                  >
+                    Edit Notes
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      {selectedAd && (
+        <AdNotesDialog
+          open={isNotesDialogOpen}
+          onClose={() => setIsNotesDialogOpen(false)}
+          ad={selectedAd}
+          onSave={handleSaveNotes}
+        />
+      )}
     </Box>
   );
 };
