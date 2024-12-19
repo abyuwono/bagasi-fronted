@@ -61,6 +61,33 @@ const INDONESIAN_CITIES: CityOption[] = [
   { value: 'denpasar', label: 'Denpasar' }
 ];
 
+const ALL_CITIES: CityOption[] = [
+  { value: 'divider-au', label: '--- AUSTRALIA ---', disabled: true },
+  { value: 'sydney', label: 'Sydney' },
+  { value: 'melbourne', label: 'Melbourne' },
+  { value: 'brisbane', label: 'Brisbane' },
+  { value: 'perth', label: 'Perth' },
+  { value: 'adelaide', label: 'Adelaide' },
+  { value: 'goldcoast', label: 'Gold Coast' },
+  { value: 'canberra', label: 'Canberra' },
+  { value: 'newcastle', label: 'Newcastle' },
+  { value: 'wollongong', label: 'Wollongong' },
+  { value: 'hobart', label: 'Hobart' },
+  { value: 'darwin', label: 'Darwin' },
+  { value: 'divider-id', label: '--- INDONESIA ---', disabled: true },
+  { value: 'jakarta', label: 'Jakarta' },
+  { value: 'surabaya', label: 'Surabaya' },
+  { value: 'medan', label: 'Medan' },
+  { value: 'bandung', label: 'Bandung' },
+  { value: 'semarang', label: 'Semarang' },
+  { value: 'makassar', label: 'Makassar' },
+  { value: 'palembang', label: 'Palembang' },
+  { value: 'tangerang', label: 'Tangerang' },
+  { value: 'depok', label: 'Depok' },
+  { value: 'yogyakarta', label: 'Yogyakarta' },
+  { value: 'denpasar', label: 'Denpasar' }
+];
+
 const CURRENCIES = [
   { code: 'AUD', label: 'Dollar Australia (AUD)' },
   { code: 'IDR', label: 'Rupiah Indonesia (IDR)' },
@@ -308,7 +335,7 @@ const AdManagement: React.FC = () => {
             />
 
             <Autocomplete
-              options={AUSTRALIAN_CITIES}
+              options={ALL_CITIES}
               value={newAd.departureCity}
               onChange={(_, value) => setNewAd({ ...newAd, departureCity: value })}
               getOptionDisabled={(option) => !!option.disabled}
@@ -322,7 +349,7 @@ const AdManagement: React.FC = () => {
             />
 
             <Autocomplete
-              options={INDONESIAN_CITIES}
+              options={ALL_CITIES}
               value={newAd.arrivalCity}
               onChange={(_, value) => setNewAd({ ...newAd, arrivalCity: value })}
               getOptionDisabled={(option) => !!option.disabled}
