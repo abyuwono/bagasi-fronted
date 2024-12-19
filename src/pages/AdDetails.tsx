@@ -126,6 +126,9 @@ const AdDetails = () => {
     );
   }
 
+  const displayName = ad.customDisplayName || ad.user?.username || 'Anonymous';
+  const rating = ad.customRating !== undefined ? ad.customRating : (ad.user?.rating || 0);
+
   return (
     <Box>
       <Paper sx={{ p: 3 }}>
@@ -168,31 +171,28 @@ const AdDetails = () => {
           <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ p: 3 }}>
               <Box display="flex" alignItems="center" mb={2}>
-                <RandomAvatar seed={ad.user?._id || 'default'} />
-                <Box ml={2}>
-                  <Box display="flex" alignItems="center">
-                    <Typography variant="h6">
-                      {ad.user?.username || 'Pengguna'}
-                    </Typography>
-                    {ad.user?.isVerified && (
-                      <Tooltip title="ID Verified" arrow>
-                        <Box ml={1}>
-                          <VerificationBadge
-                            sx={{
-                              fontSize: '1.2rem',
-                              color: '#34D399',
-                            }}
-                          />
-                        </Box>
-                      </Tooltip>
-                    )}
-                  </Box>
-                  <Box display="flex" alignItems="center">
-                    <Rating value={ad.user?.rating || 0} precision={0.5} readOnly size="small" />
-                    <Typography variant="body2" color="text.secondary" ml={1}>
-                      ({ad.user?.totalReviews || 0})
-                    </Typography>
-                  </Box>
+                <Box display="flex" alignItems="center">
+                  <Typography variant="h6">
+                    {displayName}
+                  </Typography>
+                  {ad.user?.isVerified && (
+                    <Tooltip title="ID Verified" arrow>
+                      <Box ml={1}>
+                        <VerificationBadge
+                          sx={{
+                            fontSize: '1.2rem',
+                            color: '#34D399',
+                          }}
+                        />
+                      </Box>
+                    </Tooltip>
+                  )}
+                </Box>
+                <Box ml={2} display="flex" alignItems="center">
+                  <Rating value={rating} precision={0.1} readOnly />
+                  <Typography variant="body2" color="text.secondary" ml={1}>
+                    ({rating.toFixed(1)})
+                  </Typography>
                 </Box>
               </Box>
 
