@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -50,6 +50,22 @@ const Register = () => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
+  const [countdown, setCountdown] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showOtpInput && countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (countdown === 0) {
+      setCanResend(true);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [showOtpInput, countdown]);
 
   const handleSendOTP = async (email: string) => {
     try {
@@ -68,6 +84,8 @@ const Register = () => {
 
       setShowOtpInput(true);
       setError(null);
+      setCountdown(60);
+      setCanResend(false);
     } catch (err) {
       setError('Gagal mengirim OTP. Silakan coba lagi.');
     } finally {
@@ -101,6 +119,13 @@ const Register = () => {
     } finally {
       setIsVerifying(false);
     }
+  };
+
+  const handleResendOTP = async () => {
+    if (!canResend) return;
+    setCountdown(60);
+    setCanResend(false);
+    await handleSendOTP(formik.values.email);
   };
 
   const validateWhatsapp = (value: string) => {
@@ -271,15 +296,30 @@ const Register = () => {
                 onChange={(e) => setOtp(e.target.value)}
                 helperText="Masukkan kode OTP yang dikirim ke email Anda"
               />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleVerifyOTP}
-                disabled={!otp || isVerifying}
-                sx={{ mt: 1 }}
-              >
-                Verifikasi OTP
-              </Button>
+              <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleVerifyOTP}
+                  disabled={!otp || isVerifying}
+                >
+                  Verifikasi OTP
+                </Button>
+                {countdown > 0 ? (
+                  <Typography variant="body2" color="textSecondary">
+                    Kirim ulang dalam {countdown}s
+                  </Typography>
+                ) : (
+                  <Link
+                    component="button"
+                    variant="body2"
+                    onClick={handleResendOTP}
+                    sx={{ textDecoration: 'none' }}
+                  >
+                    Kirim Ulang OTP
+                  </Link>
+                )}
+              </Box>
             </Box>
           )}
           <TextField
