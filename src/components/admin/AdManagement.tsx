@@ -32,7 +32,7 @@ interface CityOption {
 }
 
 const AUSTRALIAN_CITIES: CityOption[] = [
-  { value: 'divider-au', label: '--- AUSTRALIA ---', disabled: true },
+  { value: 'divider-au', label: '--- Australia ---', disabled: true },
   { value: 'sydney', label: 'Sydney' },
   { value: 'melbourne', label: 'Melbourne' },
   { value: 'brisbane', label: 'Brisbane' },
@@ -47,7 +47,7 @@ const AUSTRALIAN_CITIES: CityOption[] = [
 ];
 
 const INDONESIAN_CITIES: CityOption[] = [
-  { value: 'divider-id', label: '--- INDONESIA ---', disabled: true },
+  { value: 'divider-id', label: '--- Indonesia ---', disabled: true },
   { value: 'jakarta', label: 'Jakarta' },
   { value: 'surabaya', label: 'Surabaya' },
   { value: 'medan', label: 'Medan' },
@@ -62,7 +62,7 @@ const INDONESIAN_CITIES: CityOption[] = [
 ];
 
 const ALL_CITIES: CityOption[] = [
-  { value: 'divider-au', label: '--- AUSTRALIA ---', disabled: true },
+  { value: 'divider-au', label: '--- Australia ---', disabled: true },
   { value: 'sydney', label: 'Sydney' },
   { value: 'melbourne', label: 'Melbourne' },
   { value: 'brisbane', label: 'Brisbane' },
@@ -74,7 +74,7 @@ const ALL_CITIES: CityOption[] = [
   { value: 'wollongong', label: 'Wollongong' },
   { value: 'hobart', label: 'Hobart' },
   { value: 'darwin', label: 'Darwin' },
-  { value: 'divider-id', label: '--- INDONESIA ---', disabled: true },
+  { value: 'divider-id', label: '--- Indonesia ---', disabled: true },
   { value: 'jakarta', label: 'Jakarta' },
   { value: 'surabaya', label: 'Surabaya' },
   { value: 'medan', label: 'Medan' },
@@ -233,8 +233,8 @@ const AdManagement: React.FC = () => {
       setLoading(true);
       const adData = {
         ...newAd,
-        departureCity: newAd.departureCity?.value || '',
-        arrivalCity: newAd.arrivalCity?.value || '',
+        departureCity: newAd.departureCity?.label || '',
+        arrivalCity: newAd.arrivalCity?.label || '',
       };
       await adminApi.createAd(adData);
       setIsNewAdDialogOpen(false);
@@ -246,7 +246,7 @@ const AdManagement: React.FC = () => {
         expiresAt: lastDropDate,
         availableWeight: 0,
         pricePerKg: 0,
-        currency: 'IDR',
+        currency: 'AUD',
         additionalNotes: '',
         userId: '',
         customDisplayName: '',
