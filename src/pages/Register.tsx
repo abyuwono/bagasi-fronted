@@ -487,7 +487,7 @@ const Register = () => {
               disabled={!formik.values.whatsappNumber || Boolean(formik.errors.whatsappNumber) || isWhatsappVerifying}
               sx={{ mt: 1 }}
             >
-              Kirim Kode OTP WhatsApp
+              Kirim OTP WhatsApp
             </Button>
           )}
 
