@@ -69,7 +69,15 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
         <Typography color="textSecondary" gutterBottom>
           Drop-in Terakhir: {format(new Date(ad.expiresAt), 'PPP', { locale: id })}
         </Typography>
-        <Typography variant="h6" color="primary" gutterBottom>
+        <Typography 
+          variant="h4" 
+          color="primary" 
+          gutterBottom
+          sx={{ 
+            fontWeight: 'bold',
+            my: 2
+          }}
+        >
           {ad.currency} {ad.pricePerKg.toLocaleString()} / KG
         </Typography>
 
@@ -84,9 +92,8 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
             component={Link}
             to={generateAdUrl(ad)}
             variant="contained"
-            size="small"
-            fullWidth
-            sx={{ mt: 2 }}
+            size="medium"
+            sx={{ mt: 2, px: 4, py: 1 }}
           >
             Lihat Detail
           </Button>
