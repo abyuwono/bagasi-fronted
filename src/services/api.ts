@@ -258,7 +258,7 @@ export const adminApi = {
   },
   toggleUserVerification: (userId: string) => {
     const token = localStorage.getItem('token');
-    return axios.post(`${API_URL}/api/admin/users/${userId}/toggle-verification`, {}, {
+    return api.post(`/admin/users/${userId}/toggle-verification`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => res.data);
   },
