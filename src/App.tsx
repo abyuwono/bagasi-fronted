@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import AdPayment from './pages/AdPayment';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Admin from './pages/Admin';
+import { HelmetProvider } from 'react-helmet-async';
 
 const theme = createTheme({
   palette: {
@@ -51,51 +52,53 @@ const App = () => {
   const { user } = useAuth();
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/login"
-            element={user ? <Navigate to="/" /> : <Login />}
-          />
-          <Route
-            path="/register"
-            element={user ? <Navigate to="/" /> : <Register />}
-          />
-          <Route
-            path="/ads/new"
-            element={
-              <PrivateRoute roles={['traveler']}>
-                <CreateAd />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/ads/payment" element={<AdPayment />} />
-          <Route path="/ads/payment-success" element={<PaymentSuccess />} />
-          <Route path="/ads/:slug/:date/:id" element={<AdDetails />} />
-          <Route path="/ads/:id" element={<AdDetails />} />
-          <Route
-            path="/membership"
-            element={
-              <PrivateRoute roles={['shopper']}>
-                <Membership />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute roles={['traveler', 'shopper']}>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/admin" element={<Admin />} />
-        </Routes>
-      </Layout>
-    </ThemeProvider>
+    <HelmetProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/login"
+              element={user ? <Navigate to="/" /> : <Login />}
+            />
+            <Route
+              path="/register"
+              element={user ? <Navigate to="/" /> : <Register />}
+            />
+            <Route
+              path="/ads/new"
+              element={
+                <PrivateRoute roles={['traveler']}>
+                  <CreateAd />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/ads/payment" element={<AdPayment />} />
+            <Route path="/ads/payment-success" element={<PaymentSuccess />} />
+            <Route path="/ads/:slug/:date/:id" element={<AdDetails />} />
+            <Route path="/ads/:id" element={<AdDetails />} />
+            <Route
+              path="/membership"
+              element={
+                <PrivateRoute roles={['shopper']}>
+                  <Membership />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute roles={['traveler', 'shopper']}>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </Layout>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 };
 

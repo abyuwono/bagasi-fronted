@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import { WhatsApp } from '@mui/icons-material';
 import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
 import { useAuth } from '../contexts/AuthContext';
 import { ads } from '../services/api';
 import { Ad } from '../types';
@@ -26,6 +27,7 @@ import RandomAvatar from '../components/RandomAvatar';
 import VerificationBadge from '../components/VerificationBadge';
 import FormattedNotes from '../components/FormattedNotes';
 import { generateAdUrl } from '../utils/url';
+import { Helmet } from 'react-helmet-async';
 
 const monthsInIndonesian = [
   'Januari',
@@ -120,6 +122,16 @@ const AdDetails = () => {
     window.open(whatsappUrl, '_blank');
   };
 
+  const generateSEOTitle = (ad: Ad) => {
+    const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: id });
+    return `Jasa Titip ${ad.departureCity} - ${ad.arrivalCity} ${date} by ${ad.user.name} | Bagasi`;
+  };
+
+  const generateSEODescription = (ad: Ad) => {
+    const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: id });
+    return `Jasa titip dari ${ad.departureCity} ke ${ad.arrivalCity} pada ${date}. ${ad.currency} ${ad.pricePerKg.toLocaleString()}/kg. ${ad.notes}`;
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
@@ -138,6 +150,48 @@ const AdDetails = () => {
 
   return (
     <Box>
+      {ad && (
+        <Helmet>
+          <title>{generateSEOTitle(ad)}</title>
+          <meta name="description" content={generateSEODescription(ad)} />
+          
+          {/* Open Graph / Facebook */}
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content={generateSEOTitle(ad)} />
+          <meta property="og:description" content={generateSEODescription(ad)} />
+          <meta property="og:site_name" content="Bagasi" />
+          <meta property="og:url" content={window.location.href} />
+          
+          {/* Twitter */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={generateSEOTitle(ad)} />
+          <meta name="twitter:description" content={generateSEODescription(ad)} />
+          
+          {/* Additional SEO */}
+          <meta name="keywords" content={`jasa titip, ${ad.departureCity.toLowerCase()}, ${ad.arrivalCity.toLowerCase()}, bagasi, travel, shopping`} />
+          <link rel="canonical" href={window.location.href} />
+          
+          {/* Structured Data */}
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "name": generateSEOTitle(ad),
+              "description": generateSEODescription(ad),
+              "offers": {
+                "@type": "Offer",
+                "price": ad.pricePerKg,
+                "priceCurrency": ad.currency,
+                "availability": "https://schema.org/InStock"
+              },
+              "seller": {
+                "@type": "Person",
+                "name": ad.user.name
+              }
+            })}
+          </script>
+        </Helmet>
+      )}
       <Paper sx={{ p: 3 }}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={8}>
