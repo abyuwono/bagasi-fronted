@@ -53,6 +53,13 @@ const Register = () => {
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
 
+  const [isWhatsappVerified, setIsWhatsappVerified] = useState(false);
+  const [showWhatsappOtpInput, setShowWhatsappOtpInput] = useState(false);
+  const [whatsappOtp, setWhatsappOtp] = useState('');
+  const [isWhatsappVerifying, setIsWhatsappVerifying] = useState(false);
+  const [whatsappCountdown, setWhatsappCountdown] = useState(60);
+  const [canResendWhatsapp, setCanResendWhatsapp] = useState(false);
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (showOtpInput && countdown > 0) {
@@ -66,6 +73,20 @@ const Register = () => {
       if (timer) clearInterval(timer);
     };
   }, [showOtpInput, countdown]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showWhatsappOtpInput && whatsappCountdown > 0) {
+      timer = setInterval(() => {
+        setWhatsappCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (whatsappCountdown === 0) {
+      setCanResendWhatsapp(true);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [showWhatsappOtpInput, whatsappCountdown]);
 
   const handleSendOTP = async (email: string) => {
     try {
@@ -128,6 +149,67 @@ const Register = () => {
     await handleSendOTP(formik.values.email);
   };
 
+  const handleSendWhatsAppOTP = async (phoneNumber: string) => {
+    try {
+      setIsWhatsappVerifying(true);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/otp/send-whatsapp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phoneNumber }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send WhatsApp OTP');
+      }
+
+      setShowWhatsappOtpInput(true);
+      setError(null);
+      setWhatsappCountdown(60);
+      setCanResendWhatsapp(false);
+    } catch (err) {
+      setError('Gagal mengirim OTP WhatsApp. Silakan coba lagi.');
+    } finally {
+      setIsWhatsappVerifying(false);
+    }
+  };
+
+  const handleVerifyWhatsAppOTP = async () => {
+    try {
+      setIsWhatsappVerifying(true);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/otp/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          phoneNumber: formik.values.whatsappNumber,
+          otp: whatsappOtp 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid WhatsApp OTP');
+      }
+
+      setIsWhatsappVerified(true);
+      setShowWhatsappOtpInput(false);
+      setError(null);
+    } catch (err) {
+      setError('Kode OTP WhatsApp tidak valid. Silakan coba lagi.');
+    } finally {
+      setIsWhatsappVerifying(false);
+    }
+  };
+
+  const handleResendWhatsAppOTP = async () => {
+    if (!canResendWhatsapp) return;
+    setWhatsappCountdown(60);
+    setCanResendWhatsapp(false);
+    await handleSendWhatsAppOTP(formik.values.whatsappNumber);
+  };
+
   const validateWhatsapp = (value: string) => {
     if (!value) {
       return 'Nomor WhatsApp wajib diisi';
@@ -172,6 +254,14 @@ const Register = () => {
         errors.email = 'Format email tidak valid';
       }
 
+      if (!isEmailVerified) {
+        errors.email = 'Email belum diverifikasi';
+      }
+
+      if (!isWhatsappVerified) {
+        errors.whatsappNumber = 'Nomor WhatsApp belum diverifikasi';
+      }
+
       if (!values.password) {
         errors.password = 'Password wajib diisi';
       } else if (values.password.length < 6) {
@@ -195,8 +285,8 @@ const Register = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      if (!isEmailVerified) {
-        setError('Silakan verifikasi email Anda terlebih dahulu');
+      if (!isEmailVerified || !isWhatsappVerified) {
+        setError('Silakan verifikasi email dan nomor WhatsApp Anda terlebih dahulu');
         return;
       }
       try {
@@ -378,6 +468,65 @@ const Register = () => {
             )}
           </Box>
 
+          <TextField
+            fullWidth
+            id="whatsappNumber"
+            name="whatsappNumber"
+            label="Nomor WhatsApp"
+            value={formik.values.whatsappNumber}
+            onChange={formik.handleChange}
+            error={formik.touched.whatsappNumber && Boolean(formik.errors.whatsappNumber)}
+            helperText={formik.touched.whatsappNumber && formik.errors.whatsappNumber}
+            disabled={isWhatsappVerified}
+          />
+          {!isWhatsappVerified && !showWhatsappOtpInput && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleSendWhatsAppOTP(formik.values.whatsappNumber)}
+              disabled={!formik.values.whatsappNumber || Boolean(formik.errors.whatsappNumber) || isWhatsappVerifying}
+              sx={{ mt: 1 }}
+            >
+              Kirim Kode OTP WhatsApp
+            </Button>
+          )}
+
+          {showWhatsappOtpInput && !isWhatsappVerified && (
+            <Box sx={{ mt: 2 }}>
+              <TextField
+                fullWidth
+                id="whatsappOtp"
+                label="Kode OTP WhatsApp"
+                value={whatsappOtp}
+                onChange={(e) => setWhatsappOtp(e.target.value)}
+                helperText="Masukkan kode OTP yang dikirim ke WhatsApp Anda"
+              />
+              <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleVerifyWhatsAppOTP}
+                  disabled={!whatsappOtp || isWhatsappVerifying}
+                >
+                  Verifikasi OTP WhatsApp
+                </Button>
+                {whatsappCountdown > 0 ? (
+                  <Typography variant="body2" color="textSecondary">
+                    Kirim ulang dalam {whatsappCountdown}s
+                  </Typography>
+                ) : (
+                  <Link
+                    component="button"
+                    variant="body2"
+                    onClick={handleResendWhatsAppOTP}
+                    sx={{ textDecoration: 'none' }}
+                  >
+                    Kirim Ulang OTP WhatsApp
+                  </Link>
+                )}
+              </Box>
+            </Box>
+          )}
           <FormControl component="fieldset" margin="normal">
             <FormLabel component="legend">Saya ingin:</FormLabel>
             <RadioGroup
