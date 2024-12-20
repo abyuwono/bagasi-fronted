@@ -18,7 +18,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [adList, setAdList] = useState<Ad[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [fromCity, setFromCity] = useState('');
+  const [toCity, setToCity] = useState('');
 
   useEffect(() => {
     const fetchAds = async () => {
@@ -37,8 +38,8 @@ const Home = () => {
 
   const filteredAds = adList.filter(
     (ad) =>
-      ad.departureCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ad.arrivalCity.toLowerCase().includes(searchQuery.toLowerCase())
+      ad.departureCity.toLowerCase().includes(fromCity.toLowerCase()) &&
+      ad.arrivalCity.toLowerCase().includes(toCity.toLowerCase())
   );
 
   if (loading) {
@@ -102,16 +103,16 @@ const Home = () => {
               <TextField
                 fullWidth
                 label="Dari Kota"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={fromCity}
+                onChange={(e) => setFromCity(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={5}>
               <TextField
                 fullWidth
                 label="Ke Kota"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={toCity}
+                onChange={(e) => setToCity(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={2}>
