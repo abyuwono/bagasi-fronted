@@ -292,7 +292,8 @@ const Register = () => {
         
         await register({
           ...registerData,
-          phone: phoneNumber.format('E.164') // Format to E.164 standard
+          phone: phoneNumber.format('E.164'), // Format to E.164 standard
+          whatsappNumber: phoneNumber.format('E.164') // Add whatsappNumber field
         });
         navigate('/');
       } catch (err: any) {
@@ -442,6 +443,7 @@ const Register = () => {
               inputProps={{
                 name: 'phone',
                 required: true,
+                disabled: isWhatsappVerified,
               }}
               containerStyle={{
                 width: '100%',
@@ -454,6 +456,7 @@ const Register = () => {
                 backgroundColor: 'transparent',
                 borderColor: formik.touched.phone && formik.errors.phone ? '#d32f2f' : undefined,
               }}
+              disabled={isWhatsappVerified}
             />
             {formik.touched.phone && formik.errors.phone && (
               <Typography variant="caption" color="error">
