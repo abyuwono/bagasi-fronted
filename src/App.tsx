@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { useAuth } from './contexts/AuthContext';
@@ -16,6 +16,7 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 import { HelmetProvider } from 'react-helmet-async';
+import { initGA, logPageView } from './services/analytics';
 
 const theme = createTheme({
   palette: {
@@ -51,6 +52,15 @@ const PrivateRoute: React.FC<{
 
 const App = () => {
   const { user } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  useEffect(() => {
+    logPageView(location.pathname + location.search);
+  }, [location]);
 
   return (
     <HelmetProvider>
