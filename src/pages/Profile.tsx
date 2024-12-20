@@ -69,21 +69,10 @@ const Profile = () => {
           isVerified: false,
           whatsappNumber: user?.whatsappNumber || '',
           membership: user?.membership,
-          rating: 4.5,
-          totalReviews: 12,
+          rating: 0,
+          totalReviews: 0,
           reviews: [
-            {
-              rating: 5,
-              comment: 'Sangat bertanggung jawab dan tepat waktu',
-              reviewer: { username: 'John' },
-              createdAt: '2023-12-01',
-            },
-            {
-              rating: 4,
-              comment: 'Barang sampai dengan aman',
-              reviewer: { username: 'Alice' },
-              createdAt: '2023-11-28',
-            },
+
           ],
         };
         setProfile(mockProfile);
