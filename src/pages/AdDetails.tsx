@@ -29,6 +29,7 @@ import VerificationBadge from '../components/VerificationBadge';
 import FormattedNotes from '../components/FormattedNotes';
 import { generateAdUrl } from '../utils/url';
 import { Helmet } from 'react-helmet-async';
+import Footer from '../components/Footer';
 
 const monthsInIndonesian = [
   'Januari',
@@ -472,6 +473,7 @@ const AdDetails = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Footer />
     </Box>
   );
 };
