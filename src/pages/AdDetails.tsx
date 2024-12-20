@@ -16,6 +16,7 @@ import {
   Rating,
   Divider,
   Tooltip,
+  Container
 } from '@mui/material';
 import { WhatsApp } from '@mui/icons-material';
 import { format } from 'date-fns';
@@ -192,8 +193,104 @@ const AdDetails = () => {
           </script>
         </Helmet>
       )}
-      <Paper sx={{ p: 3 }}>
-        <Grid container spacing={4}>
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Grid container spacing={3}>
+          {/* User info and action buttons - Will show first on mobile */}
+          <Grid item xs={12} sx={{ display: { xs: 'block', md: 'none' } }}>
+            <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
+              <Box display="flex" flexDirection="column">
+                <Box display="flex" alignItems="center" mb={0.2}>
+                  <Typography variant="h6">
+                    {displayName}
+                  </Typography>
+                  {ad.user?.isVerified && (
+                    <Tooltip title="ID Verified" arrow>
+                      <Box ml={1}>
+                        <VerificationBadge
+                          sx={{
+                            fontSize: '1.2rem',
+                            color: '#34D399',
+                          }}
+                        />
+                      </Box>
+                    </Tooltip>
+                  )}
+                </Box>
+                <Box display="flex" alignItems="center" mb={0.7}>
+                  <Rating value={rating} precision={0.1} readOnly />
+                  <Typography variant="body2" color="text.secondary" ml={1}>
+                    ({rating.toFixed(1)})
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Divider sx={{ my: 2 }} />
+
+              {user?.role === 'shopper' ? (
+                user.membership?.type === 'shopper' && user.membership?.expiresAt && new Date(user.membership.expiresAt) > new Date() ? (
+                  showContact ? (
+                    <Button
+                      variant="contained"
+                      color="success"
+                      fullWidth
+                      startIcon={<WhatsApp />}
+                      onClick={handleWhatsAppClick}
+                    >
+                      Kirim Pesan
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      onClick={() => setBookingDialogOpen(true)}
+                    >
+                      Pesan Sekarang
+                    </Button>
+                  )
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    startIcon={<WhatsApp />}
+                    onClick={() => setSubscriptionDialogOpen(true)}
+                  >
+                    Kirim Pesan
+                  </Button>
+                )
+              ) : user ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  startIcon={<WhatsApp />}
+                  onClick={() => {
+                    const dialog = window.confirm(
+                      'Fitur ini hanya tersedia untuk akun pembeli. Silakan daftar sebagai pembeli untuk mengakses fitur ini.'
+                    );
+                    if (dialog) {
+                      navigate('/register?role=shopper');
+                    }
+                  }}
+                >
+                  Kirim Pesan
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  startIcon={<WhatsApp />}
+                  onClick={() => navigate('/login')}
+                >
+                  Masuk untuk Kirim Pesan
+                </Button>
+              )}
+            </Paper>
+          </Grid>
+
+          {/* Main content */}
           <Grid item xs={12} md={8}>
             <Typography variant="h4" gutterBottom>
               {ad.departureCity} → {ad.arrivalCity}
@@ -227,7 +324,8 @@ const AdDetails = () => {
             )}
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          {/* User info and action buttons - Desktop view */}
+          <Grid item md={4} sx={{ display: { xs: 'none', md: 'block' } }}>
             <Paper elevation={3} sx={{ p: 3 }}>
               <Box display="flex" flexDirection="column">
                 <Box display="flex" alignItems="center" mb={0.2}>
@@ -321,7 +419,7 @@ const AdDetails = () => {
             </Paper>
           </Grid>
         </Grid>
-      </Paper>
+      </Container>
 
       <Dialog open={bookingDialogOpen} onClose={() => setBookingDialogOpen(false)}>
         <DialogTitle>Pesan Ruang Bagasi</DialogTitle>
