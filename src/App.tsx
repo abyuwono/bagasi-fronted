@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import AdPayment from './pages/AdPayment';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Admin from './pages/Admin';
+import NotFound from './pages/NotFound';
 import { HelmetProvider } from 'react-helmet-async';
 
 const theme = createTheme({
@@ -95,6 +96,7 @@ const App = () => {
               }
             />
             <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
       </ThemeProvider>
