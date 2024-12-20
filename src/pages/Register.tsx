@@ -103,6 +103,11 @@ const Register = () => {
       });
 
       if (!response.ok) {
+        const data = await response.json();
+        if (response.status === 409) {
+          setError(data.message);
+          return;
+        }
         throw new Error('Failed to send OTP');
       }
 
@@ -164,6 +169,11 @@ const Register = () => {
       });
 
       if (!response.ok) {
+        const data = await response.json();
+        if (response.status === 409) {
+          setError(data.message);
+          return;
+        }
         throw new Error('Failed to send WhatsApp OTP');
       }
 
@@ -494,7 +504,7 @@ const Register = () => {
                   onClick={handleVerifyWhatsAppOTP}
                   disabled={!whatsappOtp || isWhatsappVerifying}
                 >
-                  Verifikasi OTP WhatsApp
+                  Verifikasi OTP
                 </Button>
                 {whatsappCountdown > 0 ? (
                   <Typography variant="body2" color="textSecondary">
