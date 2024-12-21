@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
@@ -9,14 +9,14 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import CreateAd from './pages/CreateAd';
 import AdDetails from './pages/AdDetails';
-import Membership from './pages/Membership';
 import Profile from './pages/Profile';
+import Membership from './pages/Membership';
 import AdPayment from './pages/AdPayment';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 import { HelmetProvider } from 'react-helmet-async';
-import { initGA, logPageView } from './services/analytics';
+import GoogleAnalytics from './components/GoogleAnalytics';
 
 const theme = createTheme({
   palette: {
@@ -54,17 +54,10 @@ const App = () => {
   const { user } = useAuth();
   const location = useLocation();
 
-  useEffect(() => {
-    initGA();
-  }, []);
-
-  useEffect(() => {
-    logPageView(location.pathname + location.search);
-  }, [location]);
-
   return (
     <HelmetProvider>
       <ThemeProvider theme={theme}>
+        <GoogleAnalytics />
         <CssBaseline />
         <Layout>
           <Routes>

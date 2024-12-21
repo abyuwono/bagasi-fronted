@@ -1,9 +1,28 @@
-import ReactGA from 'react-ga4';
+declare global {
+  interface Window {
+    gtag: (command: string, ...args: any[]) => void;
+  }
+}
 
 export const initGA = () => {
-  ReactGA.initialize('G-Z60BC1QXD9');
+  if (typeof window.gtag !== 'undefined') {
+    window.gtag('config', 'G-Z60BC1QXD9');
+  }
 };
 
 export const logPageView = (path: string) => {
-  ReactGA.send({ hitType: 'pageview', page: path });
+  if (typeof window.gtag !== 'undefined') {
+    window.gtag('event', 'page_view', {
+      page_path: path,
+    });
+  }
+};
+
+export const logEvent = (category: string, action: string, label?: string) => {
+  if (typeof window.gtag !== 'undefined') {
+    window.gtag('event', action, {
+      event_category: category,
+      event_label: label,
+    });
+  }
 };
