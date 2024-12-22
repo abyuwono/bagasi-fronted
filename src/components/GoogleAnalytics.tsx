@@ -1,13 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-declare global {
-  interface Window {
-    dataLayer: any[];
-    gtag: Function;
-  }
-}
-
 const pageview = (url: string) => {
   if (window.gtag) {
     window.gtag('config', 'G-Z60BC1QXD9', {
