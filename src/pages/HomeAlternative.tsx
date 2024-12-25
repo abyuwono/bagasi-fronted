@@ -52,11 +52,12 @@ const HomeAlternative = () => {
   }, []);
 
   const filteredAds = ads.filter(ad => {
+    if (!ad) return false;
     const searchLower = searchTerm.toLowerCase();
     return (
-      ad.originCity.toLowerCase().includes(searchLower) ||
-      ad.destinationCity.toLowerCase().includes(searchLower) ||
-      ad.user.name.toLowerCase().includes(searchLower)
+      (ad.originCity?.toLowerCase() || '').includes(searchLower) ||
+      (ad.destinationCity?.toLowerCase() || '').includes(searchLower) ||
+      (ad.user?.name?.toLowerCase() || '').includes(searchLower)
     );
   });
 
