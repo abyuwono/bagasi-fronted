@@ -85,7 +85,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
   };
 
   const handleRowClick = (id: string) => {
-    navigate(\`/ads/\${id}\`);
+    navigate(`/ads/${id}`);
   };
 
   const displayedAds = maxRows ? ads.slice(0, maxRows) : ads.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -167,7 +167,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 <TableCell align="center">
                   <Tooltip title="Hubungi via WhatsApp" onClick={(e) => {
                     e.stopPropagation();
-                    window.open(\`https://wa.me/\${ad.user.phone}\`, '_blank');
+                    window.open(`https://wa.me/${ad.user.phone}`, '_blank');
                   }}>
                     <IconButton size="small" color="success">
                       <WhatsAppIcon />
