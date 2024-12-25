@@ -1,38 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
-  Box,
-  TextField,
-  InputAdornment,
   Grid,
+  TextField,
+  Box,
   Typography,
+  InputAdornment,
+  CircularProgress,
   Paper,
-  Divider,
+  Divider
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Helmet } from 'react-helmet-async';
 import AdsTable from '../components/AdsTable';
+import { Ad } from '../types';
 
-interface Ad {
-  id: string;
-  title: string;
-  price: number;
-  originCity: string;
-  destinationCity: string;
-  departureDate: string;
-  arrivalDate: string;
-  weight: number;
-  status: string;
-  user: {
-    name: string;
-    phone: string;
-  };
-}
-
-const HomeAlternative = () => {
+const HomeAlternative: React.FC = () => {
   const [ads, setAds] = useState<Ad[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchAds = async () => {
@@ -61,6 +47,14 @@ const HomeAlternative = () => {
     );
   });
 
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -70,7 +64,6 @@ const HomeAlternative = () => {
           content="Temukan jasa titip terpercaya di Bagasi. Platform yang menghubungkan traveler dengan pembeli untuk layanan jasa titip yang aman dan terpercaya." 
         />
       </Helmet>
-      
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
