@@ -13,6 +13,7 @@ import {
   Chip,
   IconButton,
   Tooltip,
+  Rating,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -71,7 +72,14 @@ const AdsTable: React.FC<AdsTableProps> = ({
     navigate(`/ads/${id}`);
   };
 
-  const displayedAds = maxRows ? ads.slice(0, maxRows) : ads.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  // Sort ads by departure date (soonest first)
+  const sortedAds = [...ads].sort((a, b) => 
+    new Date(a.departureDate).getTime() - new Date(b.departureDate).getTime()
+  );
+
+  const displayedAds = maxRows 
+    ? sortedAds.slice(0, maxRows) 
+    : sortedAds.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', mb: 3 }}>
@@ -92,7 +100,8 @@ const AdsTable: React.FC<AdsTableProps> = ({
               <TableCell align="right">Harga/kg</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Traveler</TableCell>
-              <TableCell align="center">Kontak</TableCell>
+              <TableCell align="center">Rating</TableCell>
+              <TableCell align="center">Detail</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -123,7 +132,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2">
-                    {formatPrice(ad.pricePerKg || 0)}
+                    {formatPrice(ad.pricePerKg || 0, 'IDR')}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -140,9 +149,17 @@ const AdsTable: React.FC<AdsTableProps> = ({
                   </Typography>
                 </TableCell>
                 <TableCell align="center">
-                  <Tooltip title="Hubungi via WhatsApp" onClick={(e) => {
+                  <Rating 
+                    value={ad.rating || 0} 
+                    readOnly 
+                    size="small" 
+                    precision={0.5}
+                  />
+                </TableCell>
+                <TableCell align="center">
+                  <Tooltip title="Lihat Detail" onClick={(e) => {
                     e.stopPropagation();
-                    window.open(`https://wa.me/${ad.customWhatsapp || ad.user?.whatsappNumber}`, '_blank');
+                    navigate(`/ads/${ad._id}`);
                   }}>
                     <IconButton size="small" color="success">
                       <WhatsAppIcon />
@@ -158,7 +175,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
         <TablePagination
           rowsPerPageOptions={[10, 25, 50]}
           component="div"
-          count={ads.length}
+          count={sortedAds.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
