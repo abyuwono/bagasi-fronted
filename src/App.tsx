@@ -17,6 +17,7 @@ import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 import { HelmetProvider } from 'react-helmet-async';
 import GoogleAnalytics from './components/GoogleAnalytics';
+import WhatsAppWidget from './components/WhatsAppWidget';
 
 const theme = createTheme({
   palette: {
@@ -102,6 +103,7 @@ const App = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
+        <WhatsAppWidget />
       </ThemeProvider>
     </HelmetProvider>
   );
