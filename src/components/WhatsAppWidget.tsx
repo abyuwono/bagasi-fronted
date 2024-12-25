@@ -5,10 +5,9 @@ const WhatsAppWidget = () => {
   return (
     <FloatingWhatsApp
       phoneNumber="61478884089"
-      accountName="Bagasi"
+      accountName="Bagasi Customer Support"
       allowClickAway={true}
       allowEsc={true}
-      avatar="/logo.png"
       statusMessage="Online"
       chatMessage="Halo! 👋 Ada yang bisa kami bantu?"
       placeholder="Ketik pesan..."
