@@ -41,9 +41,9 @@ const HomeAlternative: React.FC = () => {
     if (!ad) return false;
     const searchLower = searchTerm.toLowerCase();
     return (
-      (ad.originCity?.toLowerCase() || '').includes(searchLower) ||
-      (ad.destinationCity?.toLowerCase() || '').includes(searchLower) ||
-      (ad.user?.name?.toLowerCase() || '').includes(searchLower)
+      (ad.departureCity?.toLowerCase() || '').includes(searchLower) ||
+      (ad.arrivalCity?.toLowerCase() || '').includes(searchLower) ||
+      (ad.customDisplayName?.toLowerCase() || ad.user?.username?.toLowerCase() || '').includes(searchLower)
     );
   });
 
