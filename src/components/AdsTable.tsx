@@ -104,7 +104,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
           <TableHead>
             <TableRow>
               <TableCell>Rute</TableCell>
-              <TableCell>Tanggal</TableCell>
+              <TableCell>Keberangkatan</TableCell>
               <TableCell align="right">Kapasitas</TableCell>
               <TableCell align="right">Harga/kg</TableCell>
               <TableCell>Status</TableCell>
@@ -124,17 +124,9 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 onClick={() => handleRowClick(ad.id)}
               >
                 <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <FlightTakeoffIcon fontSize="small" color="primary" />
-                      <Typography variant="body2">{ad.originCity}</Typography>
-                    </Box>
-                    <Typography variant="body2">→</Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <FlightLandIcon fontSize="small" color="primary" />
-                      <Typography variant="body2">{ad.destinationCity}</Typography>
-                    </Box>
-                  </Box>
+                  <Typography variant="body2">
+                    {ad.originCity || '-'} - {ad.destinationCity || '-'}
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">
@@ -143,25 +135,25 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2">
-                    {ad.weight} kg
+                    {ad.weight || 0} kg
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2">
-                    {formatPrice(ad.price)}
+                    {formatPrice(ad.price || 0)}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Chip 
-                    label={ad.status} 
+                    label={ad.status || 'unknown'} 
                     size="small"
-                    color={getStatusColor(ad.status) as any}
+                    color={getStatusColor(ad.status || '')}
                     variant="outlined"
                   />
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">
-                    {ad.user.name}
+                    {ad.user?.name || '-'}
                   </Typography>
                 </TableCell>
                 <TableCell align="center">
