@@ -37,7 +37,7 @@ const HomeAlternative = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_API_URL + '/ads');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/ads`);
         if (!response.ok) throw new Error('Failed to fetch ads');
         const data = await response.json();
         setAds(data);
