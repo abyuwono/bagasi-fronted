@@ -378,7 +378,14 @@ const Register = () => {
               disabled={!formik.values.email || !validateEmail(formik.values.email) || isEmailVerifying}
               sx={{ mt: 1 }}
             >
-              Kirim Kode OTP
+              {isEmailVerifying ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CircularProgress size={20} color="inherit" />
+                  <span>Mengirim...</span>
+                </Box>
+              ) : (
+                'Kirim Kode OTP'
+              )}
             </Button>
           )}
           {showEmailOtpInput && !isEmailVerified && (
@@ -397,8 +404,16 @@ const Register = () => {
                   color="primary"
                   onClick={handleVerifyEmailOTP}
                   disabled={!emailOtp || isEmailVerifying}
+                  sx={{ minWidth: 120 }}
                 >
-                  Verifikasi OTP
+                  {isEmailVerifying ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={20} color="inherit" />
+                      <span>Verifikasi...</span>
+                    </Box>
+                  ) : (
+                    'Verifikasi OTP'
+                  )}
                 </Button>
                 {emailCountdown > 0 ? (
                   <Typography variant="body2" color="textSecondary">
@@ -483,7 +498,14 @@ const Register = () => {
               disabled={!formik.values.phone || validateWhatsapp(formik.values.phone) !== '' || isWhatsappVerifying}
               sx={{ mt: 1 }}
             >
-              Kirim OTP WhatsApp
+              {isWhatsappVerifying ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CircularProgress size={20} color="inherit" />
+                  <span>Mengirim...</span>
+                </Box>
+              ) : (
+                'Kirim OTP WhatsApp'
+              )}
             </Button>
           )}
 
@@ -503,8 +525,16 @@ const Register = () => {
                   color="primary"
                   onClick={handleVerifyWhatsAppOTP}
                   disabled={!whatsappOtp || isWhatsappVerifying}
+                  sx={{ minWidth: 120 }}
                 >
-                  Verifikasi OTP
+                  {isWhatsappVerifying ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={20} color="inherit" />
+                      <span>Verifikasi...</span>
+                    </Box>
+                  ) : (
+                    'Verifikasi OTP'
+                  )}
                 </Button>
                 {whatsappCountdown > 0 ? (
                   <Typography variant="body2" color="textSecondary">
