@@ -26,13 +26,18 @@ interface Ad {
   price: number;
   originCity: string;
   destinationCity: string;
+  departureCity: string;
+  arrivalCity: string;
   departureDate: string;
   arrivalDate: string;
   weight: number;
+  availableWeight: number;
+  pricePerKg: number;
   status: string;
   user: {
     name: string;
     phone: string;
+    username?: string;
   };
 }
 
@@ -125,7 +130,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
               >
                 <TableCell>
                   <Typography variant="body2">
-                    {ad.originCity || '-'} - {ad.destinationCity || '-'}
+                    {ad.departureCity || ad.originCity || '-'} - {ad.arrivalCity || ad.destinationCity || '-'}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -135,12 +140,12 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2">
-                    {ad.weight || 0} kg
+                    {ad.availableWeight || ad.weight || 0} kg
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2">
-                    {formatPrice(ad.price || 0)}
+                    {formatPrice(ad.pricePerKg || ad.price || 0)}
                   </Typography>
                 </TableCell>
                 <TableCell>
