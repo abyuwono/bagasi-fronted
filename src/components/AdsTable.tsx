@@ -16,30 +16,8 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
-import FlightLandIcon from '@mui/icons-material/FlightLand';
 import { formatPrice } from '../utils/format';
-
-interface Ad {
-  id: string;
-  title: string;
-  price: number;
-  originCity: string;
-  destinationCity: string;
-  departureCity: string;
-  arrivalCity: string;
-  departureDate: string;
-  arrivalDate: string;
-  weight: number;
-  availableWeight: number;
-  pricePerKg: number;
-  status: string;
-  user: {
-    name: string;
-    phone: string;
-    username?: string;
-  };
-}
+import { Ad } from '../types';
 
 interface AdsTableProps {
   ads: Ad[];
@@ -121,16 +99,16 @@ const AdsTable: React.FC<AdsTableProps> = ({
             {displayedAds.map((ad) => (
               <TableRow
                 hover
-                key={ad.id}
+                key={ad._id}
                 sx={{ 
                   cursor: 'pointer',
                   '&:last-child td, &:last-child th': { border: 0 }
                 }}
-                onClick={() => handleRowClick(ad.id)}
+                onClick={() => handleRowClick(ad._id)}
               >
                 <TableCell>
                   <Typography variant="body2">
-                    {ad.departureCity || ad.originCity || '-'} - {ad.arrivalCity || ad.destinationCity || '-'}
+                    {ad.departureCity || '-'} - {ad.arrivalCity || '-'}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -140,12 +118,12 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2">
-                    {ad.availableWeight || ad.weight || 0} kg
+                    {ad.availableWeight || 0} kg
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2">
-                    {formatPrice(ad.pricePerKg || ad.price || 0)}
+                    {formatPrice(ad.pricePerKg || 0)}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -158,13 +136,13 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">
-                    {ad.user?.name || '-'}
+                    {ad.customDisplayName || ad.user?.username || '-'}
                   </Typography>
                 </TableCell>
                 <TableCell align="center">
                   <Tooltip title="Hubungi via WhatsApp" onClick={(e) => {
                     e.stopPropagation();
-                    window.open(`https://wa.me/${ad.user.phone}`, '_blank');
+                    window.open(`https://wa.me/${ad.customWhatsapp || ad.user?.whatsappNumber}`, '_blank');
                   }}>
                     <IconButton size="small" color="success">
                       <WhatsAppIcon />
