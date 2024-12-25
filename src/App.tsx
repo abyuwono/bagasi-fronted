@@ -18,6 +18,7 @@ import NotFound from './pages/NotFound';
 import { HelmetProvider } from 'react-helmet-async';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import WhatsAppWidget from './components/WhatsAppWidget';
+import HomeAlternative from './pages/HomeAlternative';
 
 const theme = createTheme({
   palette: {
@@ -63,6 +64,7 @@ const App = () => {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/table" element={<HomeAlternative />} />
             <Route
               path="/login"
               element={user ? <Navigate to="/" /> : <Login />}
