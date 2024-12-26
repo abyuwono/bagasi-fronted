@@ -98,7 +98,6 @@ const AdsTable: React.FC<AdsTableProps> = ({
         <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
-              {!isMobile && <TableCell>Foto</TableCell>}
               <TableCell>Rute</TableCell>
               <TableCell>Keberangkatan</TableCell>
               {!isMobile && <TableCell>Kedatangan</TableCell>}
@@ -112,23 +111,16 @@ const AdsTable: React.FC<AdsTableProps> = ({
           <TableBody>
             {displayedAds.map((ad) => (
               <TableRow
-                hover
                 key={ad._id}
-                sx={{ 
+                hover
+                sx={{
                   cursor: 'pointer',
-                  '&:last-child td, &:last-child th': { border: 0 }
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  },
                 }}
                 onClick={() => handleRowClick(ad._id)}
               >
-                {!isMobile && (
-                  <TableCell>
-                    <img
-                      src={ad.image || '/placeholder.png'}
-                      alt={`${ad.departureCity} to ${ad.arrivalCity}`}
-                      style={{ width: '50px', height: '50px', objectFit: 'cover' }}
-                    />
-                  </TableCell>
-                )}
                 <TableCell>
                   <Typography variant="body2">
                     {ad.departureCity || '-'} - {ad.arrivalCity || '-'}
@@ -176,9 +168,9 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 <TableCell>
                   <Tooltip title="Lihat Detail" onClick={(e) => {
                     e.stopPropagation();
-                    navigate(`/ads/${ad._id}`);
+                    navigate(`/ads/${ad._id}`)
                   }}>
-                    <IconButton size="small" color="success">
+                    <IconButton size="small" color="primary">
                       <WhatsAppIcon />
                     </IconButton>
                   </Tooltip>
