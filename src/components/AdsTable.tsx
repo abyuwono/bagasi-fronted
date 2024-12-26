@@ -123,7 +123,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 {!isMobile && (
                   <TableCell>
                     <img
-                      src={ad.imageUrl || '/placeholder.png'}
+                      src={ad.image || '/placeholder.png'}
                       alt={`${ad.departureCity} to ${ad.arrivalCity}`}
                       style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                     />
