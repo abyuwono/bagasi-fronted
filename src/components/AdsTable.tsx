@@ -132,7 +132,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2">
-                    {formatPrice(ad.pricePerKg || 0)}
+                    {formatPrice(ad.pricePerKg || 0, ad.currency)}
                   </Typography>
                 </TableCell>
                 <TableCell>
