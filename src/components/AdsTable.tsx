@@ -100,7 +100,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
             <TableRow>
               <TableCell>Rute</TableCell>
               <TableCell>Keberangkatan</TableCell>
-              {!isMobile && <TableCell>Kedatangan</TableCell>}
+              {!isMobile && <TableCell>Kadaluarsa</TableCell>}
               {!isMobile && <TableCell>Berat Tersedia</TableCell>}
               <TableCell align="right">Harga/KG</TableCell>
               <TableCell align="center">Rating</TableCell>
@@ -134,7 +134,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 {!isMobile && (
                   <TableCell>
                     <Typography variant="body2">
-                      {formatDate(ad.arrivalDate)}
+                      {formatDate(ad.expiresAt)}
                     </Typography>
                   </TableCell>
                 )}
