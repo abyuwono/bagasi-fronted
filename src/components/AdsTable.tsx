@@ -14,6 +14,8 @@ import {
   IconButton,
   Tooltip,
   Rating,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -36,6 +38,8 @@ const AdsTable: React.FC<AdsTableProps> = ({
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -94,14 +98,15 @@ const AdsTable: React.FC<AdsTableProps> = ({
         <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
+              {!isMobile && <TableCell>Foto</TableCell>}
               <TableCell>Rute</TableCell>
               <TableCell>Keberangkatan</TableCell>
-              <TableCell align="right">Kapasitas</TableCell>
-              <TableCell align="right">Harga/kg</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Traveler</TableCell>
+              {!isMobile && <TableCell>Kedatangan</TableCell>}
+              {!isMobile && <TableCell>Berat Tersedia</TableCell>}
+              <TableCell align="right">Harga/KG</TableCell>
               <TableCell align="center">Rating</TableCell>
-              <TableCell align="center">Detail</TableCell>
+              {!isMobile && <TableCell>Mule</TableCell>}
+              <TableCell>Detail</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -115,6 +120,15 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 }}
                 onClick={() => handleRowClick(ad._id)}
               >
+                {!isMobile && (
+                  <TableCell>
+                    <img
+                      src={ad.imageUrl || '/placeholder.png'}
+                      alt={`${ad.departureCity} to ${ad.arrivalCity}`}
+                      style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                    />
+                  </TableCell>
+                )}
                 <TableCell>
                   <Typography variant="body2">
                     {ad.departureCity || '-'} - {ad.arrivalCity || '-'}
@@ -125,27 +139,23 @@ const AdsTable: React.FC<AdsTableProps> = ({
                     {formatDate(ad.departureDate)}
                   </Typography>
                 </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2">
-                    {ad.availableWeight || 0} kg
-                  </Typography>
-                </TableCell>
+                {!isMobile && (
+                  <TableCell>
+                    <Typography variant="body2">
+                      {formatDate(ad.arrivalDate)}
+                    </Typography>
+                  </TableCell>
+                )}
+                {!isMobile && (
+                  <TableCell>
+                    <Typography variant="body2">
+                      {ad.availableWeight} kg
+                    </Typography>
+                  </TableCell>
+                )}
                 <TableCell align="right">
                   <Typography variant="body2">
                     {formatPrice(ad.pricePerKg || 0, ad.currency)}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip 
-                    label={ad.status || 'unknown'} 
-                    size="small"
-                    color={getStatusColor(ad.status || '')}
-                    variant="outlined"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">
-                    {ad.customDisplayName || ad.user?.username || '-'}
                   </Typography>
                 </TableCell>
                 <TableCell align="center">
@@ -156,7 +166,14 @@ const AdsTable: React.FC<AdsTableProps> = ({
                     precision={0.5}
                   />
                 </TableCell>
-                <TableCell align="center">
+                {!isMobile && (
+                  <TableCell>
+                    <Typography variant="body2">
+                      {ad.customDisplayName || ad.user?.username || '-'}
+                    </Typography>
+                  </TableCell>
+                )}
+                <TableCell>
                   <Tooltip title="Lihat Detail" onClick={(e) => {
                     e.stopPropagation();
                     navigate(`/ads/${ad._id}`);
