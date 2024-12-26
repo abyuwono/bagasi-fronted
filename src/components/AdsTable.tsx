@@ -150,7 +150,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
                 </TableCell>
                 <TableCell align="center">
                   <Rating 
-                    value={ad.rating || 0} 
+                    value={ad.customRating || ad.user?.rating || 0} 
                     readOnly 
                     size="small" 
                     precision={0.5}
