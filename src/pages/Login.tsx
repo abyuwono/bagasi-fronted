@@ -77,9 +77,10 @@ const Login = () => {
       sx={{
         minHeight: '100vh',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
-        py: 4,
+        py: { xs: 2, sm: 4 },
+        pt: { xs: '15vh', sm: '20vh' }
       }}
     >
       <Helmet>
