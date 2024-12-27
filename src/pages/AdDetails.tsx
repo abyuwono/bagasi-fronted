@@ -114,6 +114,46 @@ const AdDetails = () => {
   const rating = ad?.customRating !== undefined ? ad.customRating : (ad?.user?.rating || 0);
   const whatsappNumber = ad?.customWhatsapp || ad?.user?.whatsappNumber;
 
+  const handleContactClick = () => {
+    // If user is not logged in, show login dialog
+    if (!user) {
+      navigate('/login', { state: { from: window.location.pathname } });
+      return;
+    }
+
+    // Check if user has active membership
+    if (!user.membership?.type || user.membership.type === 'none' || 
+        (user.membership.expiresAt && new Date(user.membership.expiresAt) < new Date())) {
+      setSubscriptionDialogOpen(true);
+      return;
+    }
+
+    // If user has active membership, show contact info
+    setShowContact(true);
+  };
+
+  const renderContactButton = () => {
+    if (!ad?.user?.whatsappNumber && !ad?.user?.customWhatsapp) {
+      return null;
+    }
+
+    return (
+      <Button
+        variant="contained"
+        color="success"
+        startIcon={<WhatsApp />}
+        onClick={handleContactClick}
+        sx={{ mt: 2 }}
+      >
+        {showContact ? (
+          ad?.user?.customWhatsapp || ad?.user?.whatsappNumber
+        ) : (
+          'Lihat Kontak'
+        )}
+      </Button>
+    );
+  };
+
   const handleWhatsAppClick = () => {
     if (!user?.membership?.type || !whatsappNumber) {
       setSubscriptionDialogOpen(true);
@@ -230,15 +270,7 @@ const AdDetails = () => {
               {user?.role === 'shopper' ? (
                 user.membership?.type === 'shopper' && user.membership?.expiresAt && new Date(user.membership.expiresAt) > new Date() ? (
                   showContact ? (
-                    <Button
-                      variant="contained"
-                      color="success"
-                      fullWidth
-                      startIcon={<WhatsApp />}
-                      onClick={handleWhatsAppClick}
-                    >
-                      Kirim Pesan
-                    </Button>
+                    renderContactButton()
                   ) : (
                     <Button
                       variant="contained"
@@ -359,15 +391,7 @@ const AdDetails = () => {
               {user?.role === 'shopper' ? (
                 user.membership?.type === 'shopper' && user.membership?.expiresAt && new Date(user.membership.expiresAt) > new Date() ? (
                   showContact ? (
-                    <Button
-                      variant="contained"
-                      color="success"
-                      fullWidth
-                      startIcon={<WhatsApp />}
-                      onClick={handleWhatsAppClick}
-                    >
-                      Kirim Pesan
-                    </Button>
+                    renderContactButton()
                   ) : (
                     <Button
                       variant="contained"
