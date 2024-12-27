@@ -46,18 +46,15 @@ const Admin: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      // Hash password with bcrypt before sending
-      if (password === 'Media789') {
-        const hashedPassword = '$2a$10$7UF3RvDx9h5KKYs1bkUFo.PNZxzXdYLPD8RF9JgZvkDULuR3zXAGu';
-        const response = await adminApi.login({ username, password: hashedPassword });
-        if (response.success) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('isAdmin', 'true');
-          setIsAuthenticated(true);
-          setError(null);
-        }
-      } else {
-        setError('Invalid credentials');
+      // Hash the password with bcrypt
+      const salt = '$2a$10$7UF3RvDx9h5KKYs1bkUFo.';
+      const hashedPassword = await bcrypt.hashSync(password, salt);
+      const response = await adminApi.login({ username, password: hashedPassword });
+      if (response.success) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('isAdmin', 'true');
+        setIsAuthenticated(true);
+        setError(null);
       }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed');
