@@ -4,6 +4,7 @@ export interface User {
   username: string;
   role: 'traveler' | 'shopper';
   whatsappNumber?: string;
+  customWhatsapp?: string;
   rating: number;
   totalReviews: number;
   isVerified: boolean;

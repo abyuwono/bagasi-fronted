@@ -133,7 +133,8 @@ const AdDetails = () => {
   };
 
   const renderContactButton = () => {
-    if (!ad?.user?.whatsappNumber && !ad?.user?.customWhatsapp) {
+    const contactNumber = ad?.user?.customWhatsapp || ad?.user?.whatsappNumber;
+    if (!contactNumber) {
       return null;
     }
 
@@ -145,11 +146,7 @@ const AdDetails = () => {
         onClick={handleContactClick}
         sx={{ mt: 2 }}
       >
-        {showContact ? (
-          ad?.user?.customWhatsapp || ad?.user?.whatsappNumber
-        ) : (
-          'Lihat Kontak'
-        )}
+        {showContact ? contactNumber : 'Lihat Kontak'}
       </Button>
     );
   };
