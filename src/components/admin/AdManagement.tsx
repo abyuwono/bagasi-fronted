@@ -145,6 +145,13 @@ interface AdNotesDialogProps {
   onSave: (notes: string) => void;
 }
 
+interface AdWhatsAppDialogProps {
+  open: boolean;
+  onClose: () => void;
+  ad: Ad;
+  onSave: (whatsapp: string | undefined) => void;
+}
+
 const AdNotesDialog: React.FC<AdNotesDialogProps> = ({ open, onClose, ad, onSave }) => {
   const [notes, setNotes] = useState(ad.additionalNotes || '');
   const [isBold, setIsBold] = useState(false);
@@ -215,6 +222,47 @@ const AdNotesDialog: React.FC<AdNotesDialogProps> = ({ open, onClose, ad, onSave
   );
 };
 
+const AdWhatsAppDialog: React.FC<AdWhatsAppDialogProps> = ({ open, onClose, ad, onSave }) => {
+  const [whatsapp, setWhatsapp] = useState(ad.customWhatsapp || '');
+
+  const handleSave = () => {
+    onSave(whatsapp || undefined);
+    onClose();
+  };
+
+  const handleDelete = () => {
+    onSave(undefined);
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Edit Custom WhatsApp Number</DialogTitle>
+      <DialogContent>
+        <Box sx={{ mt: 2 }}>
+          <TextField
+            label="Custom WhatsApp Number"
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+            fullWidth
+            placeholder="Enter custom WhatsApp number"
+            helperText="Leave empty to use user's actual WhatsApp number"
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleDelete} color="error">
+          Delete Custom WhatsApp
+        </Button>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSave} variant="contained">
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 const getDefaultDates = () => {
   const today = new Date();
   const flightDate = new Date(today);
@@ -251,6 +299,7 @@ const AdManagement: React.FC = () => {
   });
   const [selectedAd, setSelectedAd] = useState<any>(null);
   const [isNotesDialogOpen, setIsNotesDialogOpen] = useState(false);
+  const [isWhatsAppDialogOpen, setIsWhatsAppDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchAds();
@@ -354,6 +403,21 @@ const AdManagement: React.FC = () => {
     } catch (error) {
       console.error('Error updating notes:', error);
       setError('Failed to update notes');
+    }
+  };
+
+  const handleEditWhatsApp = (ad: Ad) => {
+    setSelectedAd(ad);
+    setIsWhatsAppDialogOpen(true);
+  };
+
+  const handleSaveWhatsApp = async (whatsapp: string | undefined) => {
+    try {
+      await adminApi.updateAd(selectedAd._id, { customWhatsapp: whatsapp });
+      fetchAds();
+    } catch (error) {
+      console.error('Error updating WhatsApp:', error);
+      setError('Failed to update WhatsApp number');
     }
   };
 
@@ -560,7 +624,16 @@ const AdManagement: React.FC = () => {
                   )}
                 </TableCell>
                 <TableCell>{ad.user?.whatsapp || '-'}</TableCell>
-                <TableCell>{ad.customWhatsapp || '-'}</TableCell>
+                <TableCell>
+                  {ad.customWhatsapp || '-'}
+                  <Button
+                    size="small"
+                    onClick={() => handleEditWhatsApp(ad)}
+                    sx={{ ml: 1 }}
+                  >
+                    Edit
+                  </Button>
+                </TableCell>
                 <TableCell>{ad.departureCity}</TableCell>
                 <TableCell>{ad.arrivalCity}</TableCell>
                 <TableCell>
@@ -592,14 +665,20 @@ const AdManagement: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      {selectedAd && (
-        <AdNotesDialog
-          open={isNotesDialogOpen}
-          onClose={() => setIsNotesDialogOpen(false)}
-          ad={selectedAd}
-          onSave={handleSaveNotes}
-        />
-      )}
+
+      <AdNotesDialog
+        open={isNotesDialogOpen}
+        onClose={() => setIsNotesDialogOpen(false)}
+        ad={selectedAd}
+        onSave={handleSaveNotes}
+      />
+
+      <AdWhatsAppDialog
+        open={isWhatsAppDialogOpen}
+        onClose={() => setIsWhatsAppDialogOpen(false)}
+        ad={selectedAd}
+        onSave={handleSaveWhatsApp}
+      />
     </Box>
   );
 };
