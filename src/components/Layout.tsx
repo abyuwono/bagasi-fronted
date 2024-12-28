@@ -39,15 +39,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 flexGrow: 1,
                 textDecoration: 'none',
                 color: 'inherit',
-                alignItems: 'flex-start',
                 display: 'flex',
-                gap: 1
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                lineHeight: 1
               }}
             >
-              <Typography variant="h6">
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Bagasi
               </Typography>
-              <Typography variant="h6">
+              <Typography variant="caption" sx={{ mt: -0.5 }}>
                 Marketplace
               </Typography>
             </Box>
