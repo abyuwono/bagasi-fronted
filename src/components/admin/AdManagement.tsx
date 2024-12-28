@@ -120,6 +120,7 @@ interface Ad {
   status: string;
   customDisplayName?: string;
   customRating?: number;
+  customWhatsapp?: string;
 }
 
 interface NewAd {
@@ -535,49 +536,48 @@ const AdManagement: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>User</TableCell>
+              <TableCell>WhatsApp</TableCell>
+              <TableCell>Custom WhatsApp</TableCell>
               <TableCell>From</TableCell>
               <TableCell>To</TableCell>
-              <TableCell>Flight Date</TableCell>
-              <TableCell>Expires At</TableCell>
+              <TableCell>Date</TableCell>
               <TableCell>Weight</TableCell>
-              <TableCell>Price/KG</TableCell>
-              <TableCell>User</TableCell>
+              <TableCell>Price/kg</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell>Notes</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {ads.map((ad) => (
               <TableRow key={ad._id}>
+                <TableCell>
+                  {ad.customDisplayName || ad.user?.name || ad.user?.email}
+                  {ad.customRating !== undefined && (
+                    <Typography variant="caption" color="textSecondary" display="block">
+                      Rating: {ad.customRating}
+                    </Typography>
+                  )}
+                </TableCell>
+                <TableCell>{ad.user?.whatsapp || '-'}</TableCell>
+                <TableCell>{ad.customWhatsapp || '-'}</TableCell>
                 <TableCell>{ad.departureCity}</TableCell>
                 <TableCell>{ad.arrivalCity}</TableCell>
                 <TableCell>
-                  {ad.departureDate ? new Date(ad.departureDate).toLocaleDateString('id-ID') : '-'}
+                  {new Date(ad.departureDate).toLocaleDateString()}
+                </TableCell>
+                <TableCell>{ad.availableWeight} kg</TableCell>
+                <TableCell>
+                  {ad.currency} {ad.pricePerKg}
                 </TableCell>
                 <TableCell>
-                  {ad.expiresAt ? new Date(ad.expiresAt).toLocaleDateString('id-ID') : '-'}
-                </TableCell>
-                <TableCell>{ad.availableWeight} KG</TableCell>
-                <TableCell>{ad.pricePerKg} {ad.currency}</TableCell>
-                <TableCell>
-                  {ad.user?.email || ad.user?.name || '-'}
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                    <Switch
-                      checked={ad.status === 'active'}
-                      onChange={(e) => handleStatusChange(ad._id, e.target.checked)}
-                      color={getStatusColor(ad)}
-                      disabled={isAdExpired(ad)}
-                    />
-                    <Typography 
-                      variant="caption" 
-                      color={getStatusColor(ad)}
-                      sx={{ mt: 0.5 }}
-                    >
-                      {getAdStatus(ad)}
-                    </Typography>
-                  </Box>
+                  <Switch
+                    checked={!isAdExpired(ad) && ad.status === 'active'}
+                    onChange={(e) => handleStatusChange(ad._id, e.target.checked)}
+                    disabled={isAdExpired(ad)}
+                    color={getStatusColor(ad)}
+                  />
+                  {getAdStatus(ad)}
                 </TableCell>
                 <TableCell>
                   <Button
