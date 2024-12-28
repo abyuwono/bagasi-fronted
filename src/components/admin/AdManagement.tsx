@@ -153,9 +153,13 @@ interface AdWhatsAppDialogProps {
 }
 
 const AdNotesDialog: React.FC<AdNotesDialogProps> = ({ open, onClose, ad, onSave }) => {
-  const [notes, setNotes] = useState(ad.additionalNotes || '');
-  const [isBold, setIsBold] = useState(false);
-  const [isItalic, setIsItalic] = useState(false);
+  const [notes, setNotes] = useState('');
+
+  useEffect(() => {
+    if (ad) {
+      setNotes(ad.additionalNotes || '');
+    }
+  }, [ad]);
 
   const handleSave = () => {
     onSave(notes);
@@ -173,10 +177,8 @@ const AdNotesDialog: React.FC<AdNotesDialogProps> = ({ open, onClose, ad, onSave
     let formattedText = selectedText;
     if (format === 'bold') {
       formattedText = `**${selectedText}**`;
-      setIsBold(!isBold);
     } else if (format === 'italic') {
       formattedText = `*${selectedText}*`;
-      setIsItalic(!isItalic);
     }
 
     const newText = notes.substring(0, range.startOffset) + 
@@ -193,13 +195,11 @@ const AdNotesDialog: React.FC<AdNotesDialogProps> = ({ open, onClose, ad, onSave
           <ButtonGroup variant="outlined" size="small">
             <Button 
               onClick={() => handleFormat('bold')}
-              variant={isBold ? "contained" : "outlined"}
             >
               <b>B</b>
             </Button>
             <Button 
               onClick={() => handleFormat('italic')}
-              variant={isItalic ? "contained" : "outlined"}
             >
               <i>I</i>
             </Button>
@@ -223,7 +223,13 @@ const AdNotesDialog: React.FC<AdNotesDialogProps> = ({ open, onClose, ad, onSave
 };
 
 const AdWhatsAppDialog: React.FC<AdWhatsAppDialogProps> = ({ open, onClose, ad, onSave }) => {
-  const [whatsapp, setWhatsapp] = useState(ad.customWhatsapp || '');
+  const [whatsapp, setWhatsapp] = useState('');
+
+  useEffect(() => {
+    if (ad) {
+      setWhatsapp(ad.customWhatsapp || '');
+    }
+  }, [ad]);
 
   const handleSave = () => {
     onSave(whatsapp || undefined);
@@ -667,14 +673,14 @@ const AdManagement: React.FC = () => {
       </TableContainer>
 
       <AdNotesDialog
-        open={isNotesDialogOpen}
+        open={isNotesDialogOpen && selectedAd !== null}
         onClose={() => setIsNotesDialogOpen(false)}
         ad={selectedAd}
         onSave={handleSaveNotes}
       />
 
       <AdWhatsAppDialog
-        open={isWhatsAppDialogOpen}
+        open={isWhatsAppDialogOpen && selectedAd !== null}
         onClose={() => setIsWhatsAppDialogOpen(false)}
         ad={selectedAd}
         onSave={handleSaveWhatsApp}
