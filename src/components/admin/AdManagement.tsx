@@ -482,7 +482,7 @@ const AdManagement: React.FC = () => {
 
   const handleSendMessage = async (finalMessage: string) => {
     try {
-      const response = await fetch('/api/admin/send-whatsapp-message', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/send-whatsapp-message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -495,13 +495,15 @@ const AdManagement: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        const errorData = await response.json();
+        throw new Error(errorData.details || 'Failed to send message');
       }
 
+      const data = await response.json();
       toast.success('Message sent successfully');
     } catch (error) {
       console.error('Error sending message:', error);
-      toast.error('Failed to send message');
+      toast.error(error instanceof Error ? error.message : 'Failed to send message');
     } finally {
       setDialogOpen(false);
       setSelectedAd(null);
