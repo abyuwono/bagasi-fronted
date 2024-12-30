@@ -19,6 +19,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import WhatsAppWidget from './components/WhatsAppWidget';
 import HomeAlternative from './pages/HomeAlternative';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
   palette: {
@@ -106,6 +108,7 @@ const App = () => {
           </Routes>
         </Layout>
         <WhatsAppWidget />
+        <ToastContainer position="top-right" autoClose={3000} />
       </ThemeProvider>
     </HelmetProvider>
   );
