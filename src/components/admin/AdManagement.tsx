@@ -25,6 +25,7 @@ import {
   ButtonGroup,
 } from '@mui/material';
 import { adminApi } from '../../services/api';
+import { toast } from 'react-toastify';
 
 interface CityOption {
   value: string;
@@ -152,6 +153,14 @@ interface AdWhatsAppDialogProps {
   onSave: (whatsapp: string | undefined) => void;
 }
 
+interface WhatsAppDialogProps {
+  open: boolean;
+  message: string;
+  onClose: () => void;
+  onSend: (message: string) => void;
+  onMessageChange: (message: string) => void;
+}
+
 const AdNotesDialog: React.FC<AdNotesDialogProps> = ({ open, onClose, ad, onSave }) => {
   const [notes, setNotes] = useState('');
 
@@ -269,6 +278,34 @@ const AdWhatsAppDialog: React.FC<AdWhatsAppDialogProps> = ({ open, onClose, ad, 
   );
 };
 
+const WhatsAppDialog: React.FC<WhatsAppDialogProps> = ({ open, message, onClose, onSend, onMessageChange }) => {
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Send WhatsApp Message</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Edit the message below if needed:
+        </DialogContentText>
+        <TextField
+          autoFocus
+          margin="dense"
+          fullWidth
+          multiline
+          rows={4}
+          value={message}
+          onChange={(e) => onMessageChange(e.target.value)}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={() => onSend(message)} variant="contained" color="primary">
+          Send
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 const getDefaultDates = () => {
   const today = new Date();
   const flightDate = new Date(today);
@@ -306,6 +343,8 @@ const AdManagement: React.FC = () => {
   const [selectedAd, setSelectedAd] = useState<any>(null);
   const [isNotesDialogOpen, setIsNotesDialogOpen] = useState(false);
   const [isWhatsAppDialogOpen, setIsWhatsAppDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     fetchAds();
@@ -424,6 +463,46 @@ const AdManagement: React.FC = () => {
     } catch (error) {
       console.error('Error updating WhatsApp:', error);
       setError('Failed to update WhatsApp number');
+    }
+  };
+
+  const generateMessage = (customName: string) => {
+    const randomNumber = Math.floor(Math.random() * 6) + 3; // Random number between 3-8
+    return `Hi ${customName}, iklan jastip bagasi kamu telah berhasil dilisting di Bagasi.ID. Ada ${randomNumber} tertarik untuk menggunakan jastip Bagasi kamu.\n\nLangsung saja lihat di https://www.bagasi.id`;
+  };
+
+  const handleSendClick = (ad: any) => {
+    setSelectedAd(ad);
+    setMessage(generateMessage(ad.customDisplayName));
+    setDialogOpen(true);
+  };
+
+  const handleSendMessage = async (finalMessage: string) => {
+    try {
+      const response = await fetch('/api/admin/send-whatsapp-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          toNumber: selectedAd.customWhatsapp,
+          message: finalMessage
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      toast.success('Message sent successfully');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast.error('Failed to send message');
+    } finally {
+      setDialogOpen(false);
+      setSelectedAd(null);
+      setMessage('');
     }
   };
 
@@ -639,6 +718,14 @@ const AdManagement: React.FC = () => {
                   >
                     Edit
                   </Button>
+                  <Button
+                    size="small"
+                    color="primary"
+                    onClick={() => handleSendClick(ad)}
+                    sx={{ ml: 1 }}
+                  >
+                    SEND
+                  </Button>
                 </TableCell>
                 <TableCell>{ad.departureCity}</TableCell>
                 <TableCell>{ad.arrivalCity}</TableCell>
@@ -684,6 +771,14 @@ const AdManagement: React.FC = () => {
         onClose={() => setIsWhatsAppDialogOpen(false)}
         ad={selectedAd}
         onSave={handleSaveWhatsApp}
+      />
+
+      <WhatsAppDialog
+        open={dialogOpen}
+        message={message}
+        onClose={() => setDialogOpen(false)}
+        onSend={handleSendMessage}
+        onMessageChange={setMessage}
       />
     </Box>
   );
