@@ -13,7 +13,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
+  DialogContentText,
   DialogActions,
   Alert,
   MenuItem,
