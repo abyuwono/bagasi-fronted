@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -159,6 +160,7 @@ interface AdWhatsAppDialogProps {
 interface WhatsAppDialogProps {
   open: boolean;
   message: string;
+  loading: boolean;
   onClose: () => void;
   onSend: (message: string) => void;
   onMessageChange: (message: string) => void;
@@ -281,7 +283,7 @@ const AdWhatsAppDialog: React.FC<AdWhatsAppDialogProps> = ({ open, onClose, ad, 
   );
 };
 
-const WhatsAppDialog: React.FC<WhatsAppDialogProps> = ({ open, message, onClose, onSend, onMessageChange }) => {
+const WhatsAppDialog: React.FC<WhatsAppDialogProps> = ({ open, message, loading, onClose, onSend, onMessageChange }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Send WhatsApp Message</DialogTitle>
@@ -297,12 +299,25 @@ const WhatsAppDialog: React.FC<WhatsAppDialogProps> = ({ open, message, onClose,
           rows={4}
           value={message}
           onChange={(e) => onMessageChange(e.target.value)}
+          disabled={loading}
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={() => onSend(message)} variant="contained" color="primary">
-          Send
+        <Button onClick={onClose} disabled={loading}>Cancel</Button>
+        <Button 
+          onClick={() => onSend(message)} 
+          variant="contained" 
+          color="primary"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+              Sending...
+            </>
+          ) : (
+            'Send'
+          )}
         </Button>
       </DialogActions>
     </Dialog>
@@ -469,18 +484,27 @@ const AdManagement: React.FC = () => {
     }
   };
 
-  const generateMessage = (customName: string) => {
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
+  const generateMessage = (ad: any) => {
     const randomNumber = Math.floor(Math.random() * 6) + 3; // Random number between 3-8
-    return `Hi ${customName}, iklan jastip bagasi kamu telah berhasil dilisting di Bagasi.ID. Ada ${randomNumber} tertarik untuk menggunakan jastip Bagasi kamu.\n\nLangsung saja lihat di https://www.bagasi.id`;
+    return `Hi ${ad.customDisplayName}, iklan jastip bagasi kamu ${ad.departureCity} - ${ad.arrivalCity} tanggal ${formatDate(ad.departureDate)} telah berhasil dilisting di Bagasi.ID. Ada ${randomNumber} orang tertarik untuk menggunakan jastip Bagasi kamu.\n\nLangsung saja lihat di https://www.bagasi.id`;
   };
 
   const handleSendClick = (ad: any) => {
     setSelectedAd(ad);
-    setMessage(generateMessage(ad.customDisplayName));
+    setMessage(generateMessage(ad));
     setDialogOpen(true);
   };
 
   const handleSendMessage = async (finalMessage: string) => {
+    setLoading(true);
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/send-whatsapp-message`, {
         method: 'POST',
@@ -505,6 +529,7 @@ const AdManagement: React.FC = () => {
       console.error('Error sending message:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to send message');
     } finally {
+      setLoading(false);
       setDialogOpen(false);
       setSelectedAd(null);
       setMessage('');
@@ -781,7 +806,8 @@ const AdManagement: React.FC = () => {
       <WhatsAppDialog
         open={dialogOpen}
         message={message}
-        onClose={() => setDialogOpen(false)}
+        loading={loading}
+        onClose={() => !loading && setDialogOpen(false)}
         onSend={handleSendMessage}
         onMessageChange={setMessage}
       />
