@@ -120,13 +120,13 @@ interface Ad {
   currency: string;
   additionalNotes?: string;
   active: boolean;
-  user: User;
+  user?: User;
   createdAt: string;
   status: string;
   customDisplayName?: string;
   customRating?: number;
   customWhatsapp?: string;
-  whatsappMessageCount?: number;
+  whatsappMessageCount: number;
   lastWhatsappMessageSent?: string;
 }
 
@@ -339,7 +339,7 @@ const getDefaultDates = () => {
   };
 };
 
-const formatTimestamp = (date: string) => {
+const formatTimestamp = (date: string | undefined) => {
   if (!date) return '';
   return new Date(date).toLocaleString('id-ID', {
     day: '2-digit',
@@ -546,7 +546,7 @@ const AdManagement: React.FC = () => {
         ad._id === selectedAd._id 
           ? { 
               ...ad, 
-              whatsappMessageCount: data.whatsappMessageCount,
+              whatsappMessageCount: data.whatsappMessageCount || 0,
               lastWhatsappMessageSent: data.lastWhatsappMessageSent 
             } 
           : ad
@@ -776,7 +776,7 @@ const AdManagement: React.FC = () => {
                       onClick={() => handleSendClick(ad)}
                       sx={{ ml: 1 }}
                     >
-                      SEND {ad.whatsappMessageCount > 0 && `(${ad.whatsappMessageCount})`}
+                      SEND {(ad.whatsappMessageCount || 0) > 0 && `(${ad.whatsappMessageCount || 0})`}
                     </Button>
                     {ad.lastWhatsappMessageSent && (
                       <Typography variant="caption" display="block" color="text.secondary">
