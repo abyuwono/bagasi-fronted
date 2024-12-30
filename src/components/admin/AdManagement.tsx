@@ -772,6 +772,13 @@ const AdManagement: React.FC = () => {
                   <Box>
                     <Button
                       size="small"
+                      onClick={() => handleEditWhatsApp(ad)}
+                      sx={{ ml: 1 }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="small"
                       color="primary"
                       onClick={() => handleSendClick(ad)}
                       sx={{ ml: 1 }}
