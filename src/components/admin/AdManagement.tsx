@@ -126,6 +126,8 @@ interface Ad {
   customDisplayName?: string;
   customRating?: number;
   customWhatsapp?: string;
+  whatsappMessageCount?: number;
+  lastWhatsappMessageSent?: string;
 }
 
 interface NewAd {
@@ -337,6 +339,19 @@ const getDefaultDates = () => {
   };
 };
 
+const formatTimestamp = (date: string) => {
+  if (!date) return '';
+  return new Date(date).toLocaleString('id-ID', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Jakarta'
+  }).replace(',', '') + ' WIB';
+};
+
 const AdManagement: React.FC = () => {
   const [ads, setAds] = useState<Ad[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -514,7 +529,8 @@ const AdManagement: React.FC = () => {
         },
         body: JSON.stringify({
           toNumber: selectedAd.customWhatsapp,
-          message: finalMessage
+          message: finalMessage,
+          adId: selectedAd._id
         })
       });
 
@@ -524,6 +540,18 @@ const AdManagement: React.FC = () => {
       }
 
       const data = await response.json();
+      
+      // Update the ads list with new message count and timestamp
+      setAds(ads.map(ad => 
+        ad._id === selectedAd._id 
+          ? { 
+              ...ad, 
+              whatsappMessageCount: data.whatsappMessageCount,
+              lastWhatsappMessageSent: data.lastWhatsappMessageSent 
+            } 
+          : ad
+      ));
+
       toast.success('Message sent successfully');
     } catch (error) {
       console.error('Error sending message:', error);
@@ -741,21 +769,21 @@ const AdManagement: React.FC = () => {
                 <TableCell>{ad.user?.whatsapp || '-'}</TableCell>
                 <TableCell>
                   {ad.customWhatsapp || '-'}
-                  <Button
-                    size="small"
-                    onClick={() => handleEditWhatsApp(ad)}
-                    sx={{ ml: 1 }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="small"
-                    color="primary"
-                    onClick={() => handleSendClick(ad)}
-                    sx={{ ml: 1 }}
-                  >
-                    SEND
-                  </Button>
+                  <Box>
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={() => handleSendClick(ad)}
+                      sx={{ ml: 1 }}
+                    >
+                      SEND {ad.whatsappMessageCount > 0 && `(${ad.whatsappMessageCount})`}
+                    </Button>
+                    {ad.lastWhatsappMessageSent && (
+                      <Typography variant="caption" display="block" color="text.secondary">
+                        {formatTimestamp(ad.lastWhatsappMessageSent)}
+                      </Typography>
+                    )}
+                  </Box>
                 </TableCell>
                 <TableCell>{ad.departureCity}</TableCell>
                 <TableCell>{ad.arrivalCity}</TableCell>
