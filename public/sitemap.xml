@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Main Pages -->
   <url>
-    <loc>https://market.bagasi.id/</loc>
+    <loc>https://market.bagasi.id</loc>
+    <lastmod>2023-12-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://market.bagasi.id/table</loc>
+    <loc>https://market.bagasi.id/search</loc>
+    <lastmod>2023-12-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
-  
-  <!-- Authentication Pages -->
   <url>
-    <loc>https://market.bagasi.id/login</loc>
+    <loc>https://market.bagasi.id/about</loc>
+    <lastmod>2023-12-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://market.bagasi.id/register</loc>
+    <loc>https://market.bagasi.id/contact</loc>
+    <lastmod>2023-12-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-
-  <!-- Membership Pages -->
   <url>
-    <loc>https://market.bagasi.id/membership</loc>
+    <loc>https://market.bagasi.id/terms</loc>
+    <lastmod>2023-12-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.3</priority>
   </url>
-
-  <!-- Ad Creation Pages -->
   <url>
-    <loc>https://market.bagasi.id/ads/new</loc>
+    <loc>https://market.bagasi.id/privacy</loc>
+    <lastmod>2023-12-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.3</priority>
   </url>
 </urlset>
