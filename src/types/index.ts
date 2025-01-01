@@ -81,11 +81,7 @@ export interface ShopperAd {
   productPrice: number;
   productWeight: number;
   productPriceIDR: number;
-  commission: {
-    idr: number;
-    native: number;
-    currency: Currency;
-  };
+  commission: Commission;
   shippingAddress: {
     city: string;
     country: string;
