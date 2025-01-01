@@ -22,7 +22,7 @@ interface ShopperAdCardProps {
     commission: {
       idr: number;
       native: number;
-      currency: string;
+      currency: 'AUD' | 'IDR' | 'USD' | 'SGD' | 'KRW';
     };
     status: string;
   };
