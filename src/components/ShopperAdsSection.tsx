@@ -36,7 +36,7 @@ const ShopperAdsSection: React.FC = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await api.get('/api/shopper-ads/active');
+        const response = await api.get('/shopper-ads/active');
         setAds(response.data);
         setError('');
       } catch (err) {
