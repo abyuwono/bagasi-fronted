@@ -118,6 +118,11 @@ const UserProfile: React.FC = () => {
 
   // Data fetching
   const fetchUserDetails = async () => {
+    if (!authUser) {
+      setError('User not authenticated');
+      return;
+    }
+    
     try {
       setLoading(true);
       const response = await api.get(`/api/users/${authUser.id}`);
