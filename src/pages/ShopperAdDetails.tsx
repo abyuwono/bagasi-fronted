@@ -90,7 +90,14 @@ const ShopperAdDetails: React.FC = () => {
       setProcessingAction(true);
       const response = await api.post(`/api/shopper-ads/${id}/request`);
       setShowChat(true);
-      setAd(prev => prev ? { ...prev, status: 'in_discussion', selectedTraveler: user } : null);
+      setAd(prev => prev ? { 
+        ...prev, 
+        status: 'in_discussion', 
+        selectedTraveler: { 
+          _id: user?._id || '', 
+          username: user?.username || '' 
+        } 
+      } : null);
       toast.success('Request sent successfully!');
     } catch (err) {
       console.error('Error requesting help:', err);

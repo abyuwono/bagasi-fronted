@@ -92,6 +92,9 @@ export interface ShopperAd {
   localCourier: string;
   notes: string;
   status: string;
-  selectedTraveler: User | null;
+  selectedTraveler?: {
+    _id: string;
+    username: string;
+  };
   trackingNumber?: string;
 }
