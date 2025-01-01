@@ -163,12 +163,12 @@ const AdDetails = () => {
 
   const generateSEOTitle = (ad: Ad) => {
     const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: idLocale });
-    return `Jasa Titip ${ad.departureCity} - ${ad.arrivalCity} ${date} by ${ad.user.username} | Bagasi`;
+    return `Jastip Bagasi ${ad.departureCity} - ${ad.arrivalCity} ${date} by ${ad.user.username}`;
   };
 
   const generateSEODescription = (ad: Ad) => {
     const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: idLocale });
-    return `Jasa titip dari ${ad.departureCity} ke ${ad.arrivalCity} pada ${date}. ${ad.currency} ${ad.pricePerKg.toLocaleString()}/kg${ad.additionalNotes ? `. ${ad.additionalNotes}` : ''}`;
+    return `Jastip Bagasi dari ${ad.departureCity} ke ${ad.arrivalCity} pada ${date}. ${ad.currency} ${ad.pricePerKg.toLocaleString()}/kg${ad.additionalNotes ? `. ${ad.additionalNotes}` : ''}`;
   };
 
   if (loading) {
@@ -207,7 +207,7 @@ const AdDetails = () => {
           <meta name="twitter:description" content={generateSEODescription(ad)} />
           
           {/* Additional SEO */}
-          <meta name="keywords" content={`jasa titip, ${ad.departureCity.toLowerCase()}, ${ad.arrivalCity.toLowerCase()}, bagasi, travel, shopping`} />
+          <meta name="keywords" content={`jastip, jasa titip, ${ad.departureCity.toLowerCase()}, ${ad.arrivalCity.toLowerCase()}, bagasi, travel, shopping`} />
           <link rel="canonical" href={window.location.href} />
           
           {/* Structured Data */}
