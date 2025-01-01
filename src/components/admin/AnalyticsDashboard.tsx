@@ -304,40 +304,43 @@ const AnalyticsDashboard: React.FC = () => {
     </Grid>
   );
 
-  const renderPerformanceMetrics = () => (
+  const renderPerformanceCards = () => (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} sm={6} md={4}>
         <Card>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Avg Processing Time
-            </Typography>
+            <Box display="flex" alignItems="center">
+              <LocalShipping color="primary" sx={{ mr: 1 }} />
+              <Typography variant="h6">Avg. Processing Time</Typography>
+            </Box>
             <Typography variant="h4">
-              {Math.round(performanceMetrics?.avgProcessingTime / (1000 * 60 * 60 * 24))} days
+              {performanceMetrics?.avgProcessingTime ? Math.round(performanceMetrics.avgProcessingTime / (1000 * 60 * 60 * 24)) : 0} days
             </Typography>
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} sm={6} md={4}>
         <Card>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Avg Delivery Time
-            </Typography>
+            <Box display="flex" alignItems="center">
+              <LocalShipping color="secondary" sx={{ mr: 1 }} />
+              <Typography variant="h6">Avg. Delivery Time</Typography>
+            </Box>
             <Typography variant="h4">
-              {Math.round(performanceMetrics?.avgDeliveryTime / (1000 * 60 * 60 * 24))} days
+              {performanceMetrics?.avgDeliveryTime ? Math.round(performanceMetrics.avgDeliveryTime / (1000 * 60 * 60 * 24)) : 0} days
             </Typography>
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} sm={6} md={4}>
         <Card>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Success Rate
-            </Typography>
+            <Box display="flex" alignItems="center">
+              <Star color="warning" sx={{ mr: 1 }} />
+              <Typography variant="h6">Success Rate</Typography>
+            </Box>
             <Typography variant="h4">
-              {Math.round(performanceMetrics?.successRate * 100)}%
+              {performanceMetrics?.successRate ? `${Math.round(performanceMetrics.successRate * 100)}%` : '0%'}
             </Typography>
           </CardContent>
         </Card>
@@ -427,7 +430,7 @@ const AnalyticsDashboard: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           Performance Metrics
         </Typography>
-        {renderPerformanceMetrics()}
+        {renderPerformanceCards()}
       </Box>
     </Box>
   );
