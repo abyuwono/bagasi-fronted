@@ -25,10 +25,8 @@ import {
   FormControl,
   InputLabel,
   Select,
-  Tooltip,
-  CircularProgress,
-  Alert,
-  useTheme
+  useTheme,
+  Tooltip as MuiTooltip
 } from '@mui/material';
 import {
   Refresh,
@@ -52,7 +50,7 @@ import {
   PointElement,
   LineElement,
   Title,
-  Tooltip,
+  Tooltip as ChartTooltip,
   Legend
 } from 'chart.js';
 import api from '../../services/api';
@@ -63,7 +61,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   Title,
-  Tooltip,
+  ChartTooltip,
   Legend
 );
 
@@ -383,7 +381,7 @@ const PaymentManagement: React.FC = () => {
                 {format(new Date(payment.createdAt), 'dd MMM yyyy HH:mm')}
               </TableCell>
               <TableCell>
-                <Tooltip title="View Details">
+                <MuiTooltip title="View Details">
                   <IconButton
                     size="small"
                     onClick={() => {
@@ -393,9 +391,9 @@ const PaymentManagement: React.FC = () => {
                   >
                     <Assignment />
                   </IconButton>
-                </Tooltip>
+                </MuiTooltip>
                 {payment.payment.status === 'success' && (
-                  <Tooltip title="Refund">
+                  <MuiTooltip title="Refund">
                     <IconButton
                       size="small"
                       color="error"
@@ -406,7 +404,7 @@ const PaymentManagement: React.FC = () => {
                     >
                       <MonetizationOn />
                     </IconButton>
-                  </Tooltip>
+                  </MuiTooltip>
                 )}
               </TableCell>
             </TableRow>
