@@ -49,6 +49,8 @@ interface MetricData {
   completedAds?: number;
   newUsers?: number;
   count?: number;
+  totalMessages?: number;
+  totalReviews?: number;
 }
 
 interface UserMetrics {
@@ -57,6 +59,7 @@ interface UserMetrics {
 
 interface EngagementMetrics {
   chatMetrics: MetricData[];
+  reviewMetrics: MetricData[];
 }
 
 interface OverviewMetrics {
