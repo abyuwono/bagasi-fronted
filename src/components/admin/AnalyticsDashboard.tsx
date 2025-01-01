@@ -42,6 +42,36 @@ import { format, subDays } from 'date-fns';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 
+interface MetricData {
+  _id: string;
+  totalAds?: number;
+  activeAds?: number;
+  completedAds?: number;
+  newUsers?: number;
+  count?: number;
+}
+
+interface UserMetrics {
+  userGrowth: MetricData[];
+}
+
+interface EngagementMetrics {
+  chatMetrics: MetricData[];
+}
+
+interface OverviewMetrics {
+  totalAds: number;
+  totalUsers: number;
+  totalRevenue: number;
+  completedOrders: number;
+}
+
+interface PerformanceMetrics {
+  avgProcessingTime: number;
+  avgDeliveryTime: number;
+  successRate: number;
+}
+
 const AnalyticsDashboard: React.FC = () => {
   const theme = useTheme();
 
@@ -52,13 +82,13 @@ const AnalyticsDashboard: React.FC = () => {
   ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [overview, setOverview] = useState<any>(null);
-  const [adMetrics, setAdMetrics] = useState<any[]>([]);
-  const [userMetrics, setUserMetrics] = useState<any>(null);
-  const [engagementMetrics, setEngagementMetrics] = useState<any>(null);
-  const [destinations, setDestinations] = useState<any[]>([]);
-  const [productMetrics, setProductMetrics] = useState<any[]>([]);
-  const [performanceMetrics, setPerformanceMetrics] = useState<any>(null);
+  const [overview, setOverview] = useState<OverviewMetrics | null>(null);
+  const [adMetrics, setAdMetrics] = useState<MetricData[]>([]);
+  const [userMetrics, setUserMetrics] = useState<UserMetrics | null>(null);
+  const [engagementMetrics, setEngagementMetrics] = useState<EngagementMetrics | null>(null);
+  const [destinations, setDestinations] = useState<MetricData[]>([]);
+  const [productMetrics, setProductMetrics] = useState<MetricData[]>([]);
+  const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetrics | null>(null);
 
   // Effects
   useEffect(() => {
