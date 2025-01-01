@@ -125,7 +125,7 @@ const UserProfile: React.FC = () => {
     
     try {
       setLoading(true);
-      const response = await api.get(`/api/users/${authUser.id}`);
+      const response = await api.get(`/api/users/${authUser._id}`);
       setUserDetails(response.data);
       setError('');
     } catch (error) {
