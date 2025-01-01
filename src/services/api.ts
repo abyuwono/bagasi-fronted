@@ -50,7 +50,7 @@ interface RegisterData {
   email: string;
   password: string;
   whatsappNumber: string;
-  role: 'traveler' | 'shopper';
+  role: 'traveler' | 'shopper' | 'admin';
 }
 
 interface LoginData {
