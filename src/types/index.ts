@@ -2,12 +2,13 @@ export interface User {
   _id: string;
   email: string;
   username: string;
-  role: 'traveler' | 'shopper';
+  role: 'traveler' | 'shopper' | 'admin';
   whatsappNumber?: string;
   customWhatsapp?: string;
   rating: number;
   totalReviews: number;
   isVerified: boolean;
+  isAdmin?: boolean;
   membership: {
     type: 'none' | 'shopper';
     expiresAt?: Date;
