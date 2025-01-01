@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Timeline,
-  TimelineItem,
-  TimelineSeparator,
-  TimelineConnector,
-  TimelineContent,
-  TimelineDot,
-  TimelineOppositeContent,
   Box,
   Typography,
   Paper,
@@ -20,6 +13,15 @@ import {
   DialogActions,
   useTheme
 } from '@mui/material';
+import {
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineOppositeContent
+} from '@mui/lab';
 import {
   LocalShipping,
   CheckCircle,
