@@ -23,37 +23,7 @@ import { formatCurrency } from '../utils/format';
 import ChatRoom from '../components/ChatRoom';
 import api from '../services/api';
 import { toast } from 'react-toastify';
-
-interface ShopperAd {
-  _id: string;
-  user: {
-    _id: string;
-    username: string;
-  };
-  productUrl: string;
-  productImage: string;
-  productPrice: number;
-  productWeight: number;
-  productPriceIDR: number;
-  commission: {
-    idr: number;
-    native: number;
-    currency: string;
-  };
-  shippingAddress: {
-    city: string;
-    country: string;
-    fullAddress?: string;
-  };
-  localCourier: string;
-  notes: string;
-  status: string;
-  selectedTraveler?: {
-    _id: string;
-    username: string;
-  };
-  trackingNumber?: string;
-}
+import { Commission, Currency, ShopperAd } from '../types';
 
 const ShopperAdDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();

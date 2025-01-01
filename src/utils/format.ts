@@ -1,6 +1,6 @@
 import { Currency } from '../types';
 
-export const formatPrice = (price: number | undefined, currency?: Currency): string => {
+export const formatPrice = (price: number | undefined, currency: Currency | 'IDR' = 'IDR'): string => {
   if (!price) return '';
   
   const value = new Intl.NumberFormat('en-US', {
@@ -8,7 +8,7 @@ export const formatPrice = (price: number | undefined, currency?: Currency): str
     maximumFractionDigits: 0,
   }).format(price);
 
-  return `${currency || 'IDR'} ${value}`;
+  return `${currency} ${value}`;
 };
 
 export const formatCurrency = formatPrice;
