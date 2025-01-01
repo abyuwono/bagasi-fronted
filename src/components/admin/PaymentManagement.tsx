@@ -44,7 +44,28 @@ import {
 import { DateRangePicker } from '@mui/lab';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
 import api from '../../services/api';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 interface PaymentOverview {
   overview: {
