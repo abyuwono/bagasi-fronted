@@ -12,7 +12,7 @@ import {
   useTheme
 } from '@mui/material';
 import { formatCurrency } from '../utils/format';
-import api from '../utils/api';
+import api from '../services/api';
 
 declare global {
   interface Window {

@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useAuth } from '../contexts/AuthContext';
-import api from '../utils/api';
+import api from '../services/api';
 import { toast } from 'react-toastify';
 
 interface Message {

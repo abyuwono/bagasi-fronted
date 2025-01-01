@@ -12,7 +12,7 @@ import {
 import ShopperAdCard from './ShopperAdCard';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import api from '../utils/api';
+import api from '../services/api';
 
 interface ShopperAd {
   _id: string;

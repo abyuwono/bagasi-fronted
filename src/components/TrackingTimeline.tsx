@@ -30,7 +30,7 @@ import {
   Home
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
-import api from '../utils/api';
+import api from '../services/api';
 import { toast } from 'react-toastify';
 
 interface TrackingHistory {
