@@ -14,7 +14,7 @@ import {
   useTheme
 } from '@mui/material';
 import { Star } from '@mui/icons-material';
-import api from '../../utils/api';
+import api from '../../services/api';
 import ReviewList from './ReviewList';
 
 interface UserReviewsProps {
