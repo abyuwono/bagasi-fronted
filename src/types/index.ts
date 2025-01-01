@@ -67,3 +67,31 @@ export interface Transaction {
   createdAt: Date;
   completedAt?: Date;
 }
+
+export interface ShopperAd {
+  _id: string;
+  user: {
+    _id: string;
+    username: string;
+  };
+  productUrl: string;
+  productImage: string;
+  productPrice: number;
+  productWeight: number;
+  productPriceIDR: number;
+  commission: {
+    idr: number;
+    native: number;
+    currency: string;
+  };
+  shippingAddress: {
+    city: string;
+    country: string;
+    fullAddress?: string;
+  };
+  localCourier: string;
+  notes: string;
+  status: string;
+  selectedTraveler: User | null;
+  trackingNumber?: string;
+}
