@@ -276,15 +276,18 @@ const PaymentManagement: React.FC = () => {
             startText="Start Date"
             endText="End Date"
             value={[filters.dateRange.start, filters.dateRange.end]}
-            onChange={(newValue) => {
+            onChange={(newValue: [Date | null, Date | null]) => {
               if (newValue[0] && newValue[1]) {
                 setFilters({
                   ...filters,
-                  dateRange: { start: newValue[0], end: newValue[1] }
+                  dateRange: {
+                    start: newValue[0],
+                    end: newValue[1]
+                  }
                 });
               }
             }}
-            renderInput={(startProps, endProps) => (
+            renderInput={(startProps: TextFieldProps, endProps: TextFieldProps) => (
               <>
                 <TextField {...startProps} />
                 <Box sx={{ mx: 2 }}> to </Box>
