@@ -20,6 +20,12 @@ export interface Route {
   to: string;
 }
 
+export interface Commission {
+  idr: number;
+  native: number;
+  currency: 'AUD' | 'IDR' | 'USD' | 'SGD' | 'KRW';
+}
+
 export interface Ad {
   _id: string;
   user: User;
@@ -35,6 +41,9 @@ export interface Ad {
   customDisplayName?: string;
   customRating?: number;
   customWhatsapp?: string;
+  commission: Commission;
+  productPrice?: number;
+  productPriceIDR?: number;
 }
 
 export interface Booking {
