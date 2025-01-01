@@ -20,10 +20,12 @@ export interface Route {
   to: string;
 }
 
+export type Currency = 'AUD' | 'IDR' | 'USD' | 'SGD' | 'KRW';
+
 export interface Commission {
   idr: number;
   native: number;
-  currency: 'AUD' | 'IDR' | 'USD' | 'SGD' | 'KRW';
+  currency: Currency;
 }
 
 export interface Ad {
@@ -35,7 +37,7 @@ export interface Ad {
   expiresAt: string;
   availableWeight: number;
   pricePerKg: number;
-  currency: 'AUD' | 'IDR' | 'USD' | 'SGD' | 'KRW';
+  currency: Currency;
   additionalNotes?: string;
   status: 'active' | 'expired' | 'booked';
   customDisplayName?: string;
@@ -82,7 +84,7 @@ export interface ShopperAd {
   commission: {
     idr: number;
     native: number;
-    currency: string;
+    currency: Currency;
   };
   shippingAddress: {
     city: string;

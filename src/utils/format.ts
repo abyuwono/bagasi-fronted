@@ -1,4 +1,6 @@
-export const formatPrice = (price: number, currency: 'AUD' | 'IDR' | 'USD' | 'SGD' | 'KRW' = 'IDR'): string => {
+import { Currency } from '../types';
+
+export const formatPrice = (price: number, currency: Currency = 'IDR'): string => {
   const value = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
