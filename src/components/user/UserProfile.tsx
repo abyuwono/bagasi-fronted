@@ -30,7 +30,8 @@ import {
   Cancel,
   ShoppingCart,
   Star,
-  LocalShipping
+  LocalShipping,
+  AttachMoney
 } from '@mui/icons-material';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
