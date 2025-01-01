@@ -2,7 +2,7 @@ export interface User {
   _id: string;
   email: string;
   username: string;
-  role: 'traveler' | 'shopper' | 'admin';
+  role: 'traveler' | 'shopper';
   whatsappNumber?: string;
   customWhatsapp?: string;
   rating: number;
