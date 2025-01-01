@@ -367,7 +367,7 @@ const AnalyticsDashboard: React.FC = () => {
         <Box display="flex" alignItems="center">
           <DateRangePicker
             value={dateRange}
-            onChange={(newValue) => {
+            onChange={(newValue: DateRange<Date>) => {
               if (newValue[0] && newValue[1]) {
                 setDateRange(newValue);
               }
