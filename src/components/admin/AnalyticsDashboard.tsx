@@ -15,7 +15,9 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel
+  InputLabel,
+  TextField,
+  TextFieldProps
 } from '@mui/material';
 import {
   DateRangePicker,
@@ -372,7 +374,7 @@ const AnalyticsDashboard: React.FC = () => {
                 setDateRange(newValue);
               }
             }}
-            renderInput={(startProps, endProps) => (
+            renderInput={(startProps: TextFieldProps, endProps: TextFieldProps) => (
               <>
                 <TextField {...startProps} />
                 <Box sx={{ mx: 2 }}> to </Box>
