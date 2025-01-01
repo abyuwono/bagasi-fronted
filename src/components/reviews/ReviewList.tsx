@@ -26,7 +26,7 @@ import {
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
-import api from '../../utils/api';
+import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface Review {
