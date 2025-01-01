@@ -40,7 +40,7 @@ import {
 } from 'react-chartjs-2';
 import { format, subDays } from 'date-fns';
 import { toast } from 'react-toastify';
-import api from '../../utils/api';
+import api from '../../services/api';
 
 const AnalyticsDashboard: React.FC = () => {
   const theme = useTheme();
