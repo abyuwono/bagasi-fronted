@@ -14,6 +14,7 @@ import {
   Paper,
   Button,
   TextField,
+  TextFieldProps,
   Dialog,
   DialogTitle,
   DialogContent,
