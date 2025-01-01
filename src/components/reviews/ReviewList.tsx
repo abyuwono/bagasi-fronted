@@ -56,6 +56,13 @@ interface Review {
   removed: boolean;
 }
 
+interface User {
+  _id: string;
+  username: string;
+  avatar: string;
+  isAdmin: boolean;
+}
+
 interface ReviewListProps {
   reviews: Review[];
   onReviewUpdate: () => void;
