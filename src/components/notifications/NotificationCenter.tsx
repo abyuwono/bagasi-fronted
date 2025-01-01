@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  ListItemSecondary,
+  ListItemSecondaryAction,
   Divider,
   Button,
   CircularProgress,
@@ -318,6 +318,8 @@ const NotificationCenter: React.FC = () => {
                           </>
                         }
                       />
+                      <ListItemSecondaryAction>
+                      </ListItemSecondaryAction>
                     </ListItem>
                     <Divider />
                   </React.Fragment>
