@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Helmet } from 'react-helmet-async';
 import { formatCurrency } from '../utils/format';
-import api from '../utils/api';
+import api from '../services/api';
 import { toast } from 'react-toastify';
 
 interface ProductInfo {

@@ -21,7 +21,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Helmet } from 'react-helmet-async';
 import { formatCurrency } from '../utils/format';
 import ChatRoom from '../components/ChatRoom';
-import api from '../utils/api';
+import api from '../services/api';
 import { toast } from 'react-toastify';
 
 interface ShopperAd {
