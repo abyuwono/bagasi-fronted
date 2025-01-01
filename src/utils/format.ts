@@ -6,3 +6,5 @@ export const formatPrice = (price: number, currency: 'AUD' | 'IDR' | 'USD' | 'SG
 
   return `${currency} ${value}`;
 };
+
+export const formatCurrency = formatPrice;
