@@ -41,10 +41,9 @@ import {
   Assignment
 } from '@mui/icons-material';
 import { DateRangePicker } from '@mui/lab';
-import { Line } from 'react-chartjs-2';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
-import api from '../../utils/api';
+import api from '../../services/api';
 
 interface PaymentOverview {
   overview: {
