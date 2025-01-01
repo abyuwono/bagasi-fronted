@@ -32,8 +32,8 @@ import {
   Star,
   LocalShipping
 } from '@mui/icons-material';
+import api from '../../services/api';
 import { toast } from 'react-toastify';
-import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import ReviewList from '../reviews/ReviewList';
 

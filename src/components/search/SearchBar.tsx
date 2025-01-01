@@ -19,7 +19,7 @@ import {
   Clear
 } from '@mui/icons-material';
 import { debounce } from 'lodash';
-import api from '../../utils/api';
+import api from '../../services/api';
 
 interface SearchSuggestions {
   ads: string[];
