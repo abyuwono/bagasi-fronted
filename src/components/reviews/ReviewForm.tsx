@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { Star } from '@mui/icons-material';
 import { toast } from 'react-toastify';
-import api from '../../utils/api';
+import api from '../../services/api';
 
 interface ReviewFormProps {
   adId: string;
