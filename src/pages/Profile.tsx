@@ -22,6 +22,7 @@ import {
   GppMaybe as UnverifiedIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import TravelerShopperAds from '../components/TravelerShopperAds';
 
 interface Review {
   rating: number;
@@ -213,40 +214,51 @@ const Profile = () => {
         </Grid>
       </Paper>
 
-      <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          Reviews ({profile.totalReviews})
-        </Typography>
-        <List>
-          {profile.reviews.map((review, index) => (
-            <React.Fragment key={index}>
-              <ListItem alignItems="flex-start">
-                <ListItemText
-                  primary={
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                      <Typography component="span" variant="body1" sx={{ mr: 1 }}>
-                        {review.reviewer.username}
-                      </Typography>
-                      <Rating value={review.rating} size="small" readOnly />
-                    </Box>
-                  }
-                  secondary={
-                    <>
-                      <Typography component="span" variant="body2" color="text.primary">
-                        {review.comment}
-                      </Typography>
-                      <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 0.5 }}>
-                        {new Date(review.createdAt).toLocaleDateString('id-ID')}
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-              {index < profile.reviews.length - 1 && <Divider />}
-            </React.Fragment>
-          ))}
-        </List>
-      </Paper>
+      {profile.role === 'traveler' && (
+        <>
+          <Typography variant="h6" gutterBottom sx={{ mt: 4, mb: 2 }}>
+            Permintaan Jastip yang Diambil
+          </Typography>
+          <TravelerShopperAds travelerId={profile._id} />
+        </>
+      )}
+
+      {profile.reviews.length > 0 && (
+        <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Reviews ({profile.totalReviews})
+          </Typography>
+          <List>
+            {profile.reviews.map((review, index) => (
+              <React.Fragment key={index}>
+                <ListItem alignItems="flex-start">
+                  <ListItemText
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+                        <Typography component="span" variant="body1" sx={{ mr: 1 }}>
+                          {review.reviewer.username}
+                        </Typography>
+                        <Rating value={review.rating} size="small" readOnly />
+                      </Box>
+                    }
+                    secondary={
+                      <>
+                        <Typography component="span" variant="body2" color="text.primary">
+                          {review.comment}
+                        </Typography>
+                        <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 0.5 }}>
+                          {new Date(review.createdAt).toLocaleDateString('id-ID')}
+                        </Typography>
+                      </>
+                    }
+                  />
+                </ListItem>
+                {index < profile.reviews.length - 1 && <Divider />}
+              </React.Fragment>
+            ))}
+          </List>
+        </Paper>
+      )}
     </Box>
   );
 };
