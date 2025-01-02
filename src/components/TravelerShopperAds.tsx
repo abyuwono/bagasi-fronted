@@ -79,17 +79,17 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell style={{ maxWidth: '150px', padding: '16px 8px' }}>Nama Produk</TableCell>
-            <TableCell style={{ width: '80px', whiteSpace: 'nowrap', padding: '16px 8px' }}>Berat</TableCell>
-            <TableCell style={{ width: '100px', whiteSpace: 'nowrap', padding: '16px 8px' }}>Harga</TableCell>
-            <TableCell style={{ width: '100px', whiteSpace: 'nowrap', padding: '16px 8px' }}>
+            <TableCell style={{ width: '200px', padding: '12px 8px' }}>Nama Produk</TableCell>
+            <TableCell style={{ width: '60px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Berat</TableCell>
+            <TableCell style={{ width: '80px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Harga</TableCell>
+            <TableCell style={{ width: '80px', whiteSpace: 'nowrap', padding: '12px 8px' }}>
               <Typography variant="subtitle2" fontWeight="bold">
                 Pendapatan
               </Typography>
             </TableCell>
-            <TableCell style={{ width: '100px', whiteSpace: 'nowrap', padding: '16px 8px' }}>Shopper</TableCell>
-            <TableCell style={{ width: '100px', whiteSpace: 'nowrap', padding: '16px 8px' }}>Status</TableCell>
-            <TableCell align="center" style={{ width: '50px', padding: '16px 8px' }}>Detail</TableCell>
+            <TableCell style={{ width: '80px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Shopper</TableCell>
+            <TableCell style={{ width: '80px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Status</TableCell>
+            <TableCell align="center" style={{ width: '40px', padding: '12px 8px' }}>Detail</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -97,29 +97,27 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
             <TableRow key={ad._id}>
               <TableCell 
                 style={{ 
-                  maxWidth: '150px', 
+                  width: '200px',
+                  whiteSpace: 'nowrap',
                   overflow: 'hidden',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                  lineHeight: '1.4em',
-                  height: '2.8em',
-                  padding: '16px 8px',
+                  textOverflow: 'ellipsis',
+                  padding: '12px 8px',
                   borderBottom: 'none'
                 }}
+                title={ad.productName} // Show full name on hover
               >
-                {ad.productName}
+                {ad.productName?.length > 18 ? `${ad.productName.substring(0, 15)}...` : ad.productName}
               </TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>{ad.productWeight} kg</TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>IDR {ad.productPriceIDR.toLocaleString()}</TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '12px 8px', borderBottom: 'none' }}>{ad.productWeight} kg</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '12px 8px', borderBottom: 'none' }}>IDR {ad.productPriceIDR.toLocaleString()}</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '12px 8px', borderBottom: 'none' }}>
                 <Typography color="success.main" fontWeight="bold">
                   IDR {ad.commission.idr.toLocaleString()}
                 </Typography>
               </TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>{ad.user.username}</TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>{getStatusLabel(ad.status)}</TableCell>
-              <TableCell align="center" style={{ padding: '16px 8px', borderBottom: 'none' }}>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '12px 8px', borderBottom: 'none' }}>{ad.user.username}</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '12px 8px', borderBottom: 'none' }}>{getStatusLabel(ad.status)}</TableCell>
+              <TableCell align="center" style={{ padding: '12px 8px', borderBottom: 'none' }}>
                 <IconButton
                   size="small"
                   component={RouterLink}
