@@ -212,12 +212,12 @@ const Profile = () => {
         </Grid>
       </Paper>
 
-      {profile.role === 'traveler' && (
+      {profile.role === 'traveler' && user?._id && (
         <>
           <Typography variant="h6" gutterBottom sx={{ mt: 4, mb: 2 }}>
             Permintaan Jastip yang Diambil
           </Typography>
-          <TravelerShopperAds travelerId={user?._id || ''} />
+          <TravelerShopperAds travelerId={user._id} />
         </>
       )}
 
