@@ -231,7 +231,7 @@ const ShopperAdDetails: React.FC = () => {
                     rel="noopener noreferrer"
                     color="primary"
                   >
-                    {ad.productName || 'View Product'}
+                    {ad.productUrl.split('/').pop() || 'View Product'}
                   </Typography>
                 </Grid>
 
