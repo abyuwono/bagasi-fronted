@@ -230,7 +230,7 @@ const AdDetails = () => {
                 "@type": "Offer",
                 "price": ad.pricePerKg,
                 "priceCurrency": ad.currency,
-                "availability": "https://schema.org/InStock",
+                "availability": "InStock",
                 "priceValidUntil": ad.expiresAt,
                 "shippingDetails": {
                   "@type": "OfferShippingDetails",
@@ -267,9 +267,9 @@ const AdDetails = () => {
                     "@type": "Country",
                     "name": getCityCountryCode(ad.arrivalCity)
                   },
-                  "returnPolicyCategory": "http://schema.org/ReturnNotAccepted",
+                  "returnPolicyCategory": "ReturnNotAccepted",
                   "merchantReturnDays": "0",
-                  "returnMethod": "http://schema.org/ReturnNotAccepted"
+                  "returnMethod": "ReturnNotAccepted"
                 }
               },
               "seller": {
