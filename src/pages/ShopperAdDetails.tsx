@@ -410,7 +410,7 @@ const ShopperAdDetails: React.FC = () => {
                 <Typography variant="h6" gutterBottom>
                   Chat
                 </Typography>
-                <ChatRoom adId={ad.id} />
+                <ChatRoom adId={ad._id} />
               </Box>
             </Grid>
           )}
