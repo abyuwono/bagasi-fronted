@@ -79,34 +79,44 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell style={{ maxWidth: '200px' }}>Nama Produk</TableCell>
-            <TableCell>Berat</TableCell>
-            <TableCell>Harga</TableCell>
-            <TableCell>
+            <TableCell style={{ maxWidth: '150px' }}>Nama Produk</TableCell>
+            <TableCell style={{ width: '80px', whiteSpace: 'nowrap' }}>Berat</TableCell>
+            <TableCell style={{ width: '100px', whiteSpace: 'nowrap' }}>Harga</TableCell>
+            <TableCell style={{ width: '100px', whiteSpace: 'nowrap' }}>
               <Typography variant="subtitle2" fontWeight="bold">
                 Pendapatan
               </Typography>
             </TableCell>
-            <TableCell>Shopper</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell align="center">Detail</TableCell>
+            <TableCell style={{ width: '100px', whiteSpace: 'nowrap' }}>Shopper</TableCell>
+            <TableCell style={{ width: '100px', whiteSpace: 'nowrap' }}>Status</TableCell>
+            <TableCell align="center" style={{ width: '50px' }}>Detail</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {ads.map((ad) => (
             <TableRow key={ad._id}>
-              <TableCell style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <TableCell 
+                style={{ 
+                  maxWidth: '150px', 
+                  overflow: 'hidden',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  lineHeight: '1.2em',
+                  height: '2.4em'
+                }}
+              >
                 {ad.productName}
               </TableCell>
-              <TableCell>{ad.productWeight} kg</TableCell>
-              <TableCell>IDR {ad.productPriceIDR.toLocaleString()}</TableCell>
-              <TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap' }}>{ad.productWeight} kg</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap' }}>IDR {ad.productPriceIDR.toLocaleString()}</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap' }}>
                 <Typography color="success.main" fontWeight="bold">
                   IDR {ad.commission.idr.toLocaleString()}
                 </Typography>
               </TableCell>
-              <TableCell>{ad.user.username}</TableCell>
-              <TableCell>{getStatusLabel(ad.status)}</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap' }}>{ad.user.username}</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap' }}>{getStatusLabel(ad.status)}</TableCell>
               <TableCell align="center">
                 <IconButton
                   size="small"
