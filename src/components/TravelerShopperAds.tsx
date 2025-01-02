@@ -104,21 +104,22 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
                   WebkitBoxOrient: 'vertical',
                   lineHeight: '1.4em',
                   height: '2.8em',
-                  padding: '16px 8px'
+                  padding: '16px 8px',
+                  borderBottom: 'none'
                 }}
               >
                 {ad.productName}
               </TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px' }}>{ad.productWeight} kg</TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px' }}>IDR {ad.productPriceIDR.toLocaleString()}</TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px' }}>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>{ad.productWeight} kg</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>IDR {ad.productPriceIDR.toLocaleString()}</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>
                 <Typography color="success.main" fontWeight="bold">
                   IDR {ad.commission.idr.toLocaleString()}
                 </Typography>
               </TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px' }}>{ad.user.username}</TableCell>
-              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px' }}>{getStatusLabel(ad.status)}</TableCell>
-              <TableCell align="center" style={{ padding: '16px 8px' }}>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>{ad.user.username}</TableCell>
+              <TableCell style={{ whiteSpace: 'nowrap', padding: '16px 8px', borderBottom: 'none' }}>{getStatusLabel(ad.status)}</TableCell>
+              <TableCell align="center" style={{ padding: '16px 8px', borderBottom: 'none' }}>
                 <IconButton
                   size="small"
                   component={RouterLink}
