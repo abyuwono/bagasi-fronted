@@ -55,7 +55,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ adId }) => {
   useEffect(() => {
     const fetchChat = async () => {
       try {
-        const response = await api.get(`/api/chat/ad/${adId}`);
+        const response = await api.get(`/chat/ad/${adId}`);
         setChat(response.data);
         setError('');
       } catch (err) {
@@ -83,7 +83,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ adId }) => {
 
     try {
       setSending(true);
-      const response = await api.post(`/api/chat/${chat._id}/messages`, {
+      const response = await api.post(`/chat/${chat._id}/messages`, {
         content: message.trim()
       });
 
