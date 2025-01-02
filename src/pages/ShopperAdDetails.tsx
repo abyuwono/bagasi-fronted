@@ -208,7 +208,7 @@ const ShopperAdDetails: React.FC = () => {
 
               <Box sx={{ mb: 3 }}>
                 <img
-                  src={ad.productImage}
+                  src={ad.cloudflareImageUrl || ad.productImage}
                   alt={ad.productName || "Product"}
                   style={{
                     width: '100%',

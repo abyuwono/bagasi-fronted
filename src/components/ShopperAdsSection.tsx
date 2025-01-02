@@ -17,6 +17,8 @@ import api from '../services/api';
 interface ShopperAd {
   _id: string;
   productImage: string;
+  cloudflareImageUrl?: string;
+  cloudflareImageId?: string;
   productUrl: string;
   productWeight: number;
   commission: {

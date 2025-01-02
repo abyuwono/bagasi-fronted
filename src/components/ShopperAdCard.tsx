@@ -17,6 +17,8 @@ interface ShopperAdCardProps {
   ad: {
     _id: string;
     productImage: string;
+    cloudflareImageUrl?: string;
+    cloudflareImageId?: string;
     productUrl: string;
     productWeight: number;
     commission: {
@@ -79,9 +81,15 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
       <CardMedia
         component="img"
         height="200"
-        image={ad.productImage}
+        image={ad.cloudflareImageUrl || ad.productImage}
         alt="Product"
         sx={{ objectFit: 'contain', bgcolor: 'white', p: 2 }}
+        onError={(e) => {
+          const img = e.target as HTMLImageElement;
+          if (!img.src.includes('placeholder')) {
+            img.src = 'https://placehold.co/400x400?text=Image+Not+Available';
+          }
+        }}
       />
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ mb: 2 }}>
