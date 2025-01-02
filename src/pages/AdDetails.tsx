@@ -219,11 +219,19 @@ const AdDetails = () => {
               "name": generateSEOTitle(ad),
               "description": generateSEODescription(ad),
               "image": "https://market.bagasi.id/bagasi-logo.png",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": ad.customRating || ad.user.rating || 5,
+                "reviewCount": ad.user.totalReviews || 1,
+                "bestRating": "5",
+                "worstRating": "1"
+              },
               "offers": {
                 "@type": "Offer",
                 "price": ad.pricePerKg,
                 "priceCurrency": ad.currency,
                 "availability": "https://schema.org/InStock",
+                "priceValidUntil": ad.expiresAt,
                 "shippingDetails": {
                   "@type": "OfferShippingDetails",
                   "shippingDestination": {
@@ -246,6 +254,19 @@ const AdDetails = () => {
               "seller": {
                 "@type": "Person",
                 "name": ad.user.username
+              },
+              "review": {
+                "@type": "Review",
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": ad.customRating || ad.user.rating || 5,
+                  "bestRating": "5",
+                  "worstRating": "1"
+                },
+                "author": {
+                  "@type": "Person",
+                  "name": "Bagasi User"
+                }
               }
             })}
           </script>
