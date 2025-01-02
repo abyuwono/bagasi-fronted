@@ -91,7 +91,7 @@ const Profile = () => {
     fetchProfile();
   }, [user, navigate, authLoading]);
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
         <CircularProgress />
@@ -214,7 +214,7 @@ const Profile = () => {
         </Grid>
       </Paper>
 
-      {profile.role === 'traveler' && user && !authLoading && (
+      {user && user.role === 'traveler' && (
         <>
           <Typography variant="h6" gutterBottom sx={{ mt: 4, mb: 2 }}>
             Permintaan Jastip yang Diambil
