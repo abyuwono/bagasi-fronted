@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -117,7 +118,7 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
                     <Button
                       variant="contained"
                       color="primary"
-                      component={Link}
+                      component={RouterLink}
                       to={`/shopper-ads/${ad.id}`}
                     >
                       View Details
