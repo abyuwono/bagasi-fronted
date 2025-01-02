@@ -72,7 +72,7 @@ const ShopperAdDetails: React.FC = () => {
         ...prev, 
         status: 'in_discussion', 
         selectedTraveler: { 
-          _id: user?._id || '', 
+          id: user?.id || '', 
           username: user?.username || '' 
         } 
       } : null);
@@ -179,8 +179,8 @@ const ShopperAdDetails: React.FC = () => {
     );
   }
 
-  const isUserShopper = user?._id === ad.user._id;
-  const isUserTraveler = user?._id === ad?.selectedTraveler?._id;
+  const isUserShopper = user?.id === ad.user.id;
+  const isUserTraveler = user?.id === ad?.selectedTraveler?.id;
   const canShowFullAddress = ad.status === 'accepted' && isUserTraveler;
 
   return (
@@ -410,10 +410,10 @@ const ShopperAdDetails: React.FC = () => {
           */}
           {user && 
            ((isUserShopper && ad.status !== 'cancelled') || 
-            (isUserTraveler && ad.selectedTraveler?._id === user._id && ad.status !== 'cancelled')) && (
+            (isUserTraveler && ad.selectedTraveler?.id === user.id && ad.status !== 'cancelled')) && (
             <Grid item xs={12} md={4}>
               <Paper sx={{ p: 3, height: '100%' }}>
-                <ChatRoom adId={ad._id} />
+                <ChatRoom adId={ad.id} />
               </Paper>
             </Grid>
           )}
