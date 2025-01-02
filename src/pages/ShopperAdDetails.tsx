@@ -208,7 +208,7 @@ const ShopperAdDetails: React.FC = () => {
 
               <Box sx={{ mb: 3 }}>
                 <img
-                  src={ad.cloudflareImageUrl || ad.productImage}
+                  src={ad.productImage}
                   alt={ad.productName || "Product"}
                   style={{
                     width: '100%',
@@ -219,8 +219,8 @@ const ShopperAdDetails: React.FC = () => {
                   }}
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
-                    if (img.src !== ad.productImage) {
-                      img.src = ad.productImage;
+                    if (!img.src.includes('placeholder')) {
+                      img.src = 'https://placehold.co/400x400?text=Image+Not+Available';
                     }
                   }}
                 />
