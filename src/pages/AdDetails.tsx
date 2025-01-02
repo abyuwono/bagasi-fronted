@@ -258,9 +258,11 @@ const AdDetails = () => {
                     "@type": "MonetaryAmount",
                     "value": ad.pricePerKg,
                     "currency": ad.currency
-                  }
+                  },
+                  "applicableCountry": getCityCountryCode(ad.arrivalCity)
                 },
-                "hasMerchantReturnPolicy": "https://schema.org/MerchantReturnNotAccepted"
+                "hasMerchantReturnPolicy": "https://schema.org/MerchantReturnNotAccepted",
+                "returnPolicyCategory": "https://schema.org/ReturnNotAccepted"
               },
               "seller": {
                 "@type": "Person",
