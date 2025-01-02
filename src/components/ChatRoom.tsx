@@ -7,7 +7,9 @@ import {
   Paper,
   CircularProgress,
   Alert,
-  useTheme
+  useTheme,
+  Grid,
+  Button
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useAuth } from '../contexts/AuthContext';
@@ -15,27 +17,30 @@ import api from '../services/api';
 import { toast } from 'react-toastify';
 
 interface Message {
-  _id: string;
+  id: string;
+  text: string;
   sender: {
-    _id: string;
+    id: string;
     username: string;
   };
-  content: string;
-  timestamp: string;
-  read: boolean;
+  createdAt: string;
 }
 
 interface ChatRoom {
-  _id: string;
-  messages: Message[];
+  id: string;
+  ad: {
+    id: string;
+    productUrl: string;
+  };
   shopper: {
-    _id: string;
+    id: string;
     username: string;
   };
   traveler: {
-    _id: string;
+    id: string;
     username: string;
   };
+  messages: Message[];
 }
 
 interface ChatRoomProps {
@@ -47,84 +52,91 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ adId }) => {
   const theme = useTheme();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [chat, setChat] = useState<ChatRoom | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chat?.messages]);
 
   useEffect(() => {
     const fetchChat = async () => {
       try {
         const response = await api.get(`/chat/ad/${adId}`);
         setChat(response.data);
-        setError('');
-      } catch (err) {
+        setError(null);
+      } catch (err: any) {
         console.error('Error fetching chat:', err);
-        setError('Failed to load chat');
+        setError(err.response?.data?.message || 'Failed to load chat');
       } finally {
         setLoading(false);
       }
     };
 
-    if (adId) {
-      fetchChat();
-    }
-  }, [adId]);
+    fetchChat();
 
-  useEffect(() => {
-    // Scroll to bottom when new messages arrive
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chat?.messages]);
+    // Set up polling for new messages
+    const pollInterval = setInterval(fetchChat, 5000);
+
+    return () => clearInterval(pollInterval);
+  }, [adId]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim() || !chat) return;
+
+    if (!message.trim() || !chat) {
+      return;
+    }
 
     try {
-      setSending(true);
-      const response = await api.post(`/chat/ad/${chat._id}/messages`, {
-        content: message.trim()
+      const response = await api.post(`/chat/ad/${chat.id}/messages`, {
+        text: message,
       });
 
-      setChat(prev => prev ? {
-        ...prev,
-        messages: [...prev.messages, response.data]
-      } : null);
+      setChat((prevChat) => {
+        if (!prevChat) return null;
+        return {
+          ...prevChat,
+          messages: [...prevChat.messages, response.data],
+        };
+      });
+
       setMessage('');
+      setError(null);
     } catch (err: any) {
       console.error('Error sending message:', err);
-      if (err.response?.data?.message?.includes('contact information')) {
-        toast.error('Messages cannot contain contact information');
-      } else {
-        toast.error('Failed to send message');
-      }
-    } finally {
-      setSending(false);
+      setError(err.response?.data?.message || 'Failed to send message');
     }
-  };
-
-  const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('id-ID', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   };
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="400px">
+      <Box display="flex" justifyContent="center" height="400px">
         <CircularProgress />
       </Box>
     );
   }
 
   if (error) {
-    return <Alert severity="error">{error}</Alert>;
+    return (
+      <Alert severity="error">
+        {error}
+      </Alert>
+    );
   }
 
   if (!chat) {
-    return <Alert severity="info">No chat available</Alert>;
+    return (
+      <Alert severity="info">
+        No chat found for this ad
+      </Alert>
+    );
   }
 
   return (
@@ -134,6 +146,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ adId }) => {
       </Typography>
       
       <Paper
+        ref={chatContainerRef}
         sx={{
           flex: 1,
           mb: 2,
@@ -144,41 +157,39 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ adId }) => {
         }}
       >
         {chat.messages.map((msg) => {
-          const isOwnMessage = msg.sender._id === user?._id;
+          const isOwnMessage = msg.sender.id === user?.id;
 
           return (
             <Box
-              key={msg._id}
+              key={msg.id}
               sx={{
                 display: 'flex',
                 justifyContent: isOwnMessage ? 'flex-end' : 'flex-start',
-                mb: 1
+                mb: 2,
               }}
             >
               <Box
                 sx={{
-                  maxWidth: '80%',
-                  bgcolor: isOwnMessage ? 'primary.main' : 'grey.300',
+                  maxWidth: '70%',
+                  bgcolor: isOwnMessage ? 'primary.main' : 'white',
                   color: isOwnMessage ? 'white' : 'text.primary',
                   borderRadius: 2,
-                  p: 1,
-                  px: 2
+                  p: 2,
+                  position: 'relative',
                 }}
               >
-                <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
-                  {msg.sender.username}
+                <Typography variant="body2" gutterBottom>
+                  {msg.text}
                 </Typography>
-                <Typography variant="body2">{msg.content}</Typography>
                 <Typography
                   variant="caption"
                   sx={{
                     display: 'block',
-                    textAlign: 'right',
-                    mt: 0.5,
-                    opacity: 0.8
+                    mt: 1,
+                    color: isOwnMessage ? 'white' : 'text.secondary',
                   }}
                 >
-                  {formatTime(msg.timestamp)}
+                  {msg.sender.username} • {new Date(msg.createdAt).toLocaleTimeString()}
                 </Typography>
               </Box>
             </Box>
@@ -187,29 +198,28 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ adId }) => {
         <div ref={messagesEndRef} />
       </Paper>
 
-      <Box
-        component="form"
-        onSubmit={handleSendMessage}
-        sx={{
-          display: 'flex',
-          gap: 1
-        }}
-      >
-        <TextField
-          fullWidth
-          size="small"
-          placeholder="Type your message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          disabled={sending}
-        />
-        <IconButton
-          color="primary"
-          type="submit"
-          disabled={!message.trim() || sending}
-        >
-          <SendIcon />
-        </IconButton>
+      <Box component="form" onSubmit={handleSendMessage} sx={{ mt: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Type a message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={!message.trim()}
+            >
+              Send
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   );
