@@ -178,10 +178,10 @@ const ShopperAdDetails: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{`Jastip ${ad.user.customDisplayName || ad.user.username} - ${ad.departureCity} ke ${ad.arrivalCity} - Bagasi`}</title>
+        <title>{`Jastip ${ad.user.username} - ${ad.productUrl} - Bagasi`}</title>
         <meta
           name="description"
-          content={`Jastip dari ${ad.departureCity} ke ${ad.arrivalCity} oleh ${ad.user.customDisplayName || ad.user.username}. Bagasi - Platform jastip terpercaya untuk membeli barang dari luar negeri.`}
+          content={`Jastip untuk ${ad.productUrl} oleh ${ad.user.username}. Bagasi - Platform jastip terpercaya untuk membeli barang dari luar negeri.`}
         />
       </Helmet>
 
