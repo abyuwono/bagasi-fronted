@@ -266,7 +266,7 @@ const AdDetails = () => {
               },
               "seller": {
                 "@type": "Person",
-                "name": ad.user.username
+                "name": ad.customDisplayName || ad.user.username
               },
               "review": {
                 "@type": "Review",
