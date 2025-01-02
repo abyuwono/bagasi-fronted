@@ -94,7 +94,7 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
         </TableHead>
         <TableBody>
           {ads.map((ad) => (
-            <TableRow key={ad._id}>
+            <TableRow key={ad.id}>
               <TableCell style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {ad.productName}
               </TableCell>
@@ -111,7 +111,7 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
                 <IconButton
                   size="small"
                   component={RouterLink}
-                  to={`/shopper-ads/${ad._id}`}
+                  to={`/shopper-ads/${ad.id}`}
                 >
                   <VisibilityIcon fontSize="small" />
                 </IconButton>
