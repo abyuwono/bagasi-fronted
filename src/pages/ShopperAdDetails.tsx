@@ -220,9 +220,9 @@ const ShopperAdDetails: React.FC = () => {
               </Box>
 
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <Typography variant="subtitle1" gutterBottom>
-                    Product URL:
+                    Product:
                   </Typography>
                   <Typography
                     component="a"
@@ -230,9 +230,8 @@ const ShopperAdDetails: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     color="primary"
-                    sx={{ wordBreak: 'break-all' }}
                   >
-                    {ad.productUrl}
+                    {ad.productName || 'View Product'}
                   </Typography>
                 </Grid>
 
@@ -240,7 +239,7 @@ const ShopperAdDetails: React.FC = () => {
                   <Typography variant="subtitle1" gutterBottom>
                     Product Weight:
                   </Typography>
-                  <Typography>{ad.productWeight}g</Typography>
+                  <Typography>{Math.max(0.1, ad.productWeight / 1000)} KG</Typography>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -254,9 +253,6 @@ const ShopperAdDetails: React.FC = () => {
                   <Typography>
                     {formatCurrency(ad.productPrice, ad.commission.currency)}
                   </Typography>
-                  <Typography color="text.secondary" variant="body2">
-                    ({formatCurrency(ad.productPriceIDR, 'IDR')})
-                  </Typography>
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
@@ -264,10 +260,7 @@ const ShopperAdDetails: React.FC = () => {
                     Commission:
                   </Typography>
                   <Typography color="primary">
-                    {formatCurrency(ad.commission.idr, 'IDR')}
-                  </Typography>
-                  <Typography color="text.secondary" variant="body2">
-                    ({formatCurrency(ad.commission.native, ad.commission.currency)})
+                    {formatCurrency(ad.commission.native, ad.commission.currency)}
                   </Typography>
                 </Grid>
 
@@ -361,7 +354,7 @@ const ShopperAdDetails: React.FC = () => {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            {(isUserShopper || isUserTraveler) && ad.status !== 'cancelled' && (
+            {user && (isUserShopper || isUserTraveler) && ad.status !== 'cancelled' && (
               <Paper sx={{ p: 3, height: '100%' }}>
                 <ChatRoom adId={ad._id} />
               </Paper>
