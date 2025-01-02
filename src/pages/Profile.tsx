@@ -219,6 +219,9 @@ const Profile = () => {
           <Typography variant="h6" gutterBottom sx={{ mt: 4, mb: 2 }}>
             Permintaan Jastip yang Diambil
           </Typography>
+          {console.log('Profile user:', user)}
+          {console.log('Profile user.id:', user.id)}
+          {console.log('Profile user.role:', user.role)}
           <TravelerShopperAds travelerId={user.id} />
         </>
       )}

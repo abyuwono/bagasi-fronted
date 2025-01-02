@@ -23,8 +23,13 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
   const [ads, setAds] = useState<ShopperAd[]>([]);
 
   useEffect(() => {
+    console.log('TravelerShopperAds mounted with travelerId:', travelerId);
+    console.log('TravelerShopperAds travelerId type:', typeof travelerId);
+    console.log('TravelerShopperAds travelerId length:', travelerId?.length);
+
     const fetchAds = async () => {
       if (!travelerId) {
+        console.error('No traveler ID provided. Value:', travelerId);
         setError('No traveler ID provided');
         setLoading(false);
         return;
@@ -33,6 +38,7 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
       try {
         console.log('Fetching ads for traveler:', travelerId);
         const response = await api.get(`/shopper-ads/traveler/${travelerId}`);
+        console.log('Fetched ads response:', response.data);
         setAds(response.data);
         setError(null);
       } catch (err: any) {
