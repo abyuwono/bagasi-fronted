@@ -87,7 +87,7 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
                 Pendapatan
               </Typography>
             </TableCell>
-            <TableCell>Username</TableCell>
+            <TableCell>Shopper</TableCell>
             <TableCell>Status</TableCell>
             <TableCell align="center">Detail</TableCell>
           </TableRow>
