@@ -241,15 +241,26 @@ const AdDetails = () => {
                   },
                   "deliveryTime": {
                     "@type": "ShippingDeliveryTime",
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": "3",
+                      "maxValue": "7",
+                      "unitCode": "DAY"
+                    },
                     "handlingTime": {
                       "@type": "QuantitativeValue",
                       "minValue": "1",
                       "maxValue": "3",
                       "unitCode": "DAY"
                     }
+                  },
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": ad.pricePerKg,
+                    "currency": ad.currency
                   }
                 },
-                "hasMerchantReturnPolicy": false
+                "hasMerchantReturnPolicy": "https://schema.org/MerchantReturnNotAccepted"
               },
               "seller": {
                 "@type": "Person",
