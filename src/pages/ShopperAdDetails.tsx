@@ -42,7 +42,7 @@ const ShopperAdDetails: React.FC = () => {
   useEffect(() => {
     const fetchAd = async () => {
       try {
-        const response = await api.get(`/api/shopper-ads/${id}`);
+        const response = await api.get(`/shopper-ads/${id}`);
         setAd(response.data);
       } catch (err) {
         console.error('Error fetching ad:', err);
@@ -58,7 +58,7 @@ const ShopperAdDetails: React.FC = () => {
   const handleRequestHelp = async () => {
     try {
       setProcessingAction(true);
-      const response = await api.post(`/api/shopper-ads/${id}/request`);
+      const response = await api.post(`/shopper-ads/${id}/request`);
       setShowChat(true);
       setAd(prev => prev ? { 
         ...prev, 
@@ -80,7 +80,7 @@ const ShopperAdDetails: React.FC = () => {
   const handleAcceptTraveler = async () => {
     try {
       setProcessingAction(true);
-      await api.post(`/api/shopper-ads/${id}/accept-traveler`);
+      await api.post(`/shopper-ads/${id}/accept-traveler`);
       setAd(prev => prev ? { ...prev, status: 'accepted' } : null);
       setShowAcceptDialog(false);
       toast.success('Traveler accepted successfully!');
@@ -95,7 +95,7 @@ const ShopperAdDetails: React.FC = () => {
   const handleCancel = async () => {
     try {
       setProcessingAction(true);
-      await api.patch(`/api/shopper-ads/${id}/cancel`);
+      await api.patch(`/shopper-ads/${id}/cancel`);
       setAd(prev => prev ? { ...prev, status: 'cancelled' } : null);
       setShowCancelDialog(false);
       toast.success('Order cancelled successfully');
@@ -110,7 +110,7 @@ const ShopperAdDetails: React.FC = () => {
   const handleComplete = async () => {
     try {
       setProcessingAction(true);
-      await api.patch(`/api/shopper-ads/${id}/complete`);
+      await api.patch(`/shopper-ads/${id}/complete`);
       setAd(prev => prev ? { ...prev, status: 'completed' } : null);
       toast.success('Order marked as completed!');
     } catch (err) {
@@ -178,10 +178,10 @@ const ShopperAdDetails: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Jastip Request Details - Bagasi</title>
+        <title>{`Jastip ${ad.user.customDisplayName || ad.user.username} - ${ad.departureCity} ke ${ad.arrivalCity} - Bagasi`}</title>
         <meta
           name="description"
-          content="Detail permintaan jastip di Bagasi. Platform jastip terpercaya untuk membeli barang dari luar negeri."
+          content={`Jastip dari ${ad.departureCity} ke ${ad.arrivalCity} oleh ${ad.user.customDisplayName || ad.user.username}. Bagasi - Platform jastip terpercaya untuk membeli barang dari luar negeri.`}
         />
       </Helmet>
 
