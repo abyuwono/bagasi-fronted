@@ -51,12 +51,14 @@ interface UserProfile {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
+    if (authLoading) return;
+
     const fetchProfile = async () => {
       try {
         if (!user) {
@@ -87,7 +89,7 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [user, navigate]);
+  }, [user, navigate, authLoading]);
 
   if (loading) {
     return (
@@ -212,7 +214,7 @@ const Profile = () => {
         </Grid>
       </Paper>
 
-      {profile.role === 'traveler' && user?._id && (
+      {profile.role === 'traveler' && user && !authLoading && (
         <>
           <Typography variant="h6" gutterBottom sx={{ mt: 4, mb: 2 }}>
             Permintaan Jastip yang Diambil

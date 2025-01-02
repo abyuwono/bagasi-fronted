@@ -26,8 +26,8 @@ const TravelerShopperAds: React.FC<TravelerShopperAdsProps> = ({ travelerId }) =
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        if (!travelerId || !/^[0-9a-fA-F]{24}$/.test(travelerId)) {
-          console.error('Invalid traveler ID format');
+        if (!travelerId || typeof travelerId !== 'string') {
+          console.error('Invalid traveler ID');
           setLoading(false);
           return;
         }
