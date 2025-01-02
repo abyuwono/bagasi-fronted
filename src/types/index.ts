@@ -71,9 +71,9 @@ export interface Transaction {
 }
 
 export interface ShopperAd {
-  _id: string;
+  id: string;
   user: {
-    _id: string;
+    id: string;
     username: string;
     customDisplayName?: string;
   };
@@ -94,7 +94,7 @@ export interface ShopperAd {
   notes: string;
   status: string;
   selectedTraveler?: {
-    _id: string;
+    id: string;
     username: string;
   };
   trackingNumber?: string;

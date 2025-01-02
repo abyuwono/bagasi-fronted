@@ -67,15 +67,15 @@ const ShopperAdDetails: React.FC = () => {
     try {
       setProcessingAction(true);
       const response = await api.post(`/shopper-ads/${id}/request`);
-      setShowChat(true);
-      setAd(prev => prev ? { 
-        ...prev, 
-        status: 'in_discussion', 
-        selectedTraveler: { 
-          id: user?.id || '', 
-          username: user?.username || '' 
-        } 
+      setAd(prev => prev ? {
+        ...response.data,
+        status: 'in_discussion',
+        selectedTraveler: {
+          id: user?.id || '',
+          username: user?.username || ''
+        }
       } : null);
+      setShowChat(true);
       toast.success('Request sent successfully!');
     } catch (err) {
       console.error('Error requesting help:', err);
@@ -403,18 +403,15 @@ const ShopperAdDetails: React.FC = () => {
             </Paper>
           </Grid>
 
-          {/* Only show chat room if:
-              1. User is logged in AND
-              2. User is either the ad creator OR the selected traveler AND
-              3. Ad is not cancelled
-          */}
-          {user && 
-           ((isUserShopper && ad.status !== 'cancelled') || 
-            (isUserTraveler && ad.selectedTraveler?.id === user.id && ad.status !== 'cancelled')) && (
+          {(isUserShopper ||
+           (isUserTraveler && ad.selectedTraveler?.id === user.id && ad.status !== 'cancelled')) && (
             <Grid item xs={12} md={4}>
-              <Paper sx={{ p: 3, height: '100%' }}>
+              <Box mt={4}>
+                <Typography variant="h6" gutterBottom>
+                  Chat
+                </Typography>
                 <ChatRoom adId={ad.id} />
-              </Paper>
+              </Box>
             </Grid>
           )}
         </Grid>
