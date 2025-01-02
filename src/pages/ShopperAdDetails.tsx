@@ -208,7 +208,7 @@ const ShopperAdDetails: React.FC = () => {
 
               <Box sx={{ mb: 3 }}>
                 <img
-                  src={ad.productImage}
+                  src={ad.cloudflareImageUrl || ad.productImage}
                   alt="Product"
                   style={{
                     width: '100%',
@@ -389,7 +389,14 @@ const ShopperAdDetails: React.FC = () => {
             </Paper>
           </Grid>
 
-          {(isUserShopper || isUserTraveler) && ad.status !== 'cancelled' && (
+          {/* Only show chat room if:
+              1. User is logged in AND
+              2. User is either the ad creator OR the selected traveler AND
+              3. Ad is not cancelled
+          */}
+          {user && 
+           ((isUserShopper && ad.status !== 'cancelled') || 
+            (isUserTraveler && ad.selectedTraveler?._id === user._id && ad.status !== 'cancelled')) && (
             <Grid item xs={12} md={4}>
               <Paper sx={{ p: 3, height: '100%' }}>
                 <ChatRoom adId={ad._id} />

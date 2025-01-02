@@ -75,9 +75,12 @@ export interface ShopperAd {
   user: {
     _id: string;
     username: string;
+    customDisplayName?: string;
   };
   productUrl: string;
   productImage: string;
+  cloudflareImageId?: string;
+  cloudflareImageUrl?: string;
   productPrice: number;
   productWeight: number;
   productPriceIDR: number;
@@ -95,4 +98,6 @@ export interface ShopperAd {
     username: string;
   };
   trackingNumber?: string;
+  departureCity: string;
+  arrivalCity: string;
 }
