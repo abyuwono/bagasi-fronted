@@ -28,6 +28,7 @@ import RandomAvatar from '../components/RandomAvatar';
 import VerificationBadge from '../components/VerificationBadge';
 import FormattedNotes from '../components/FormattedNotes';
 import { generateAdUrl } from '../utils/url';
+import { getCityCountryCode } from '../utils/country';
 import { Helmet } from 'react-helmet-async';
 import Footer from '../components/Footer';
 
@@ -217,11 +218,30 @@ const AdDetails = () => {
               "@type": "Product",
               "name": generateSEOTitle(ad),
               "description": generateSEODescription(ad),
+              "image": "https://market.bagasi.id/bagasi-logo.png",
               "offers": {
                 "@type": "Offer",
                 "price": ad.pricePerKg,
                 "priceCurrency": ad.currency,
-                "availability": "https://schema.org/InStock"
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": getCityCountryCode(ad.arrivalCity),
+                    "addressRegion": ad.arrivalCity
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": "1",
+                      "maxValue": "3",
+                      "unitCode": "DAY"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": false
               },
               "seller": {
                 "@type": "Person",
