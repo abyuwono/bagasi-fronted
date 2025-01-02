@@ -66,10 +66,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ adId }) => {
       }
     };
 
-    fetchChat();
-    const interval = setInterval(fetchChat, 5000); // Poll every 5 seconds
-
-    return () => clearInterval(interval);
+    if (adId) {
+      fetchChat();
+    }
   }, [adId]);
 
   useEffect(() => {
