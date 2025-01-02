@@ -12,14 +12,28 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
+  IconButton,
 } from '@mui/material';
+import { Visibility as VisibilityIcon } from '@mui/icons-material';
 import api from '../services/api';
 import { ShopperAd } from '../types';
 
 interface Props {
   travelerId: string;
 }
+
+const getStatusLabel = (status: string): string => {
+  const statusMap: { [key: string]: string } = {
+    draft: 'Draft',
+    active: 'Aktif',
+    in_discussion: 'Sedang Diskusi',
+    accepted: 'Diterima',
+    shipped: 'Dikirim',
+    completed: 'Selesai',
+    cancelled: 'Dibatalkan'
+  };
+  return statusMap[status] || status;
+};
 
 const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
   const [loading, setLoading] = useState(true);
@@ -49,65 +63,58 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
   }, [travelerId]);
 
   if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" mt={4}>
-        <CircularProgress />
-      </Box>
-    );
+    return <CircularProgress />;
   }
 
   if (error) {
-    return (
-      <Alert severity="error" sx={{ mt: 2 }}>
-        {error}
-      </Alert>
-    );
+    return <Alert severity="error">{error}</Alert>;
   }
 
   if (ads.length === 0) {
-    return (
-      <Alert severity="info" sx={{ mt: 2 }}>
-        Belum ada permintaan jastip yang diambil
-      </Alert>
-    );
+    return <Typography>No shopper ads found.</Typography>;
   }
 
   return (
     <TableContainer component={Paper}>
-      <Table>
+      <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Nama Produk</TableCell>
+            <TableCell style={{ maxWidth: '200px' }}>Nama Produk</TableCell>
             <TableCell>Berat</TableCell>
             <TableCell>Harga</TableCell>
-            <TableCell>Pendapatan (Komisi)</TableCell>
-            <TableCell>Shopper Username</TableCell>
+            <TableCell>
+              <Typography variant="subtitle2" fontWeight="bold">
+                Pendapatan
+              </Typography>
+            </TableCell>
+            <TableCell>Username</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell>Action</TableCell>
+            <TableCell align="center">Detail</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {ads.map((ad) => (
             <TableRow key={ad._id}>
-              <TableCell>
-                <a href={ad.productUrl} target="_blank" rel="noopener noreferrer">
-                  {new URL(ad.productUrl).hostname}
-                </a>
+              <TableCell style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {ad.productName}
               </TableCell>
               <TableCell>{ad.productWeight} kg</TableCell>
               <TableCell>IDR {ad.productPriceIDR.toLocaleString()}</TableCell>
-              <TableCell>IDR {ad.commission.idr.toLocaleString()}</TableCell>
-              <TableCell>{ad.user.username}</TableCell>
-              <TableCell>{ad.status}</TableCell>
               <TableCell>
-                <Button
-                  variant="contained"
+                <Typography color="success.main" fontWeight="bold">
+                  IDR {ad.commission.idr.toLocaleString()}
+                </Typography>
+              </TableCell>
+              <TableCell>{ad.user.username}</TableCell>
+              <TableCell>{getStatusLabel(ad.status)}</TableCell>
+              <TableCell align="center">
+                <IconButton
                   size="small"
                   component={RouterLink}
                   to={`/shopper-ads/${ad._id}`}
                 >
-                  View Details
-                </Button>
+                  <VisibilityIcon fontSize="small" />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}
