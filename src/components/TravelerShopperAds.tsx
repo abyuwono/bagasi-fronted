@@ -9,6 +9,7 @@ import {
   Link,
   CircularProgress,
   Alert,
+  Button,
 } from '@mui/material';
 import api from '../services/api';
 import { ShopperAd } from '../types';
@@ -79,31 +80,48 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
   return (
     <Grid container spacing={2}>
       {ads.map((ad) => (
-        <Grid item xs={12} key={ad._id}>
+        <Grid item xs={12} key={ad.id}>
           <Card>
             <CardContent>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    <Link href={ad.productUrl} target="_blank" rel="noopener noreferrer">
-                      {ad.productUrl}
-                    </Link>
+                <Grid item xs={12} md={3}>
+                  <Box
+                    component="img"
+                    src={ad.cloudflareImageUrl || ad.productImage}
+                    alt={`Product from ${ad.user.username}`}
+                    sx={{
+                      width: '100%',
+                      height: 'auto',
+                      objectFit: 'cover',
+                      borderRadius: 1
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={9}>
+                  <Typography variant="h6" gutterBottom>
+                    {ad.user.username}'s Request
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                    <Chip
-                      label={ad.status}
-                      color={
-                        ad.status === 'completed'
-                          ? 'success'
-                          : ad.status === 'cancelled'
-                          ? 'error'
-                          : 'primary'
-                      }
-                      size="small"
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      Shopper: {ad.user.username}
-                    </Typography>
+                  <Typography variant="body1" color="text.secondary" paragraph>
+                    Product Weight: {ad.productWeight} kg
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary" paragraph>
+                    Product Price: IDR {ad.productPriceIDR.toLocaleString()}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary" paragraph>
+                    Commission: IDR {ad.commission.idr.toLocaleString()}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary" paragraph>
+                    From {ad.departureCity} to {ad.arrivalCity}
+                  </Typography>
+                  <Box mt={2}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      component={Link}
+                      to={`/shopper-ads/${ad.id}`}
+                    >
+                      View Details
+                    </Button>
                   </Box>
                 </Grid>
               </Grid>
