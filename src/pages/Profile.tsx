@@ -63,7 +63,7 @@ const Profile = () => {
         // TODO: Implement API call to fetch user profile
         // For now using mock data
         const mockProfile: UserProfile = {
-          _id: '123',
+          _id: user?._id || '',
           email: user?.email || '',
           username: user?.email?.split('@')[0] || 'User',
           role: user?.role || 'shopper',
@@ -72,9 +72,7 @@ const Profile = () => {
           membership: user?.membership,
           rating: 0,
           totalReviews: 0,
-          reviews: [
-
-          ],
+          reviews: [],
         };
         setProfile(mockProfile);
       } catch (err: any) {
