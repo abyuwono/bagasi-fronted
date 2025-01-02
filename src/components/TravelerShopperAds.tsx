@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
-  Card,
-  CardContent,
   Typography,
-  Grid,
-  Chip,
-  Link,
   CircularProgress,
   Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
   Button,
 } from '@mui/material';
 import api from '../services/api';
@@ -25,26 +27,18 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
   const [ads, setAds] = useState<ShopperAd[]>([]);
 
   useEffect(() => {
-    console.log('TravelerShopperAds mounted with travelerId:', travelerId);
-    console.log('TravelerShopperAds travelerId type:', typeof travelerId);
-    console.log('TravelerShopperAds travelerId length:', travelerId?.length);
-
     const fetchAds = async () => {
       if (!travelerId) {
-        console.error('No traveler ID provided. Value:', travelerId);
         setError('No traveler ID provided');
         setLoading(false);
         return;
       }
 
       try {
-        console.log('Fetching ads for traveler:', travelerId);
         const response = await api.get(`/shopper-ads/traveler/${travelerId}`);
-        console.log('Fetched ads response:', response.data);
         setAds(response.data);
         setError(null);
       } catch (err: any) {
-        console.error('Error fetching traveler shopper ads:', err);
         setError(err.response?.data?.message || 'Failed to load shopper ads');
       } finally {
         setLoading(false);
@@ -79,58 +73,47 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
   }
 
   return (
-    <Grid container spacing={2}>
-      {ads.map((ad) => (
-        <Grid item xs={12} key={ad.id}>
-          <Card>
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
-                  <Box
-                    component="img"
-                    src={ad.cloudflareImageUrl || ad.productImage}
-                    alt={`Product from ${ad.user.username}`}
-                    sx={{
-                      width: '100%',
-                      height: 'auto',
-                      objectFit: 'cover',
-                      borderRadius: 1
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  <Typography variant="h6" gutterBottom>
-                    {ad.user.username}'s Request
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary" paragraph>
-                    Product Weight: {ad.productWeight} kg
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary" paragraph>
-                    Product Price: IDR {ad.productPriceIDR.toLocaleString()}
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary" paragraph>
-                    Commission: IDR {ad.commission.idr.toLocaleString()}
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary" paragraph>
-                    From {ad.departureCity} to {ad.arrivalCity}
-                  </Typography>
-                  <Box mt={2}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      component={RouterLink}
-                      to={`/shopper-ads/${ad.id}`}
-                    >
-                      View Details
-                    </Button>
-                  </Box>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Nama Produk</TableCell>
+            <TableCell>Berat</TableCell>
+            <TableCell>Harga</TableCell>
+            <TableCell>Pendapatan (Komisi)</TableCell>
+            <TableCell>Shopper Username</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Action</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {ads.map((ad) => (
+            <TableRow key={ad.id}>
+              <TableCell>
+                <a href={ad.productUrl} target="_blank" rel="noopener noreferrer">
+                  {new URL(ad.productUrl).hostname}
+                </a>
+              </TableCell>
+              <TableCell>{ad.productWeight} kg</TableCell>
+              <TableCell>IDR {ad.productPriceIDR.toLocaleString()}</TableCell>
+              <TableCell>IDR {ad.commission.idr.toLocaleString()}</TableCell>
+              <TableCell>{ad.user.username}</TableCell>
+              <TableCell>{ad.status}</TableCell>
+              <TableCell>
+                <Button
+                  variant="contained"
+                  size="small"
+                  component={RouterLink}
+                  to={`/shopper-ads/${ad.id}`}
+                >
+                  View Details
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
