@@ -2,8 +2,11 @@ import axios, { AxiosError } from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'https://api.bagasi.id';
 
+// Remove any trailing /api from the base URL
+const baseURL = API_URL.endsWith('/api') ? API_URL.slice(0, -4) : API_URL;
+
 const api = axios.create({
-  baseURL: API_URL.replace(/\/api$/, ''), // Remove trailing /api if present
+  baseURL,
   withCredentials: true, // Important for CORS with credentials
   headers: {
     'Content-Type': 'application/json',
