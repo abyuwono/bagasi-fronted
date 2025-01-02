@@ -82,7 +82,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ adId }) => {
 
     try {
       setSending(true);
-      const response = await api.post(`/chat/${chat._id}/messages`, {
+      const response = await api.post(`/chat/ad/${chat._id}/messages`, {
         content: message.trim()
       });
 
