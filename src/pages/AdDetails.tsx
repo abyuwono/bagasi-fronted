@@ -263,10 +263,13 @@ const AdDetails = () => {
                 },
                 "hasMerchantReturnPolicy": {
                   "@type": "MerchantReturnPolicy",
-                  "applicableCountry": getCityCountryCode(ad.arrivalCity),
-                  "returnPolicyCategory": "https://schema.org/ReturnNotAccepted",
+                  "applicableCountry": {
+                    "@type": "Country",
+                    "name": getCityCountryCode(ad.arrivalCity)
+                  },
+                  "returnPolicyCategory": "http://schema.org/ReturnNotAccepted",
                   "merchantReturnDays": "0",
-                  "returnMethod": "https://schema.org/ReturnNotAccepted"
+                  "returnMethod": "http://schema.org/ReturnNotAccepted"
                 }
               },
               "seller": {
