@@ -26,6 +26,11 @@ const TravelerShopperAds: React.FC<TravelerShopperAdsProps> = ({ travelerId }) =
   useEffect(() => {
     const fetchAds = async () => {
       try {
+        if (!travelerId) {
+          console.error('No traveler ID provided');
+          setLoading(false);
+          return;
+        }
         const response = await api.get(`/shopper-ads/traveler/${travelerId}`);
         setAds(response.data);
       } catch (err) {

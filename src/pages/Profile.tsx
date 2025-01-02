@@ -217,7 +217,7 @@ const Profile = () => {
           <Typography variant="h6" gutterBottom sx={{ mt: 4, mb: 2 }}>
             Permintaan Jastip yang Diambil
           </Typography>
-          <TravelerShopperAds travelerId={profile._id} />
+          <TravelerShopperAds travelerId={user?._id || ''} />
         </>
       )}
 
