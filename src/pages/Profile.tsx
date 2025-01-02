@@ -69,7 +69,7 @@ const Profile = () => {
         // TODO: Implement API call to fetch user profile
         // For now using mock data
         const mockProfile: UserProfile = {
-          _id: user._id,
+          _id: user.id,
           email: user.email,
           username: user.username,
           role: user.role,
@@ -219,7 +219,7 @@ const Profile = () => {
           <Typography variant="h6" gutterBottom sx={{ mt: 4, mb: 2 }}>
             Permintaan Jastip yang Diambil
           </Typography>
-          <TravelerShopperAds travelerId={user._id} />
+          <TravelerShopperAds travelerId={user.id} />
         </>
       )}
 
