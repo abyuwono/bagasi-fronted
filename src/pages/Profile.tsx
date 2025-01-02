@@ -34,7 +34,7 @@ interface Review {
 }
 
 interface UserProfile {
-  _id: string;
+  id: string;
   email: string;
   username: string;
   role: 'traveler' | 'shopper';
@@ -69,7 +69,7 @@ const Profile = () => {
         // TODO: Implement API call to fetch user profile
         // For now using mock data
         const mockProfile: UserProfile = {
-          _id: user._id,
+          id: user.id,
           email: user.email,
           username: user.username,
           role: user.role,
@@ -220,9 +220,9 @@ const Profile = () => {
             Permintaan Jastip yang Diambil
           </Typography>
           {console.log('Profile user:', user)}
-          {console.log('Profile user._id:', user._id)}
+          {console.log('Profile user.id:', user.id)}
           {console.log('Profile user.role:', user.role)}
-          <TravelerShopperAds travelerId={user._id} />
+          <TravelerShopperAds travelerId={user.id} />
         </>
       )}
 
