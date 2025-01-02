@@ -403,8 +403,8 @@ const ShopperAdDetails: React.FC = () => {
             </Paper>
           </Grid>
 
-          {(isUserShopper ||
-           (isUserTraveler && ad.selectedTraveler?.id === user.id && ad.status !== 'cancelled')) && (
+          {user && (isUserShopper ||
+           (isUserTraveler && ad.selectedTraveler?.id === user?.id && ad.status !== 'cancelled')) && (
             <Grid item xs={12} md={4}>
               <Box mt={4}>
                 <Typography variant="h6" gutterBottom>
