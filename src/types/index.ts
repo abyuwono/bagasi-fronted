@@ -71,13 +71,14 @@ export interface Transaction {
 }
 
 export interface ShopperAd {
-  id: string;
+  _id: string;
   user: {
     id: string;
     username: string;
     customDisplayName?: string;
   };
   productUrl: string;
+  productName: string;
   productImage: string;
   cloudflareImageId?: string;
   cloudflareImageUrl?: string;
