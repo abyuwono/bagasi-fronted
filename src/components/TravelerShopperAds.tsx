@@ -88,7 +88,7 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
         </TableHead>
         <TableBody>
           {ads.map((ad) => (
-            <TableRow key={ad.id}>
+            <TableRow key={ad._id}>
               <TableCell>
                 <a href={ad.productUrl} target="_blank" rel="noopener noreferrer">
                   {new URL(ad.productUrl).hostname}
@@ -104,7 +104,7 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
                   variant="contained"
                   size="small"
                   component={RouterLink}
-                  to={`/shopper-ads/${ad.id}`}
+                  to={`/shopper-ads/${ad._id}`}
                 >
                   View Details
                 </Button>
