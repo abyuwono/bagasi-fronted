@@ -21,6 +21,7 @@ import WhatsAppWidget from './components/WhatsAppWidget';
 import HomeAlternative from './pages/HomeAlternative';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ShopperAdDetails from './pages/ShopperAdDetails';
 
 const theme = createTheme({
   palette: {
@@ -87,6 +88,7 @@ const App = () => {
             <Route path="/ads/payment-success" element={<PaymentSuccess />} />
             <Route path="/ads/:slug/:date/:id" element={<AdDetails />} />
             <Route path="/ads/:id" element={<AdDetails />} />
+            <Route path="/shopper-ads/:id" element={<ShopperAdDetails />} />
             <Route
               path="/membership"
               element={
@@ -103,7 +105,14 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-            <Route path="/admin" element={<Admin />} />
+            <Route
+              path="/admin"
+              element={
+                <PrivateRoute roles={['admin']}>
+                  <Admin />
+                </PrivateRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
