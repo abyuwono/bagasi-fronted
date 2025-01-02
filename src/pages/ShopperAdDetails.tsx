@@ -209,13 +209,19 @@ const ShopperAdDetails: React.FC = () => {
               <Box sx={{ mb: 3 }}>
                 <img
                   src={ad.cloudflareImageUrl || ad.productImage}
-                  alt="Product"
+                  alt={ad.productName || "Product"}
                   style={{
                     width: '100%',
                     maxHeight: '400px',
                     objectFit: 'contain',
                     backgroundColor: '#f5f5f5',
                     borderRadius: '8px'
+                  }}
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    if (img.src !== ad.productImage) {
+                      img.src = ad.productImage;
+                    }
                   }}
                 />
               </Box>
