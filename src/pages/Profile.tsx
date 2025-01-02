@@ -59,19 +59,23 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        if (!user) {
+          navigate('/login');
+          return;
+        }
         setLoading(true);
         // TODO: Implement API call to fetch user profile
         // For now using mock data
         const mockProfile: UserProfile = {
-          _id: user?._id || '',
-          email: user?.email || '',
-          username: user?.email?.split('@')[0] || 'User',
-          role: user?.role || 'shopper',
-          isVerified: false,
-          whatsappNumber: user?.whatsappNumber || '',
-          membership: user?.membership,
-          rating: 0,
-          totalReviews: 0,
+          _id: user._id,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+          isVerified: user.isVerified,
+          whatsappNumber: user.whatsappNumber || '',
+          membership: user.membership,
+          rating: user.rating || 0,
+          totalReviews: user.totalReviews || 0,
           reviews: [],
         };
         setProfile(mockProfile);
@@ -82,11 +86,7 @@ const Profile = () => {
       }
     };
 
-    if (user) {
-      fetchProfile();
-    } else {
-      navigate('/login');
-    }
+    fetchProfile();
   }, [user, navigate]);
 
   if (loading) {
