@@ -163,7 +163,7 @@ const AdDetails = () => {
 
   const generateSEOTitle = (ad: Ad) => {
     const date = format(new Date(ad.departureDate), 'd MMMM yyyy', { locale: idLocale });
-    return `Jastip Bagasi ${ad.departureCity} - ${ad.arrivalCity} ${date} by ${ad.user.username}`;
+    return `Jastip Bagasi ${ad.departureCity} - ${ad.arrivalCity} ${date} by ${ad.customDisplayName || ad.user.username}`;
   };
 
   const generateSEODescription = (ad: Ad) => {
