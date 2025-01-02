@@ -39,22 +39,20 @@ import { useAuth } from '../../contexts/AuthContext';
 import ReviewList from '../reviews/ReviewList';
 
 interface UserDetails {
-  user: {
-    _id: string;
-    username: string;
-    email: string;
-    phone: string;
-    avatar: string;
-    role: string;
-    status: string;
-    isVerified: boolean;
-    preferences: {
-      language: string;
-      currency: string;
-      notifications: {
-        email: boolean;
-        push: boolean;
-      };
+  id: string;
+  username: string;
+  email: string;
+  phone: string;
+  avatar: string;
+  role: string;
+  status: string;
+  isVerified: boolean;
+  preferences: {
+    language: string;
+    currency: string;
+    notifications: {
+      email: boolean;
+      push: boolean;
     };
   };
   recentActivity: {
@@ -109,11 +107,11 @@ const UserProfile: React.FC = () => {
     if (userDetails) {
       setFormData({
         ...formData,
-        username: userDetails.user.username,
-        email: userDetails.user.email,
-        phone: userDetails.user.phone || ''
+        username: userDetails.username,
+        email: userDetails.email,
+        phone: userDetails.phone || ''
       });
-      setNotificationSettings(userDetails.user.preferences.notifications);
+      setNotificationSettings(userDetails.preferences.notifications);
     }
   }, [userDetails]);
 
@@ -126,7 +124,7 @@ const UserProfile: React.FC = () => {
     
     try {
       setLoading(true);
-      const response = await api.get(`/api/users/${authUser._id}`);
+      const response = await api.get(`/api/users/${authUser.id}`);
       setUserDetails(response.data);
       setError('');
     } catch (error) {
@@ -156,7 +154,9 @@ const UserProfile: React.FC = () => {
 
       setUserDetails({
         ...userDetails!,
-        user: response.data
+        username: response.data.username,
+        email: response.data.email,
+        phone: response.data.phone
       });
       setEditMode(false);
       toast.success('Profile updated successfully');
@@ -202,7 +202,7 @@ const UserProfile: React.FC = () => {
       setUpdating(true);
       await api.patch('/api/users/profile', {
         preferences: {
-          ...userDetails?.user.preferences,
+          ...userDetails?.preferences,
           notifications: notificationSettings
         }
       });
@@ -244,17 +244,17 @@ const UserProfile: React.FC = () => {
                 mb={3}
               >
                 <Avatar
-                  src={userDetails.user.avatar}
+                  src={userDetails.avatar}
                   sx={{ width: 120, height: 120, mb: 2 }}
                 />
                 {!editMode ? (
                   <>
-                    <Typography variant="h5">{userDetails.user.username}</Typography>
+                    <Typography variant="h5">{userDetails.username}</Typography>
                     <Typography color="textSecondary">
-                      {userDetails.user.email}
+                      {userDetails.email}
                     </Typography>
                     <Typography color="textSecondary">
-                      {userDetails.user.phone}
+                      {userDetails.phone}
                     </Typography>
                     <Button
                       startIcon={<Edit />}
@@ -407,7 +407,7 @@ const UserProfile: React.FC = () => {
                     Recent Ads
                   </Typography>
                   {userDetails.recentActivity.ads.map((ad) => (
-                    <Card key={ad._id} sx={{ mb: 2 }}>
+                    <Card key={ad.id} sx={{ mb: 2 }}>
                       <CardContent>
                         <Typography variant="subtitle1">{ad.productName}</Typography>
                         <Typography color="textSecondary">
