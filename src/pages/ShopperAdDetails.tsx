@@ -56,6 +56,14 @@ const ShopperAdDetails: React.FC = () => {
   }, [id]);
 
   const handleRequestHelp = async () => {
+    if (!user) {
+      navigate('/login', { state: { from: `/shopper-ads/${id}` } });
+      return;
+    }
+    if (user.role !== 'traveler') {
+      toast.error('Anda harus login sebagai traveler untuk membantu membeli');
+      return;
+    }
     try {
       setProcessingAction(true);
       const response = await api.post(`/shopper-ads/${id}/request`);
@@ -328,7 +336,7 @@ const ShopperAdDetails: React.FC = () => {
               </Grid>
 
               <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-                {ad.status === 'active' && user?.role === 'traveler' && (
+                {ad.status === 'active' && (
                   <Button
                     variant="contained"
                     color="primary"
