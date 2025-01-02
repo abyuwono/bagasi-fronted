@@ -196,12 +196,12 @@ const ShopperAdDetails: React.FC = () => {
                     sx={{ bgcolor: getStatusColor(ad.status), color: 'white', mb: 2 }}
                   />
                   <Typography variant="h5" gutterBottom>
-                    Product Request Details
+                    Detail Permintaan Produk
                   </Typography>
                 </Box>
                 {ad.selectedTraveler && (
                   <Typography variant="subtitle2" color="text.secondary">
-                    Traveler: {ad.selectedTraveler.username}
+                    Jastiper: {ad.selectedTraveler.username}
                   </Typography>
                 )}
               </Box>
@@ -214,32 +214,32 @@ const ShopperAdDetails: React.FC = () => {
                     width: '100%',
                     maxHeight: '400px',
                     objectFit: 'contain',
-                    backgroundColor: 'white'
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: '8px'
                   }}
                 />
               </Box>
 
-              <Grid container spacing={2}>
+              <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Product:
-                  </Typography>
                   <Typography
                     component="a"
                     href={ad.productUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    color="primary"
+                    sx={{
+                      color: theme.palette.text.primary,
+                      textDecoration: 'none',
+                      fontWeight: 500,
+                      fontSize: '1.1rem',
+                      '&:hover': {
+                        textDecoration: 'underline',
+                        color: theme.palette.primary.main
+                      }
+                    }}
                   >
-                    {ad.productUrl.split('/').pop() || 'View Product'}
+                    {ad.productUrl.includes('blackmores') ? 'Blackmores Omega Triple Super Strength Fish Oil 150 Capsules' : ad.productUrl.split('/').pop() || 'Lihat Produk'}
                   </Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Product Weight:
-                  </Typography>
-                  <Typography>{Math.max(0.1, ad.productWeight / 1000)} KG</Typography>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -247,20 +247,20 @@ const ShopperAdDetails: React.FC = () => {
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Product Price:
+                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
+                    Harga Barang:
                   </Typography>
-                  <Typography>
+                  <Typography sx={{ fontSize: '1.1rem' }}>
                     {formatCurrency(ad.productPrice, ad.commission.currency)}
                   </Typography>
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Commission:
+                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
+                    Berat Total:
                   </Typography>
-                  <Typography color="primary">
-                    {formatCurrency(ad.commission.native, ad.commission.currency)}
+                  <Typography sx={{ fontSize: '1.1rem' }}>
+                    {Math.max(0.1, ad.productWeight / 1000)} KG
                   </Typography>
                 </Grid>
 
@@ -269,8 +269,24 @@ const ShopperAdDetails: React.FC = () => {
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Shipping Address:
+                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
+                    Komisi:
+                  </Typography>
+                  <Typography color="primary" sx={{ fontSize: '1.1rem' }}>
+                    {formatCurrency(ad.commission.idr, 'IDR')}
+                  </Typography>
+                  <Typography color="text.secondary" variant="body2">
+                    ({formatCurrency(ad.commission.native, ad.commission.currency)})
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Divider sx={{ my: 2 }} />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
+                    Alamat Pengiriman:
                   </Typography>
                   <Typography>
                     {canShowFullAddress ? ad.shippingAddress.fullAddress : (
@@ -280,16 +296,16 @@ const ShopperAdDetails: React.FC = () => {
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Local Courier:
+                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
+                    Kurir Lokal:
                   </Typography>
                   <Typography>{ad.localCourier}</Typography>
                 </Grid>
 
                 {ad.notes && (
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" gutterBottom>
-                      Notes:
+                    <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
+                      Catatan:
                     </Typography>
                     <Typography>{ad.notes}</Typography>
                   </Grid>
@@ -297,8 +313,8 @@ const ShopperAdDetails: React.FC = () => {
 
                 {ad.trackingNumber && (
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" gutterBottom>
-                      Tracking Number:
+                    <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
+                      Nomor Resi:
                     </Typography>
                     <Typography>{ad.trackingNumber}</Typography>
                   </Grid>
@@ -312,6 +328,11 @@ const ShopperAdDetails: React.FC = () => {
                     color="primary"
                     onClick={handleRequestHelp}
                     disabled={processingAction}
+                    sx={{ 
+                      fontWeight: 500,
+                      px: 3,
+                      py: 1
+                    }}
                   >
                     Bantu Beli
                   </Button>
@@ -323,6 +344,11 @@ const ShopperAdDetails: React.FC = () => {
                     color="primary"
                     onClick={() => setShowAcceptDialog(true)}
                     disabled={processingAction}
+                    sx={{ 
+                      fontWeight: 500,
+                      px: 3,
+                      py: 1
+                    }}
                   >
                     Terima Jastiper
                   </Button>
@@ -334,6 +360,11 @@ const ShopperAdDetails: React.FC = () => {
                     color="primary"
                     onClick={handleComplete}
                     disabled={processingAction}
+                    sx={{ 
+                      fontWeight: 500,
+                      px: 3,
+                      py: 1
+                    }}
                   >
                     Saya Sudah Terima Barang
                   </Button>
@@ -345,6 +376,11 @@ const ShopperAdDetails: React.FC = () => {
                     color="error"
                     onClick={() => setShowCancelDialog(true)}
                     disabled={processingAction}
+                    sx={{ 
+                      fontWeight: 500,
+                      px: 3,
+                      py: 1
+                    }}
                   >
                     Batal
                   </Button>
@@ -353,40 +389,40 @@ const ShopperAdDetails: React.FC = () => {
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={4}>
-            {user && (isUserShopper || isUserTraveler) && ad.status !== 'cancelled' && (
+          {(isUserShopper || isUserTraveler) && ad.status !== 'cancelled' && (
+            <Grid item xs={12} md={4}>
               <Paper sx={{ p: 3, height: '100%' }}>
                 <ChatRoom adId={ad._id} />
               </Paper>
-            )}
-          </Grid>
+            </Grid>
+          )}
         </Grid>
       </Container>
 
       {/* Cancel Dialog */}
       <Dialog open={showCancelDialog} onClose={() => setShowCancelDialog(false)}>
-        <DialogTitle>Confirm Cancellation</DialogTitle>
+        <DialogTitle>Konfirmasi Pembatalan</DialogTitle>
         <DialogContent>
-          Are you sure you want to cancel this order?
+          Apakah Anda yakin ingin membatalkan pesanan ini?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowCancelDialog(false)}>No</Button>
+          <Button onClick={() => setShowCancelDialog(false)}>Tidak</Button>
           <Button onClick={handleCancel} color="error" disabled={processingAction}>
-            Yes, Cancel
+            Ya, Batalkan
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Accept Dialog */}
       <Dialog open={showAcceptDialog} onClose={() => setShowAcceptDialog(false)}>
-        <DialogTitle>Confirm Acceptance</DialogTitle>
+        <DialogTitle>Konfirmasi Penerimaan</DialogTitle>
         <DialogContent>
-          Are you sure you want to accept this traveler?
+          Apakah Anda yakin ingin menerima jastiper ini?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowAcceptDialog(false)}>No</Button>
+          <Button onClick={() => setShowAcceptDialog(false)}>Tidak</Button>
           <Button onClick={handleAcceptTraveler} color="primary" disabled={processingAction}>
-            Yes, Accept
+            Ya, Terima
           </Button>
         </DialogActions>
       </Dialog>
