@@ -360,7 +360,7 @@ const ShopperAdDetails: React.FC = () => {
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-                          <span style={{ fontSize: '0.875rem' }}>{(ad.productWeight / 1000).toFixed(2)}</span>
+                          <span style={{ fontSize: '0.875rem' }}>{ad.productWeight.toFixed(2)}</span>
                           <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>KG</span>
                         </Typography>
                       </TableCell>
@@ -399,7 +399,7 @@ const ShopperAdDetails: React.FC = () => {
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
                           <span style={{ fontSize: '0.875rem' }}>
-                            {((ad.totalWeight || 0) / 1000 || ((ad.productWeight / 1000) * (ad.quantity || 1))).toFixed(2)}
+                            {(ad.totalWeight || (ad.productWeight * (ad.quantity || 1))).toFixed(2)}
                           </span>
                           <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>KG</span>
                         </Typography>
