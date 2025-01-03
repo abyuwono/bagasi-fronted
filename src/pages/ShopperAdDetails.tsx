@@ -250,7 +250,7 @@ const ShopperAdDetails: React.FC = () => {
       </Helmet>
 
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+        <Typography variant="h5" gutterBottom sx={{ mb: 2, color: theme.palette.text.secondary }}>
           Detail Produk Jastip
         </Typography>
         
@@ -263,12 +263,22 @@ const ShopperAdDetails: React.FC = () => {
                     label={getStatusText(ad.status)}
                     sx={{ bgcolor: getStatusColor(ad.status), color: 'white', mb: 1 }}
                   />
-                  <Typography variant="h5" component="h1" gutterBottom sx={{ 
-                    fontWeight: 'bold',
-                    fontSize: '1.8rem',
-                    mt: 1,
-                    color: theme.palette.text.primary 
-                  }}>
+                  <Typography
+                    component="a"
+                    href={ad.productUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="h6"
+                    sx={{ 
+                      display: 'block',
+                      mt: 1,
+                      color: theme.palette.text.primary,
+                      textDecoration: 'none',
+                      '&:hover': {
+                        textDecoration: 'underline'
+                      }
+                    }}
+                  >
                     {ad.productName}
                   </Typography>
                 </Box>
@@ -299,7 +309,7 @@ const ShopperAdDetails: React.FC = () => {
                 />
               </Box>
 
-              <Grid container spacing={3}>
+              <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Typography
                     component="a"
@@ -307,14 +317,7 @@ const ShopperAdDetails: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
-                      color: theme.palette.text.primary,
-                      textDecoration: 'none',
-                      fontWeight: 500,
-                      fontSize: '1.1rem',
-                      '&:hover': {
-                        textDecoration: 'underline',
-                        color: theme.palette.primary.main
-                      }
+                      display: 'none'
                     }}
                   >
                     {ad.productUrl}
