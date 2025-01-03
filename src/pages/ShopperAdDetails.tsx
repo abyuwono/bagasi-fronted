@@ -174,13 +174,13 @@ const ShopperAdDetails: React.FC = () => {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'active':
-        return 'Tersedia';
+        return 'Bisa Diambil';
       case 'in_discussion':
         return 'Sedang Diskusi';
       case 'accepted':
         return 'Dalam Proses';
       case 'shipped':
-        return 'Dikirim';
+        return 'Dikirim Kurir Lokal';
       case 'completed':
         return 'Selesai';
       default:
@@ -343,7 +343,7 @@ const ShopperAdDetails: React.FC = () => {
                     <TableRow>
                       <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="subtitle2" color="text.secondary">
-                          Harga Barang
+                          Harga per Unit
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
@@ -385,7 +385,7 @@ const ShopperAdDetails: React.FC = () => {
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography>
-                          {formatCurrency((ad.productPrice * (ad.quantity || 1)), ad.commission.currency)}
+                          {formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.commission.currency)}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -397,7 +397,9 @@ const ShopperAdDetails: React.FC = () => {
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-                          <span style={{ fontSize: '0.875rem' }}>{((ad.productWeight / 1000) * (ad.quantity || 1)).toFixed(2)}</span>
+                          <span style={{ fontSize: '0.875rem' }}>
+                            {((ad.totalWeight || 0) / 1000 || ((ad.productWeight / 1000) * (ad.quantity || 1))).toFixed(2)}
+                          </span>
                           <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>KG</span>
                         </Typography>
                       </TableCell>
@@ -422,7 +424,7 @@ const ShopperAdDetails: React.FC = () => {
                 <Box sx={{ mt: 3, display: 'flex', gap: 4 }}>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                      Alamat Pengiriman
+                      Kirim Ke
                     </Typography>
                     <Typography variant="body2">
                       {canShowFullAddress ? ad.shippingAddress.fullAddress : `${ad.shippingAddress.city}, ${ad.shippingAddress.country}`}
