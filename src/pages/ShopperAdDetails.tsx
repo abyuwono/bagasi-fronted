@@ -336,7 +336,7 @@ const ShopperAdDetails: React.FC = () => {
                             }
                           }}
                         >
-                          {new URL(ad.productUrl).hostname}
+                          {ad.merchantName || new URL(ad.productUrl).hostname}
                         </MuiLink>
                       </TableCell>
                     </TableRow>
