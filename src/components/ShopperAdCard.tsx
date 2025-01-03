@@ -128,7 +128,9 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
               mb: 0.5,
-              height: '36px'
+              minHeight: '42px',
+              lineHeight: 1.3,
+              fontSize: '0.875rem'
             }}
           >
             {ad.productName || 'Unnamed Product'}
