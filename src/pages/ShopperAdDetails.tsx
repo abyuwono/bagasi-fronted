@@ -391,7 +391,7 @@ const ShopperAdDetails: React.FC = () => {
                 )}
               </Grid>
 
-              <Box sx={{ mt: 3, display: 'flex', gap: 2, alignItems: 'center' }}>
+              <Box sx={{ mt: 3, display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
                 {isUserShopper ? (
                   <>
                     <Box 
@@ -413,7 +413,6 @@ const ShopperAdDetails: React.FC = () => {
                         Kamu pemilik order jastip ini
                       </Typography>
                     </Box>
-                    <Box sx={{ flex: 1 }} />
                     {ad.status !== 'cancelled' && !['accepted', 'shipped', 'completed'].includes(ad.status) && (
                       <>
                         <Button
