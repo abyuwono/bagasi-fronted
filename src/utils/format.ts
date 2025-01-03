@@ -4,8 +4,8 @@ export const formatPrice = (price: number | undefined, currency: Currency | 'IDR
   if (!price) return '';
   
   const value = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(price);
 
   return `${currency} ${value}`;
