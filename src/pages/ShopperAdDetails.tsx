@@ -393,11 +393,11 @@ const ShopperAdDetails: React.FC = () => {
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                          <span style={{ fontSize: '0.75rem', fontStyle: 'italic', color: 'text.secondary' }}>
-                            {formatCurrency(ad.productPrice * (ad.quantity || 1), getCurrency(ad.productCurrency || ad.commission.currency))}
-                          </span>
                           <span style={{ fontSize: '0.875rem', color: 'text.secondary' }}>
                             IDR {(ad.productPriceIDR * (ad.quantity || 1)).toLocaleString('id-ID')}
+                          </span>
+                          <span style={{ fontSize: '0.65rem', fontStyle: 'italic', color: 'rgba(0, 0, 0, 0.38)' }}>
+                            {formatCurrency(ad.productPrice * (ad.quantity || 1), getCurrency(ad.productCurrency || ad.commission.currency))}
                           </span>
                         </Typography>
                       </TableCell>
