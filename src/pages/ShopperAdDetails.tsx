@@ -419,6 +419,19 @@ const ShopperAdDetails: React.FC = () => {
                       ({formatCurrency(ad.commission.native, ad.commission.currency)})
                     </Typography>
                   </Box>
+                  <Typography 
+                    color="white" 
+                    sx={{ 
+                      mt: 1, 
+                      fontSize: '0.75rem', 
+                      fontStyle: 'italic',
+                      opacity: 0.7,
+                      borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+                      pt: 1
+                    }}
+                  >
+                    Total dana yang akan dikirimkan adalah {formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.commission.currency)} + {formatCurrency(ad.commission.native, ad.commission.currency)}
+                  </Typography>
                 </Box>
 
                 <Box sx={{ mt: 3, display: 'flex', gap: 4 }}>
@@ -431,7 +444,7 @@ const ShopperAdDetails: React.FC = () => {
                     </Typography>
                   </Box>
 
-                  <Box sx={{ minWidth: '200px' }}>
+                  <Box sx={{ minWidth: '100px' }}>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                       Kurir Lokal
                     </Typography>
