@@ -105,14 +105,7 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-            <Route
-              path="/admin"
-              element={
-                <PrivateRoute roles={['admin']}>
-                  <Admin />
-                </PrivateRoute>
-              }
-            />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
