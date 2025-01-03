@@ -70,106 +70,109 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
   };
 
   return (
-    <Card
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        '&:hover': {
-          boxShadow: 6,
-          transform: 'translateY(-4px)',
-          transition: 'transform 0.2s ease-in-out'
-        }
-      }}
+    <Link
+      to={`/shopper-ads/${ad._id}`}
+      style={{ textDecoration: 'none', display: 'block', height: '100%' }}
     >
-      <CardMedia
-        component="img"
-        height="160"
-        image={ad.cloudflareImageUrl || ad.productImage}
-        alt="Product"
-        sx={{ objectFit: 'contain', bgcolor: 'white', p: 1 }}
-        onError={(e) => {
-          const img = e.target as HTMLImageElement;
-          if (!img.src.includes('placeholder')) {
-            img.src = 'https://placehold.co/400x400?text=Image+Not+Available';
+      <Card
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          '&:hover': {
+            boxShadow: 6,
+            transform: 'translateY(-4px)',
+            transition: 'transform 0.2s ease-in-out'
           }
         }}
-      />
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2, '&:last-child': { pb: 2 } }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-          <Chip
-            label={getStatusText(ad.status)}
-            size="small"
-            sx={{
-              bgcolor: getStatusColor(ad.status),
-              color: 'white',
-              height: '24px'
-            }}
-          />
-          <Typography variant="caption" color="text.secondary">
-            Berat Total: {ad.productWeight}KG
-          </Typography>
-        </Box>
-
-        <Typography
-          variant="subtitle2"
-          sx={{
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            mb: 0.5,
-            height: '36px'
+      >
+        <CardMedia
+          component="img"
+          height="160"
+          image={ad.cloudflareImageUrl || ad.productImage}
+          alt="Product"
+          sx={{ objectFit: 'contain', bgcolor: 'white', p: 1 }}
+          onError={(e) => {
+            const img = e.target as HTMLImageElement;
+            if (!img.src.includes('placeholder')) {
+              img.src = 'https://placehold.co/400x400?text=Image+Not+Available';
+            }
           }}
-        >
-          {ad.productName || 'Unnamed Product'}
-        </Typography>
-
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{
-            display: 'block',
-            mb: 1
-          }}
-        >
-          {ad.merchantName ? `${ad.merchantName} • ` : ''}{new URL(ad.productUrl).hostname}
-        </Typography>
-
-        <Box sx={{ mt: 'auto' }}>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-            Komisi Jastiper
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 1 }}>
-            <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
-              {formatCurrency(ad.commission.idr, 'IDR')}
-            </Typography>
+        />
+        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2, '&:last-child': { pb: 2 } }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+            <Chip
+              label={getStatusText(ad.status)}
+              size="small"
+              sx={{
+                bgcolor: getStatusColor(ad.status),
+                color: 'white',
+                height: '24px'
+              }}
+            />
             <Typography variant="caption" color="text.secondary">
-              ({formatCurrency(ad.commission.native, ad.commission.currency)})
+              Berat Total: {ad.productWeight}KG
             </Typography>
           </Box>
-          
-          <Button
-            component={Link}
-            to={`/shopper-ads/${ad._id}`}
-            variant="contained"
-            fullWidth
-            color="primary"
-            sx={{ 
-              mt: 1,
-              textTransform: 'none',
-              fontWeight: 'bold',
-              '&:hover': {
-                transform: 'scale(1.02)',
-                transition: 'transform 0.2s ease-in-out'
-              }
+
+          <Typography
+            variant="subtitle2"
+            sx={{
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              mb: 0.5,
+              height: '36px'
             }}
           >
-            Ambil Jastip
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
+            {ad.productName || 'Unnamed Product'}
+          </Typography>
+
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{
+              display: 'block',
+              mb: 1
+            }}
+          >
+            {ad.merchantName ? `${ad.merchantName}` : ''}
+          </Typography>
+
+          <Box sx={{ mt: 'auto' }}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+              Komisi Jastiper
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 1 }}>
+              <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
+                {formatCurrency(ad.commission.idr, 'IDR')}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                ({formatCurrency(ad.commission.native, ad.commission.currency)})
+              </Typography>
+            </Box>
+            
+            <Button
+              variant="contained"
+              fullWidth
+              color="primary"
+              sx={{ 
+                mt: 1,
+                textTransform: 'none',
+                fontWeight: 'bold',
+                '&:hover': {
+                  transform: 'scale(1.02)',
+                  transition: 'transform 0.2s ease-in-out'
+                }
+              }}
+            >
+              Ambil Jastip
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+    </Link>
   );
 };
 
