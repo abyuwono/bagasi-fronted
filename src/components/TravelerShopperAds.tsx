@@ -84,16 +84,16 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell style={{ width: '200px', padding: '12px 8px' }}>Nama Produk</TableCell>
-            <TableCell style={{ width: '60px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Berat</TableCell>
-            <TableCell style={{ width: '80px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Harga</TableCell>
-            <TableCell style={{ width: '80px', whiteSpace: 'nowrap', padding: '12px 8px' }}>
+            <TableCell style={{ width: '160px', padding: '12px 8px' }}>Nama Produk</TableCell>
+            <TableCell style={{ width: '50px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Berat</TableCell>
+            <TableCell style={{ width: '70px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Harga</TableCell>
+            <TableCell style={{ width: '70px', whiteSpace: 'nowrap', padding: '12px 8px' }}>
               <Typography variant="subtitle2" fontWeight="bold">
                 Pendapatan
               </Typography>
             </TableCell>
-            <TableCell style={{ width: '80px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Shopper</TableCell>
-            <TableCell style={{ width: '80px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Status</TableCell>
+            <TableCell style={{ width: '70px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Shopper</TableCell>
+            <TableCell style={{ width: '70px', whiteSpace: 'nowrap', padding: '12px 8px' }}>Status</TableCell>
             <TableCell align="center" style={{ width: '40px', padding: '12px 8px' }}>Detail</TableCell>
           </TableRow>
         </TableHead>
@@ -111,7 +111,8 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
             >
               <TableCell 
                 style={{ 
-                  width: '200px',
+                  width: '160px',
+                  maxWidth: '160px',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
