@@ -318,7 +318,7 @@ const ShopperAdDetails: React.FC = () => {
                 <Table size="small">
                   <TableBody>
                     <TableRow>
-                      <TableCell sx={{ width: '30%', pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                      <TableCell sx={{ width: '45%', pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="subtitle2" color="text.secondary">
                           Nama Toko
                         </Typography>
@@ -359,8 +359,9 @@ const ShopperAdDetails: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography>
-                          {(ad.productWeight / 1000).toFixed(2)} KG
+                        <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
+                          <span style={{ fontSize: '0.875rem' }}>{(ad.productWeight / 1000).toFixed(2)}</span>
+                          <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>KG</span>
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -395,24 +396,27 @@ const ShopperAdDetails: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography>
-                          {((ad.productWeight / 1000) * (ad.quantity || 1)).toFixed(2)} KG
+                        <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
+                          <span style={{ fontSize: '0.875rem' }}>{((ad.productWeight / 1000) * (ad.quantity || 1)).toFixed(2)}</span>
+                          <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>KG</span>
                         </Typography>
                       </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
 
-                <Box sx={{ mt: 3 }}>
-                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                    Komisi
+                <Box sx={{ mt: 3, bgcolor: 'primary.main', p: 2, borderRadius: 1 }}>
+                  <Typography variant="subtitle1" color="white" gutterBottom>
+                    Komisi Traveler
                   </Typography>
-                  <Typography color="primary" sx={{ fontSize: '1rem', mb: 0.5 }}>
-                    {formatCurrency(ad.commission.idr, 'IDR')}
-                  </Typography>
-                  <Typography color="text.secondary" variant="body2">
-                    ({formatCurrency(ad.commission.native, ad.commission.currency)})
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                    <Typography color="white" sx={{ fontSize: '1.5rem', fontWeight: 600 }}>
+                      {formatCurrency(ad.commission.idr, 'IDR')}
+                    </Typography>
+                    <Typography color="white" sx={{ opacity: 0.8 }}>
+                      ({formatCurrency(ad.commission.native, ad.commission.currency)})
+                    </Typography>
+                  </Box>
                 </Box>
 
                 <Box sx={{ mt: 3, display: 'flex', gap: 4 }}>
