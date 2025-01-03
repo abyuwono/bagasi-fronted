@@ -414,7 +414,7 @@ const ShopperAdDetails: React.FC = () => {
                       </Typography>
                     </Box>
                     <Box sx={{ flex: 1 }} />
-                    {!['accepted', 'shipped', 'completed', 'cancelled'].includes(ad.status) && (
+                    {ad.status !== 'cancelled' && !['accepted', 'shipped', 'completed'].includes(ad.status) && (
                       <>
                         <Button
                           variant="outlined"
