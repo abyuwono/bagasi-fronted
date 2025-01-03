@@ -98,6 +98,7 @@ const ShopperAds: React.FC<Props> = ({ shopperId }) => {
             <TableRow
               key={ad._id}
               hover
+              onClick={() => handleRowClick(ad._id)}
               style={{ cursor: 'pointer' }}
             >
               <TableCell style={{ padding: '12px 8px' }}>
@@ -118,13 +119,8 @@ const ShopperAds: React.FC<Props> = ({ shopperId }) => {
               <TableCell style={{ padding: '12px 8px' }}>
                 {getStatusLabel(ad.status)}
               </TableCell>
-              <TableCell align="center" style={{ padding: '12px 8px' }}>
-                <IconButton
-                  size="small"
-                  onClick={() => handleRowClick(ad._id)}
-                >
-                  <VisibilityIcon fontSize="small" />
-                </IconButton>
+              <TableCell style={{ padding: '12px 8px' }}>
+                <VisibilityIcon fontSize="small" />
               </TableCell>
             </TableRow>
           ))}

@@ -394,10 +394,19 @@ const ShopperAdDetails: React.FC = () => {
               <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
                 {isUserShopper ? (
                   <>
-                    <Typography variant="body1" sx={{ alignSelf: 'center', mr: 2, fontStyle: 'italic' }}>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        alignSelf: 'center', 
+                        ml: 'auto',
+                        mr: 2, 
+                        color: 'text.secondary',
+                        fontSize: '0.875rem'
+                      }}
+                    >
                       Kamu pemilik order jastip ini
                     </Typography>
-                    {!['accepted', 'shipped', 'completed'].includes(ad.status) && (
+                    {!['accepted', 'shipped', 'completed', 'cancelled'].includes(ad.status) && (
                       <>
                         <Button
                           variant="outlined"
@@ -529,9 +538,9 @@ const ShopperAdDetails: React.FC = () => {
           <Typography>
             {user?.id === ad.user.id && ad.status === 'active' ? (
               <>
-                <p>Anda yakin ingin membatalkan iklan ini secara permanen?</p>
+                <p>Kamu yakin ingin membatalkan iklan Jastip ini secara permanen?</p>
                 <p>
-                  Anda akan mendapatkan pengembalian dana sebesar{' '}
+                  Kamu akan mendapatkan pengembalian dana sebesar{' '}
                   <strong>
                     Rp {(ad.productPriceIDR + ad.commission.idr).toLocaleString()}
                   </strong>{' '}
@@ -542,8 +551,8 @@ const ShopperAdDetails: React.FC = () => {
                 </p>
               </>
             ) : user?.id === ad.user.id
-              ? 'Anda yakin ingin menolak traveler ini? Iklan akan kembali aktif.'
-              : 'Anda yakin ingin membatalkan order ini? Iklan akan kembali aktif.'}
+              ? 'Kamu yakin ingin menolak traveler ini? Iklan akan kembali aktif.'
+              : 'Kamu yakin ingin membatalkan order ini? Banyak pembatalan dapat mengakibatkan akun dinonaktifkan.'}
           </Typography>
         </DialogContent>
         <DialogActions>
