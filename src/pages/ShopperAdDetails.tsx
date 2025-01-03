@@ -14,9 +14,14 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  useTheme
+  useTheme,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Link as MuiLink
 } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Helmet } from 'react-helmet-async';
 import { formatCurrency } from '../utils/format';
@@ -264,8 +269,8 @@ const ShopperAdDetails: React.FC = () => {
                     sx={{ bgcolor: getStatusColor(ad.status), color: 'white', mb: 1 }}
                   />
                   <Typography
-                    component="a"
-                    href={ad.productUrl}
+                    component={RouterLink}
+                    to={ad.productUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     variant="h6"
@@ -309,99 +314,147 @@ const ShopperAdDetails: React.FC = () => {
                 />
               </Box>
 
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Typography
-                    component="a"
-                    href={ad.productUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    sx={{
-                      display: 'none'
-                    }}
-                  >
-                    {ad.productUrl}
-                  </Typography>
-                </Grid>
+              <Box sx={{ mt: 2 }}>
+                <Table size="small">
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ width: '30%', pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                          Nama Toko
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <MuiLink
+                          href={ad.productUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          sx={{
+                            color: theme.palette.primary.main,
+                            textDecoration: 'none',
+                            '&:hover': {
+                              textDecoration: 'underline'
+                            }
+                          }}
+                        >
+                          {new URL(ad.productUrl).hostname}
+                        </MuiLink>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                          Harga Barang
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography>
+                          {formatCurrency(ad.productPrice, ad.commission.currency)}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                          Berat per Unit
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography>
+                          {(ad.productWeight / 1000).toFixed(2)} KG
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                          Kuantitas
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography>
+                          {ad.quantity || 1}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                          Harga Total
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography>
+                          {formatCurrency((ad.productPrice * (ad.quantity || 1)), ad.commission.currency)}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                          Berat Total
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                        <Typography>
+                          {((ad.productWeight / 1000) * (ad.quantity || 1)).toFixed(2)} KG
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
 
-                <Grid item xs={12}>
-                  <Divider sx={{ my: 2 }} />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
-                    Harga Barang:
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Komisi
                   </Typography>
-                  <Typography sx={{ fontSize: '1.1rem' }}>
-                    {formatCurrency(ad.productPrice, ad.commission.currency)}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
-                    Berat Total:
-                  </Typography>
-                  <Typography sx={{ fontSize: '1.1rem' }}>
-                    {Math.max(0.1, ad.productWeight / 1000)} KG
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Divider sx={{ my: 2 }} />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
-                    Komisi:
-                  </Typography>
-                  <Typography color="primary" sx={{ fontSize: '1.1rem' }}>
+                  <Typography color="primary" sx={{ fontSize: '1rem', mb: 0.5 }}>
                     {formatCurrency(ad.commission.idr, 'IDR')}
                   </Typography>
                   <Typography color="text.secondary" variant="body2">
                     ({formatCurrency(ad.commission.native, ad.commission.currency)})
                   </Typography>
-                </Grid>
+                </Box>
 
-                <Grid item xs={12}>
-                  <Divider sx={{ my: 2 }} />
-                </Grid>
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Alamat Pengiriman
+                  </Typography>
+                  <Typography variant="body2">
+                    {canShowFullAddress ? ad.shippingAddress : `${ad.shippingAddress.city}, ${ad.shippingAddress.country}`}
+                  </Typography>
+                </Box>
 
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
-                    Alamat Pengiriman:
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Kurir Lokal
                   </Typography>
-                  <Typography>
-                    {canShowFullAddress ? ad.shippingAddress.fullAddress : (
-                      `${ad.shippingAddress.city}, ${ad.shippingAddress.country}`
-                    )}
+                  <Typography variant="body2">
+                    {ad.localCourier}
                   </Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
-                    Kurir Lokal:
-                  </Typography>
-                  <Typography>{ad.localCourier}</Typography>
-                </Grid>
+                </Box>
 
                 {ad.notes && (
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
-                      Catatan:
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      Catatan
                     </Typography>
-                    <Typography>{ad.notes}</Typography>
-                  </Grid>
+                    <Typography variant="body2">
+                      {ad.notes}
+                    </Typography>
+                  </Box>
                 )}
 
                 {ad.trackingNumber && (
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
-                      Nomor Resi:
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      Nomor Resi
                     </Typography>
-                    <Typography>{ad.trackingNumber}</Typography>
-                  </Grid>
+                    <Typography variant="body2">
+                      {ad.trackingNumber}
+                    </Typography>
+                  </Box>
                 )}
-              </Grid>
+              </Box>
 
               <Box sx={{ mt: 3, display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
                 {isUserShopper ? (
