@@ -13,6 +13,7 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Link
 } from '@mui/material';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
 import api from '../services/api';
@@ -76,7 +77,30 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
   }
 
   if (ads.length === 0) {
-    return <Typography>No shopper ads found.</Typography>;
+    return (
+      <Box sx={{ textAlign: 'center', py: 4 }}>
+        <Typography sx={{ mb: 2 }}>
+          Belum ada order jastip yang kamu bantu.
+        </Typography>
+        <Typography>
+          <Link 
+            href="https://www.bagasi.id" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            sx={{ 
+              color: 'primary.main',
+              textDecoration: 'none',
+              '&:hover': {
+                textDecoration: 'underline'
+              }
+            }}
+          >
+            Klik di sini
+          </Link>
+          {' '}untuk melihat shopper yang membutuhkan bantuan kamu.
+        </Typography>
+      </Box>
+    );
   }
 
   return (
