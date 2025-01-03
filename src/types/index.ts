@@ -84,6 +84,7 @@ export interface ShopperAd {
   cloudflareImageId?: string;
   cloudflareImageUrl?: string;
   productPrice: number;
+  productCurrency?: string;
   productWeight: number;
   quantity?: number;
   totalWeight?: number;
