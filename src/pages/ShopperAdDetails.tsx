@@ -391,21 +391,29 @@ const ShopperAdDetails: React.FC = () => {
                 )}
               </Grid>
 
-              <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+              <Box sx={{ mt: 3, display: 'flex', gap: 2, alignItems: 'center' }}>
                 {isUserShopper ? (
                   <>
-                    <Typography 
-                      variant="body2" 
+                    <Box 
                       sx={{ 
-                        alignSelf: 'center', 
-                        ml: 'auto',
-                        mr: 2, 
-                        color: 'text.secondary',
-                        fontSize: '0.875rem'
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                        borderRadius: '16px',
+                        px: 2,
+                        py: 0.75,
                       }}
                     >
-                      Kamu pemilik order jastip ini
-                    </Typography>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: 'text.secondary',
+                          fontSize: '0.75rem',
+                          fontStyle: 'italic'
+                        }}
+                      >
+                        Kamu pemilik order jastip ini
+                      </Typography>
+                    </Box>
+                    <Box sx={{ flex: 1 }} />
                     {!['accepted', 'shipped', 'completed', 'cancelled'].includes(ad.status) && (
                       <>
                         <Button
