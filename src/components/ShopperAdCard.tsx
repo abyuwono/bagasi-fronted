@@ -107,7 +107,7 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
             }}
           />
           <Typography variant="caption" color="text.secondary">
-            {ad.productWeight}g
+            Berat Total: {ad.productWeight}KG
           </Typography>
         </Box>
 
