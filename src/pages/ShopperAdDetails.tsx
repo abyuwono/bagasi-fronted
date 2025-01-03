@@ -527,11 +527,23 @@ const ShopperAdDetails: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           <Typography>
-            {user?.id === ad.user.id && ad.status === 'active'
-              ? 'Anda yakin ingin membatalkan iklan ini secara permanen?'
-              : user?.id === ad.user.id
-                ? 'Anda yakin ingin menolak traveler ini? Iklan akan kembali aktif.'
-                : 'Anda yakin ingin membatalkan order ini? Iklan akan kembali aktif.'}
+            {user?.id === ad.user.id && ad.status === 'active' ? (
+              <>
+                <p>Anda yakin ingin membatalkan iklan ini secara permanen?</p>
+                <p>
+                  Anda akan mendapatkan pengembalian dana sebesar{' '}
+                  <strong>
+                    Rp {(ad.productPriceIDR + ad.commission.idr).toLocaleString()}
+                  </strong>{' '}
+                  (Harga barang + Komisi untuk traveller).
+                </p>
+                <p style={{ color: '#666', fontSize: '0.9em', marginTop: '8px' }}>
+                  *Refund akan diproses paling lama 14 hari kerja
+                </p>
+              </>
+            ) : user?.id === ad.user.id
+              ? 'Anda yakin ingin menolak traveler ini? Iklan akan kembali aktif.'
+              : 'Anda yakin ingin membatalkan order ini? Iklan akan kembali aktif.'}
           </Typography>
         </DialogContent>
         <DialogActions>
