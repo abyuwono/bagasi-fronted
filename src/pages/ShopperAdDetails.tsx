@@ -392,7 +392,7 @@ const ShopperAdDetails: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography variant="body2" sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                        <Typography variant="body2" sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 1 }}>
                           <span style={{ fontSize: '0.875rem', color: 'text.secondary' }}>
                             IDR {(ad.productPriceIDR * (ad.quantity || 1)).toLocaleString('id-ID')}
                           </span>
