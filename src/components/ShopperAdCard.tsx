@@ -20,6 +20,8 @@ interface ShopperAdCardProps {
     cloudflareImageUrl?: string;
     cloudflareImageId?: string;
     productUrl: string;
+    productName: string;
+    merchantName: string;
     productWeight: number;
     commission: {
       idr: number;
@@ -74,16 +76,18 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
         display: 'flex',
         flexDirection: 'column',
         '&:hover': {
-          boxShadow: 6
+          boxShadow: 6,
+          transform: 'translateY(-4px)',
+          transition: 'transform 0.2s ease-in-out'
         }
       }}
     >
       <CardMedia
         component="img"
-        height="200"
+        height="160"
         image={ad.cloudflareImageUrl || ad.productImage}
         alt="Product"
-        sx={{ objectFit: 'contain', bgcolor: 'white', p: 2 }}
+        sx={{ objectFit: 'contain', bgcolor: 'white', p: 1 }}
         onError={(e) => {
           const img = e.target as HTMLImageElement;
           if (!img.src.includes('placeholder')) {
@@ -91,58 +95,77 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
           }
         }}
       />
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ mb: 2 }}>
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2, '&:last-child': { pb: 2 } }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
           <Chip
             label={getStatusText(ad.status)}
             size="small"
             sx={{
               bgcolor: getStatusColor(ad.status),
               color: 'white',
-              mb: 1
+              height: '24px'
             }}
           />
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              mb: 1
-            }}
-          >
-            {new URL(ad.productUrl).hostname}
+          <Typography variant="caption" color="text.secondary">
+            {ad.productWeight}g
           </Typography>
         </Box>
 
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            Berat: {ad.productWeight}g
-          </Typography>
-          <Divider sx={{ my: 1 }} />
-          <Typography variant="subtitle1" gutterBottom>
-            Komisi Jastiper:
-          </Typography>
-          <Typography variant="h6" color="primary" gutterBottom>
-            {formatCurrency(ad.commission.idr, 'IDR')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            ({formatCurrency(ad.commission.native, ad.commission.currency)})
-          </Typography>
-        </Box>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            mb: 0.5,
+            height: '36px'
+          }}
+        >
+          {ad.productName}
+        </Typography>
 
-        <Box sx={{ mt: 2 }}>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{
+            display: 'block',
+            mb: 1
+          }}
+        >
+          {ad.merchantName} • {new URL(ad.productUrl).hostname}
+        </Typography>
+
+        <Box sx={{ mt: 'auto' }}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+            Komisi Jastiper
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 1 }}>
+            <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
+              {formatCurrency(ad.commission.idr, 'IDR')}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              ({formatCurrency(ad.commission.native, ad.commission.currency)})
+            </Typography>
+          </Box>
+          
           <Button
             component={Link}
             to={`/shopper-ads/${ad._id}`}
             variant="contained"
             fullWidth
             color="primary"
-            sx={{ mt: 'auto' }}
+            sx={{ 
+              mt: 1,
+              textTransform: 'none',
+              fontWeight: 'bold',
+              '&:hover': {
+                transform: 'scale(1.02)',
+                transition: 'transform 0.2s ease-in-out'
+              }
+            }}
           >
-            Lihat Detail
+            Ambil Jastip
           </Button>
         </Box>
       </CardContent>

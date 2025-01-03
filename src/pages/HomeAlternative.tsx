@@ -59,7 +59,7 @@ const HomeAlternative: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Bagasi - Platform Jasa Titip #1 di Indonesia</title>
+        <title>Platform Jastip Bagasi #1 di Indonesia, Australia, Amerika, Jepang, Korea Selatan</title>
         <meta 
           name="description" 
           content="Temukan jasa titip terpercaya di Bagasi. Platform yang menghubungkan traveler dengan pembeli untuk layanan jasa titip yang aman dan terpercaya." 
