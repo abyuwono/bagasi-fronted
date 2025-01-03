@@ -101,4 +101,6 @@ export interface ShopperAd {
   trackingNumber?: string;
   departureCity: string;
   arrivalCity: string;
+  totalAmount?: number;
+  platformFee?: number;
 }
