@@ -393,7 +393,7 @@ const ShopperAdDetails: React.FC = () => {
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                          <span style={{ fontSize: '0.875rem' }}>
+                          <span style={{ fontSize: '0.75rem', fontStyle: 'italic', color: 'text.secondary' }}>
                             {formatCurrency(ad.productPrice * (ad.quantity || 1), getCurrency(ad.productCurrency || ad.commission.currency))}
                           </span>
                           <span style={{ fontSize: '0.875rem', color: 'text.secondary' }}>
@@ -443,7 +443,11 @@ const ShopperAdDetails: React.FC = () => {
                       pt: 1
                     }}
                   >
-                    Total dana yang akan dikirimkan secara otomatis senilai {formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.commission.currency)} + {formatCurrency(ad.commission.native, ad.commission.currency)} setelah titipan telah diterima oleh pembeli
+                    Total dana yang akan dikirimkan secara otomatis senilai{' '}
+                    <span style={{ fontWeight: 'bold' }}>
+                      IDR {((ad.productPriceIDR * (ad.quantity || 1)) + ad.commission.idr).toLocaleString('id-ID')}
+                    </span>
+                    {' '}setelah titipan telah diterima oleh pembeli
                   </Typography>
                 </Box>
 
