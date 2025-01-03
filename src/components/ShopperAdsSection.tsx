@@ -112,9 +112,9 @@ const ShopperAdsSection: React.FC = () => {
             )} */}
           </Alert>
         ) : (
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             {ads.map((ad) => (
-              <Grid item xs={12} sm={6} md={4} key={ad._id}>
+              <Grid item xs={12} sm={6} md={3} key={ad._id}>
                 <ShopperAdCard ad={ad} />
               </Grid>
             ))}

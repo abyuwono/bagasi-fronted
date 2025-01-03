@@ -88,7 +88,7 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
       >
         <CardMedia
           component="img"
-          height="160"
+          height="140"
           image={ad.cloudflareImageUrl || ad.productImage}
           alt="Product"
           sx={{ objectFit: 'contain', bgcolor: 'white', p: 1 }}
@@ -99,7 +99,7 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
             }
           }}
         />
-        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2, '&:last-child': { pb: 2 } }}>
+        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 1.5, '&:last-child': { pb: 1.5 } }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
             <Chip
               label={getStatusText(ad.status)}
