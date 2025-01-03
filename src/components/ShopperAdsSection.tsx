@@ -82,9 +82,9 @@ const ShopperAdsSection: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={0} sx={{ p: 3, bgcolor: 'background.default' }}>
-        {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h5">Barang Jastip</Typography>
-          {user?.role === 'shopper' && (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h5">Daftar Barang Jastip, Dapat Duit Yuk</Typography>
+          {/* {user?.role === 'shopper' && (
             <Button
               component={Link}
               to="/shopper-ads/new"
@@ -93,12 +93,13 @@ const ShopperAdsSection: React.FC = () => {
             >
               Buat Permintaan
             </Button>
-          )}
-        </Box> */}
+          )} */}
+        </Box>
+
         {ads.length === 0 ? (
           <Alert severity="info">
             Saat ini belum ada permintaan barang jastip yang aktif. Periksa kembali nanti untuk melihat permintaan terbaru.
-            {user?.role === 'shopper' && (
+            {/* {user?.role === 'shopper' && (
               <Button
                 component={Link}
                 to="/shopper-ads/new"
@@ -108,7 +109,7 @@ const ShopperAdsSection: React.FC = () => {
               >
                 Buat Permintaan
               </Button>
-            )}
+            )} */}
           </Alert>
         ) : (
           <Grid container spacing={3}>
