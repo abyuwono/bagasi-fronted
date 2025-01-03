@@ -250,17 +250,26 @@ const ShopperAdDetails: React.FC = () => {
       </Helmet>
 
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+          Detail Produk Jastip
+        </Typography>
+        
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
             <Paper sx={{ p: 3 }}>
-              <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Box>
+              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <Box sx={{ flex: 1 }}>
                   <Chip
                     label={getStatusText(ad.status)}
-                    sx={{ bgcolor: getStatusColor(ad.status), color: 'white', mb: 2 }}
+                    sx={{ bgcolor: getStatusColor(ad.status), color: 'white', mb: 1 }}
                   />
-                  <Typography variant="h5" gutterBottom>
-                    Detail Permintaan Produk
+                  <Typography variant="h5" component="h1" gutterBottom sx={{ 
+                    fontWeight: 'bold',
+                    fontSize: '1.8rem',
+                    mt: 1,
+                    color: theme.palette.text.primary 
+                  }}>
+                    {ad.productName}
                   </Typography>
                 </Box>
                 {ad.selectedTraveler && (
@@ -273,7 +282,7 @@ const ShopperAdDetails: React.FC = () => {
               <Box sx={{ mb: 3 }}>
                 <img
                   src={ad.cloudflareImageUrl || ad.productImage}
-                  alt="Product"
+                  alt={ad.productName}
                   style={{
                     width: '100%',
                     maxHeight: '400px',
@@ -308,7 +317,7 @@ const ShopperAdDetails: React.FC = () => {
                       }
                     }}
                   >
-                    {ad.productUrl.includes('blackmores') ? 'Blackmores Omega Triple Super Strength Fish Oil 150 Capsules' : ad.productUrl.split('/').pop() || 'Lihat Produk'}
+                    {ad.productUrl}
                   </Typography>
                 </Grid>
 
