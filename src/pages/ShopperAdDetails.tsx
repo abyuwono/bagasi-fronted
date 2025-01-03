@@ -386,14 +386,15 @@ const ShopperAdDetails: React.FC = () => {
 
                 {['in_discussion', 'accepted'].includes(ad.status) && (isUserShopper || isUserTraveler) && (
                   <Button
-                    variant="outlined"
+                    variant="contained"
                     color="error"
                     onClick={() => setShowCancelDialog(true)}
                     disabled={processingAction}
                     sx={{ 
                       fontWeight: 500,
                       px: 3,
-                      py: 1
+                      py: 1,
+                      color: 'white'
                     }}
                   >
                     Batal
