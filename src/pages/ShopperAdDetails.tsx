@@ -423,7 +423,8 @@ const ShopperAdDetails: React.FC = () => {
                           sx={{ 
                             fontWeight: 500,
                             px: 3,
-                            py: 1
+                            py: 1,
+                            position: 'relative'
                           }}
                         >
                           Edit
@@ -437,7 +438,8 @@ const ShopperAdDetails: React.FC = () => {
                             fontWeight: 500,
                             px: 3,
                             py: 1,
-                            color: 'white'
+                            color: 'white',
+                            position: 'relative'
                           }}
                         >
                           Cancel
@@ -456,10 +458,24 @@ const ShopperAdDetails: React.FC = () => {
                         sx={{ 
                           fontWeight: 500,
                           px: 3,
-                          py: 1
+                          py: 1,
+                          position: 'relative'
                         }}
                       >
-                        Bantu Beli
+                        {processingAction ? (
+                          <CircularProgress
+                            size={24}
+                            sx={{
+                              position: 'absolute',
+                              top: '50%',
+                              left: '50%',
+                              marginTop: '-12px',
+                              marginLeft: '-12px',
+                            }}
+                          />
+                        ) : (
+                          'Bantu Beli'
+                        )}
                       </Button>
                     )}
 
@@ -472,10 +488,24 @@ const ShopperAdDetails: React.FC = () => {
                         sx={{ 
                           fontWeight: 500,
                           px: 3,
-                          py: 1
+                          py: 1,
+                          position: 'relative'
                         }}
                       >
-                        Terima Jastiper
+                        {processingAction ? (
+                          <CircularProgress
+                            size={24}
+                            sx={{
+                              position: 'absolute',
+                              top: '50%',
+                              left: '50%',
+                              marginTop: '-12px',
+                              marginLeft: '-12px',
+                            }}
+                          />
+                        ) : (
+                          'Terima Jastiper'
+                        )}
                       </Button>
                     )}
 
@@ -488,10 +518,24 @@ const ShopperAdDetails: React.FC = () => {
                         sx={{ 
                           fontWeight: 500,
                           px: 3,
-                          py: 1
+                          py: 1,
+                          position: 'relative'
                         }}
                       >
-                        Saya Sudah Terima Barang
+                        {processingAction ? (
+                          <CircularProgress
+                            size={24}
+                            sx={{
+                              position: 'absolute',
+                              top: '50%',
+                              left: '50%',
+                              marginTop: '-12px',
+                              marginLeft: '-12px',
+                            }}
+                          />
+                        ) : (
+                          'Saya Sudah Terima Barang'
+                        )}
                       </Button>
                     )}
 
@@ -505,10 +549,25 @@ const ShopperAdDetails: React.FC = () => {
                           fontWeight: 500,
                           px: 3,
                           py: 1,
-                          color: 'white'
+                          color: 'white',
+                          position: 'relative'
                         }}
                       >
-                        {getCancelButtonText()}
+                        {processingAction ? (
+                          <CircularProgress
+                            size={24}
+                            sx={{
+                              position: 'absolute',
+                              top: '50%',
+                              left: '50%',
+                              marginTop: '-12px',
+                              marginLeft: '-12px',
+                              color: 'white'
+                            }}
+                          />
+                        ) : (
+                          getCancelButtonText()
+                        )}
                       </Button>
                     )}
                   </>
@@ -563,13 +622,29 @@ const ShopperAdDetails: React.FC = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowCancelDialog(false)}>Tidak</Button>
+          <Button onClick={() => setShowCancelDialog(false)} disabled={processingAction}>
+            Tidak
+          </Button>
           <Button
             onClick={handleCancel}
             color="error"
             disabled={processingAction}
+            sx={{ position: 'relative' }}
           >
-            Ya, Batalkan
+            {processingAction ? (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px',
+                }}
+              />
+            ) : (
+              'Ya'
+            )}
           </Button>
         </DialogActions>
       </Dialog>
