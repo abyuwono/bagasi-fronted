@@ -349,7 +349,6 @@ const ShopperAdDetails: React.FC = () => {
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
                           <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.productPrice, ad.commission.currency)}</span>
-                          <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>{ad.commission.currency}</span>
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -373,8 +372,9 @@ const ShopperAdDetails: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography>
-                          {ad.quantity || 1}
+                        <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
+                          <span style={{ fontSize: '0.875rem' }}>{ad.quantity || 1}</span>
+                          <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>pcs</span>
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -385,9 +385,8 @@ const ShopperAdDetails: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-                          <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.commission.currency)}</span>
-                          <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>{ad.commission.currency}</span>
+                        <Typography>
+                          {formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.commission.currency)}
                         </Typography>
                       </TableCell>
                     </TableRow>
