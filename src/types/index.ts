@@ -97,7 +97,7 @@ export interface ShopperAd {
   selectedTraveler?: {
     id: string;
     username: string;
-  };
+  } | null;
   trackingNumber?: string;
   departureCity: string;
   arrivalCity: string;

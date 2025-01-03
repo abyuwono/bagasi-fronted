@@ -110,10 +110,10 @@ const ShopperAds: React.FC<Props> = ({ shopperId }) => {
                 ${ad.productPrice}
               </TableCell>
               <TableCell style={{ padding: '12px 8px' }}>
-                Rp {ad.totalAmount?.toLocaleString()}
+                Rp {ad.totalAmount?.toLocaleString() || ad.productPriceIDR?.toLocaleString()}
               </TableCell>
               <TableCell style={{ padding: '12px 8px' }}>
-                {ad.selectedTraveler ? ad.selectedTraveler.username : '-'}
+                {ad.selectedTraveler?.username || '-'}
               </TableCell>
               <TableCell style={{ padding: '12px 8px' }}>
                 {getStatusLabel(ad.status)}
