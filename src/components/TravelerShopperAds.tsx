@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -39,6 +39,11 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [ads, setAds] = useState<ShopperAd[]>([]);
+  const navigate = useNavigate();
+
+  const handleRowClick = (adId: string) => {
+    navigate(`/shopper-ads/${adId}`);
+  };
 
   useEffect(() => {
     const fetchAds = async () => {
@@ -94,7 +99,16 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
         </TableHead>
         <TableBody>
           {ads.map((ad) => (
-            <TableRow key={ad._id}>
+            <TableRow 
+              key={ad._id}
+              onClick={() => handleRowClick(ad._id)}
+              sx={{ 
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                }
+              }}
+            >
               <TableCell 
                 style={{ 
                   width: '200px',
@@ -104,9 +118,9 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
                   padding: '12px 8px',
                   borderBottom: 'none'
                 }}
-                title={ad.productName} // Show full name on hover
+                title={ad.productName}
               >
-                {ad.productName?.length > 18 ? `${ad.productName.substring(0, 15)}...` : ad.productName}
+                {ad.productName}
               </TableCell>
               <TableCell style={{ whiteSpace: 'nowrap', padding: '12px 8px', borderBottom: 'none' }}>{ad.productWeight} kg</TableCell>
               <TableCell style={{ whiteSpace: 'nowrap', padding: '12px 8px', borderBottom: 'none' }}>IDR {ad.productPriceIDR.toLocaleString()}</TableCell>
@@ -118,13 +132,7 @@ const TravelerShopperAds: React.FC<Props> = ({ travelerId }) => {
               <TableCell style={{ whiteSpace: 'nowrap', padding: '12px 8px', borderBottom: 'none' }}>{ad.user.username}</TableCell>
               <TableCell style={{ whiteSpace: 'nowrap', padding: '12px 8px', borderBottom: 'none' }}>{getStatusLabel(ad.status)}</TableCell>
               <TableCell align="center" style={{ padding: '12px 8px', borderBottom: 'none' }}>
-                <IconButton
-                  size="small"
-                  component={RouterLink}
-                  to={`/shopper-ads/${ad._id}`}
-                >
-                  <VisibilityIcon fontSize="small" />
-                </IconButton>
+                <VisibilityIcon fontSize="small" />
               </TableCell>
             </TableRow>
           ))}
