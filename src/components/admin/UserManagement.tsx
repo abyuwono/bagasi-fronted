@@ -32,6 +32,7 @@ interface User {
   rating: number;
   totalReviews: number;
   createdAt: string;
+  role: 'traveler' | 'shopper';
 }
 
 const UserManagement: React.FC = () => {
@@ -109,6 +110,7 @@ const UserManagement: React.FC = () => {
               <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>WhatsApp Number</TableCell>
+              <TableCell>Type</TableCell>
               <TableCell>Rating</TableCell>
               <TableCell>Reviews</TableCell>
               <TableCell>Active</TableCell>
@@ -122,6 +124,9 @@ const UserManagement: React.FC = () => {
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.whatsappNumber}</TableCell>
+                <TableCell>
+                  {user.role === 'traveler' ? 'Traveler' : 'Shopper'}
+                </TableCell>
                 <TableCell>{user.rating}</TableCell>
                 <TableCell>{user.totalReviews || 0}</TableCell>
                 <TableCell>
