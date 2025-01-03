@@ -100,17 +100,22 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
           }}
         />
         <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2, '&:last-child': { pb: 2 } }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
             <Chip
               label={getStatusText(ad.status)}
               size="small"
               sx={{
                 bgcolor: getStatusColor(ad.status),
                 color: 'white',
-                height: '24px'
+                height: '20px',
+                '& .MuiChip-label': {
+                  px: 1,
+                  fontSize: '0.75rem',
+                  lineHeight: 1.2
+                }
               }}
             />
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.2 }}>
               Berat Total: {ad.productWeight}KG
             </Typography>
           </Box>
