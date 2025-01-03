@@ -78,6 +78,7 @@ export interface ShopperAd {
     customDisplayName?: string;
   };
   productUrl: string;
+  merchantName?: string;
   productName: string;
   productImage: string;
   cloudflareImageId?: string;
