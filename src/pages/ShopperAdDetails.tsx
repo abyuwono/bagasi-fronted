@@ -424,7 +424,9 @@ const ShopperAdDetails: React.FC = () => {
                             fontWeight: 500,
                             px: 3,
                             py: 1,
-                            position: 'relative'
+                            position: 'relative',
+                            minWidth: '100px',
+                            minHeight: '36px'
                           }}
                         >
                           Edit
@@ -439,7 +441,9 @@ const ShopperAdDetails: React.FC = () => {
                             px: 3,
                             py: 1,
                             color: 'white',
-                            position: 'relative'
+                            position: 'relative',
+                            minWidth: '100px',
+                            minHeight: '36px'
                           }}
                         >
                           Cancel
@@ -459,7 +463,9 @@ const ShopperAdDetails: React.FC = () => {
                           fontWeight: 500,
                           px: 3,
                           py: 1,
-                          position: 'relative'
+                          position: 'relative',
+                          minWidth: '100px',
+                          minHeight: '36px'
                         }}
                       >
                         {processingAction ? (
@@ -489,7 +495,9 @@ const ShopperAdDetails: React.FC = () => {
                           fontWeight: 500,
                           px: 3,
                           py: 1,
-                          position: 'relative'
+                          position: 'relative',
+                          minWidth: '100px',
+                          minHeight: '36px'
                         }}
                       >
                         {processingAction ? (
@@ -519,7 +527,9 @@ const ShopperAdDetails: React.FC = () => {
                           fontWeight: 500,
                           px: 3,
                           py: 1,
-                          position: 'relative'
+                          position: 'relative',
+                          minWidth: '100px',
+                          minHeight: '36px'
                         }}
                       >
                         {processingAction ? (
@@ -550,7 +560,9 @@ const ShopperAdDetails: React.FC = () => {
                           px: 3,
                           py: 1,
                           color: 'white',
-                          position: 'relative'
+                          position: 'relative',
+                          minWidth: '100px',
+                          minHeight: '36px'
                         }}
                       >
                         {processingAction ? (
