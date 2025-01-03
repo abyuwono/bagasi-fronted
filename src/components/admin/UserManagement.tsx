@@ -125,7 +125,7 @@ const UserManagement: React.FC = () => {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.whatsappNumber}</TableCell>
                 <TableCell>
-                  {user.role === 'traveler' ? 'Traveler' : 'Shopper'}
+                  {user.role ? (user.role === 'traveler' ? 'Traveler' : 'Shopper') : 'Not Set'}
                 </TableCell>
                 <TableCell>{user.rating}</TableCell>
                 <TableCell>{user.totalReviews || 0}</TableCell>
