@@ -420,7 +420,7 @@ const ShopperAdDetails: React.FC = () => {
                     Alamat Pengiriman
                   </Typography>
                   <Typography variant="body2">
-                    {canShowFullAddress ? ad.shippingAddress : `${ad.shippingAddress.city}, ${ad.shippingAddress.country}`}
+                    {canShowFullAddress ? ad.shippingAddress.fullAddress : `${ad.shippingAddress.city}, ${ad.shippingAddress.country}`}
                   </Typography>
                 </Box>
 
