@@ -347,8 +347,9 @@ const ShopperAdDetails: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography>
-                          {formatCurrency(ad.productPrice, ad.commission.currency)}
+                        <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
+                          <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.productPrice, ad.commission.currency)}</span>
+                          <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>{ad.commission.currency}</span>
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -384,8 +385,9 @@ const ShopperAdDetails: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography>
-                          {formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.commission.currency)}
+                        <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
+                          <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.commission.currency)}</span>
+                          <span style={{ fontSize: '0.75rem', color: 'text.secondary' }}>{ad.commission.currency}</span>
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -430,7 +432,7 @@ const ShopperAdDetails: React.FC = () => {
                       pt: 1
                     }}
                   >
-                    Total dana yang akan dikirimkan adalah {formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.commission.currency)} + {formatCurrency(ad.commission.native, ad.commission.currency)}
+                    Total dana yang akan dikirimkan secara otomatis senilai {formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.commission.currency)} + {formatCurrency(ad.commission.native, ad.commission.currency)} setelah titipan telah diterima oleh pembeli
                   </Typography>
                 </Box>
 
