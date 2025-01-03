@@ -315,11 +315,11 @@ const ShopperAdDetails: React.FC = () => {
               </Box>
 
               <Box sx={{ mt: 2 }}>
-                <Table>
+                <Table size="small">
                   <TableBody>
                     <TableRow>
                       <TableCell sx={{ width: '30%', pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
                           Nama Toko
                         </Typography>
                       </TableCell>
@@ -331,7 +331,6 @@ const ShopperAdDetails: React.FC = () => {
                           sx={{
                             color: theme.palette.primary.main,
                             textDecoration: 'none',
-                            fontSize: '0.875rem',
                             '&:hover': {
                               textDecoration: 'underline'
                             }
@@ -343,60 +342,60 @@ const ShopperAdDetails: React.FC = () => {
                     </TableRow>
                     <TableRow>
                       <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
                           Harga Barang
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography sx={{ fontSize: '0.875rem' }}>
+                        <Typography>
                           {formatCurrency(ad.productPrice, ad.commission.currency)}
                         </Typography>
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
                           Berat per Unit
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography sx={{ fontSize: '0.875rem' }}>
+                        <Typography>
                           {(ad.productWeight / 1000).toFixed(2)} KG
                         </Typography>
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
                           Kuantitas
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography sx={{ fontSize: '0.875rem' }}>
+                        <Typography>
                           {ad.quantity || 1}
                         </Typography>
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
                           Harga Total
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
+                        <Typography>
                           {formatCurrency((ad.productPrice * (ad.quantity || 1)), ad.commission.currency)}
                         </Typography>
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell sx={{ pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
                           Berat Total
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
-                        <Typography sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
+                        <Typography>
                           {((ad.productWeight / 1000) * (ad.quantity || 1)).toFixed(2)} KG
                         </Typography>
                       </TableCell>
