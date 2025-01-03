@@ -86,6 +86,8 @@ export interface ShopperAd {
   productPrice: number;
   productWeight: number;
   quantity?: number;
+  totalWeight?: number;
+  totalAmount?: number;
   productPriceIDR: number;
   commission: Commission;
   shippingAddress: {
@@ -103,6 +105,5 @@ export interface ShopperAd {
   trackingNumber?: string;
   departureCity: string;
   arrivalCity: string;
-  totalAmount?: number;
   platformFee?: number;
 }
