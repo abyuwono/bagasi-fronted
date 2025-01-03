@@ -224,6 +224,11 @@ const ShopperAdDetails: React.FC = () => {
     return false;
   };
 
+  const getCurrency = (currency: string | undefined): Currency => {
+    if (!currency) return 'AUD';
+    return currency as Currency;
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
@@ -348,7 +353,9 @@ const ShopperAdDetails: React.FC = () => {
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-                          <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.productPrice, (ad.productCurrency || ad.commission.currency) as Currency)}</span>
+                          <span style={{ fontSize: '0.875rem' }}>
+                            {formatCurrency(ad.productPrice, getCurrency(ad.productCurrency || ad.commission.currency))}
+                          </span>
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -386,7 +393,9 @@ const ShopperAdDetails: React.FC = () => {
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-                          <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), (ad.productCurrency || ad.commission.currency) as Currency)}</span>
+                          <span style={{ fontSize: '0.875rem' }}>
+                            {formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), getCurrency(ad.productCurrency || ad.commission.currency))}
+                          </span>
                         </Typography>
                       </TableCell>
                     </TableRow>
