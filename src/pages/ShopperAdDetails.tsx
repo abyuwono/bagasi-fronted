@@ -103,10 +103,30 @@ const ShopperAdDetails: React.FC = () => {
   const handleCancel = async () => {
     try {
       setProcessingAction(true);
-      await api.patch(`/shopper-ads/${id}/cancel`);
-      setAd(prev => prev ? { ...prev, status: 'cancelled' } : null);
+      const response = await api.patch(`/shopper-ads/${id}/cancel`);
+      
+      // Update the ad state based on the response
+      setAd(prev => {
+        if (!prev) return null;
+        
+        const isUserShopper = user?.id === prev.user.id;
+        const isActiveStatus = prev.status === 'active';
+        
+        // If shopper cancels active ad, it becomes cancelled
+        if (isUserShopper && isActiveStatus) {
+          return { ...prev, status: 'cancelled' };
+        }
+        
+        // For all other cases (traveler cancel or shopper reject), ad goes back to active
+        return { 
+          ...prev, 
+          status: 'active',
+          selectedTraveler: null
+        };
+      });
+      
       setShowCancelDialog(false);
-      toast.success('Order cancelled successfully');
+      toast.success(response.data.message);
     } catch (err) {
       console.error('Error cancelling order:', err);
       toast.error('Failed to cancel order');
@@ -161,6 +181,42 @@ const ShopperAdDetails: React.FC = () => {
       default:
         return 'Dibatalkan';
     }
+  };
+
+  const getCancelButtonText = () => {
+    if (!ad) return '';
+    
+    const isUserShopper = user?.id === ad.user.id;
+    
+    if (isUserShopper) {
+      if (ad.status === 'active') return 'Batalkan Permanen';
+      if (ad.status === 'in_discussion') return 'Tolak Traveler';
+      return '';
+    }
+    
+    // For travelers
+    if (['in_discussion', 'accepted', 'shipped'].includes(ad.status)) {
+      return 'Batalkan Order';
+    }
+    
+    return '';
+  };
+
+  const showCancelButton = () => {
+    if (!ad || !user) return false;
+    
+    const isUserShopper = user.id === ad.user.id;
+    const isUserTraveler = user.id === ad?.selectedTraveler?.id;
+    
+    if (isUserShopper) {
+      return ['active', 'in_discussion'].includes(ad.status);
+    }
+    
+    if (isUserTraveler) {
+      return ['in_discussion', 'accepted', 'shipped'].includes(ad.status);
+    }
+    
+    return false;
   };
 
   if (loading) {
@@ -384,7 +440,7 @@ const ShopperAdDetails: React.FC = () => {
                   </Button>
                 )}
 
-                {['in_discussion', 'accepted'].includes(ad.status) && (isUserShopper || isUserTraveler) && (
+                {showCancelButton() && (
                   <Button
                     variant="contained"
                     color="error"
@@ -397,7 +453,7 @@ const ShopperAdDetails: React.FC = () => {
                       color: 'white'
                     }}
                   >
-                    Batal
+                    {getCancelButtonText()}
                   </Button>
                 )}
               </Box>
@@ -419,14 +475,31 @@ const ShopperAdDetails: React.FC = () => {
       </Container>
 
       {/* Cancel Dialog */}
-      <Dialog open={showCancelDialog} onClose={() => setShowCancelDialog(false)}>
-        <DialogTitle>Konfirmasi Pembatalan</DialogTitle>
+      <Dialog
+        open={showCancelDialog}
+        onClose={() => setShowCancelDialog(false)}
+      >
+        <DialogTitle>
+          {user?.id === ad.user.id && ad.status === 'active' 
+            ? 'Batalkan Permanen?' 
+            : 'Batalkan Order?'}
+        </DialogTitle>
         <DialogContent>
-          Apakah Anda yakin ingin membatalkan pesanan ini?
+          <Typography>
+            {user?.id === ad.user.id && ad.status === 'active'
+              ? 'Anda yakin ingin membatalkan iklan ini secara permanen?'
+              : user?.id === ad.user.id
+                ? 'Anda yakin ingin menolak traveler ini? Iklan akan kembali aktif.'
+                : 'Anda yakin ingin membatalkan order ini? Iklan akan kembali aktif.'}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowCancelDialog(false)}>Tidak</Button>
-          <Button onClick={handleCancel} color="error" disabled={processingAction}>
+          <Button
+            onClick={handleCancel}
+            color="error"
+            disabled={processingAction}
+          >
             Ya, Batalkan
           </Button>
         </DialogActions>

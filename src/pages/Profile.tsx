@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import TravelerShopperAds from '../components/TravelerShopperAds';
+import ShopperAds from '../components/ShopperAds';
 
 interface Review {
   rating: number;
@@ -214,16 +215,18 @@ const Profile = () => {
         </Grid>
       </Paper>
 
-      {user && user.role === 'traveler' && (
-        <>
-          <Typography variant="h6" gutterBottom sx={{ mt: 4, mb: 2 }}>
-            Permintaan Jastip yang Diambil
+      {/* Ads Section */}
+      {profile && (
+        <Box mt={4}>
+          <Typography variant="h6" gutterBottom>
+            {profile.role === 'traveler' ? 'Permintaan Belanja' : 'Daftar Belanja Saya'}
           </Typography>
-          {console.log('Profile user:', user)}
-          {console.log('Profile user.id:', user.id)}
-          {console.log('Profile user.role:', user.role)}
-          <TravelerShopperAds travelerId={user.id} />
-        </>
+          {profile.role === 'traveler' ? (
+            <TravelerShopperAds travelerId={profile.id} />
+          ) : (
+            <ShopperAds shopperId={profile.id} />
+          )}
+        </Box>
       )}
 
       {profile.reviews.length > 0 && (
