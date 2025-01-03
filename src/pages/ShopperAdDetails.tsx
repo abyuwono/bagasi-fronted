@@ -392,69 +392,110 @@ const ShopperAdDetails: React.FC = () => {
               </Grid>
 
               <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-                {ad.status === 'active' && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleRequestHelp}
-                    disabled={processingAction}
-                    sx={{ 
-                      fontWeight: 500,
-                      px: 3,
-                      py: 1
-                    }}
-                  >
-                    Bantu Beli
-                  </Button>
-                )}
+                {isUserShopper ? (
+                  <>
+                    <Typography variant="body1" sx={{ alignSelf: 'center', mr: 2, fontStyle: 'italic' }}>
+                      Kamu pemilik order jastip ini
+                    </Typography>
+                    {!['accepted', 'shipped', 'completed'].includes(ad.status) && (
+                      <>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => navigate(`/shopper-ads/${ad._id}/edit`)}
+                          disabled={processingAction}
+                          sx={{ 
+                            fontWeight: 500,
+                            px: 3,
+                            py: 1
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => setShowCancelDialog(true)}
+                          disabled={processingAction}
+                          sx={{ 
+                            fontWeight: 500,
+                            px: 3,
+                            py: 1,
+                            color: 'white'
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {ad.status === 'active' && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleRequestHelp}
+                        disabled={processingAction}
+                        sx={{ 
+                          fontWeight: 500,
+                          px: 3,
+                          py: 1
+                        }}
+                      >
+                        Bantu Beli
+                      </Button>
+                    )}
 
-                {ad.status === 'in_discussion' && isUserShopper && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setShowAcceptDialog(true)}
-                    disabled={processingAction}
-                    sx={{ 
-                      fontWeight: 500,
-                      px: 3,
-                      py: 1
-                    }}
-                  >
-                    Terima Jastiper
-                  </Button>
-                )}
+                    {ad.status === 'in_discussion' && isUserShopper && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setShowAcceptDialog(true)}
+                        disabled={processingAction}
+                        sx={{ 
+                          fontWeight: 500,
+                          px: 3,
+                          py: 1
+                        }}
+                      >
+                        Terima Jastiper
+                      </Button>
+                    )}
 
-                {ad.status === 'shipped' && isUserShopper && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleComplete}
-                    disabled={processingAction}
-                    sx={{ 
-                      fontWeight: 500,
-                      px: 3,
-                      py: 1
-                    }}
-                  >
-                    Saya Sudah Terima Barang
-                  </Button>
-                )}
+                    {ad.status === 'shipped' && isUserShopper && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleComplete}
+                        disabled={processingAction}
+                        sx={{ 
+                          fontWeight: 500,
+                          px: 3,
+                          py: 1
+                        }}
+                      >
+                        Saya Sudah Terima Barang
+                      </Button>
+                    )}
 
-                {showCancelButton() && (
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => setShowCancelDialog(true)}
-                    disabled={processingAction}
-                    sx={{ 
-                      fontWeight: 500,
-                      px: 3,
-                      py: 1,
-                      color: 'white'
-                    }}
-                  >
-                    {getCancelButtonText()}
-                  </Button>
+                    {showCancelButton() && !isUserShopper && (
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => setShowCancelDialog(true)}
+                        disabled={processingAction}
+                        sx={{ 
+                          fontWeight: 500,
+                          px: 3,
+                          py: 1,
+                          color: 'white'
+                        }}
+                      >
+                        {getCancelButtonText()}
+                      </Button>
+                    )}
+                  </>
                 )}
               </Box>
             </Paper>
