@@ -315,10 +315,10 @@ const ShopperAdDetails: React.FC = () => {
               </Box>
 
               <Box sx={{ mt: 2 }}>
-                <Table size="small" sx={{ '& td': { py: 1.5 } }}>
+                <Table>
                   <TableBody>
                     <TableRow>
-                      <TableCell sx={{ width: '35%', pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
+                      <TableCell sx={{ width: '30%', pl: 0, borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
                           Nama Toko
                         </Typography>
