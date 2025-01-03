@@ -20,8 +20,8 @@ interface ShopperAdCardProps {
     cloudflareImageUrl?: string;
     cloudflareImageId?: string;
     productUrl: string;
-    productName: string;
-    merchantName: string;
+    productName?: string;
+    merchantName?: string;
     productWeight: number;
     commission: {
       idr: number;
@@ -122,7 +122,7 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
             height: '36px'
           }}
         >
-          {ad.productName}
+          {ad.productName || 'Unnamed Product'}
         </Typography>
 
         <Typography
@@ -133,7 +133,7 @@ const ShopperAdCard: React.FC<ShopperAdCardProps> = ({ ad }) => {
             mb: 1
           }}
         >
-          {ad.merchantName} • {new URL(ad.productUrl).hostname}
+          {ad.merchantName ? `${ad.merchantName} • ` : ''}{new URL(ad.productUrl).hostname}
         </Typography>
 
         <Box sx={{ mt: 'auto' }}>
