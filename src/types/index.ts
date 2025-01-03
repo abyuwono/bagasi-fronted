@@ -20,7 +20,7 @@ export interface Route {
   to: string;
 }
 
-export type Currency = 'AUD' | 'IDR' | 'USD' | 'SGD' | 'KRW';
+export type Currency = 'AUD' | 'IDR' | 'USD' | 'SGD' | 'KRW' | string;
 
 export interface Commission {
   idr: number;

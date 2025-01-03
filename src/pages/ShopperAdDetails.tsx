@@ -348,7 +348,7 @@ const ShopperAdDetails: React.FC = () => {
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-                          <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.productPrice, ad.productCurrency || ad.commission.currency)}</span>
+                          <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.productPrice, (ad.productCurrency || ad.commission.currency) as Currency)}</span>
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -386,7 +386,7 @@ const ShopperAdDetails: React.FC = () => {
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid rgba(224, 224, 224, 0.4)' }}>
                         <Typography variant="body2" sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-                          <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), ad.productCurrency || ad.commission.currency)}</span>
+                          <span style={{ fontSize: '0.875rem' }}>{formatCurrency(ad.totalAmount || (ad.productPrice * (ad.quantity || 1)), (ad.productCurrency || ad.commission.currency) as Currency)}</span>
                         </Typography>
                       </TableCell>
                     </TableRow>
